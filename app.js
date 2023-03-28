@@ -8,30 +8,30 @@ const contact = document.querySelector('.contact button');
 const description = document.querySelector('.info h3');
 const linkies = document.querySelector('.linkies');
 
-//Moving animation event
+//Moving Animation Event
 container.addEventListener("mousemove", (e) => {
-    let xAxis = (window.innerWidth / 2 - e.pageX) /25;
-    let yAxis = (window.innerHeight / 2 - e.pageY) /25;
-    card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+  let xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+  let yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+  card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
 });
-
-//Animate in
+//Animate In
 container.addEventListener("mouseenter", (e) => {
-    card.style.transition = "none";
-    title.style.transform = "translateZ(50px)";
-    picture.style.transform = "translateZ(100px)";
-    description.style.transform = "translateZ(50px)";
-    linkies.style.transform = "translateZ(45px)";
-    contact.style.transform = "translateZ(30px)";
+  card.style.transition = "none";
+  //Popout
+  title.style.transform = "translateZ(-150px)";
+  picture.style.transform = "translateZ(-200px)";
+  description.style.transform = "translateZ(-125px)";
+  sizes.style.transform = "translateZ(-100px)";
+  linkies.style.transform = "translateZ(-75px)";
 });
-
-//Animate out
+//Animate Out
 container.addEventListener("mouseleave", (e) => {
-    card.style.transition = 'all 0.5s ease';
-    card.style.transform = `rotateY(0deg) rotateX(0deg)`;
-    title.style.transform = "translateZ(0px)";
-    picture.style.transform = "translateZ(0px)";
-    contact.style.transform = "translateZ(0px)";
-    description.style.transform = "translateZ(0px)";
-    linkies.style.transform = "translateZ(0px)";
+  card.style.transition = "all 0.5s ease";
+  card.style.transform = `rotateY(0deg)`;
+  //Popback
+  title.style.transform = "translateZ(0px)";
+  picture.style.transform = "translateZ(0px)";
+  description.style.transform = "translateZ(0px)";
+  sizes.style.transform = "translateZ(0px)";
+  linkies.style.transform = "translateZ(0px)";
 });
