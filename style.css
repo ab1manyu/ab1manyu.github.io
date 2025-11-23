@@ -1,0 +1,141 @@
+:root {
+    --bg-color: #000000;
+    --panel-bg: rgba(10, 25, 15, 0.6);
+    --border-color: #1a332a;
+    --text-main: #e5e5e5;
+    --text-muted: #6b7280;
+    --accent-solid: #10b981;
+    --accent-gradient: linear-gradient(135deg, #34d399 0%, #059669 100%);
+    --font-tech: 'Share Tech Mono', monospace;
+    --font-body: 'Inter', sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+}
+
+.dot-grid {
+    background-image: radial-gradient(#1a332a 1px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 0.4;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.noise {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 999;
+    background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MDAiIGhlaWdodD0iNTAwIj48ZmlsdGVyIGlkPSJub2lzZSI+PGZlVHVyYnVsZW5jZSB0eXBlPSJmcmFjdGFsTm9pc2UiIGJhc2VGcmVxdWVuY3k9IjAuNjUiIG51bT1vY3RhdmVzPSIzIiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI25vaXNlKSIgb3BhY2l0eT0iMC41Ii8+PC9zdmc+');
+}
+
+.glass-panel {
+    background: var(--panel-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color);
+    border-radius: 1.5rem;
+    transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.glass-panel:hover {
+    border-color: #34d399;
+}
+
+.nav-item {
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-item::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0%;
+    height: 1px;
+    background: var(--accent-gradient);
+    transition: width 0.3s ease;
+}
+
+.nav-item:hover::after {
+    width: 100%;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #000;
+}
+::-webkit-scrollbar-thumb {
+    background: #1a332a;
+    border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-solid);
+}
+
+#loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-tech);
+}
+
+.loader-hidden {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s ease-in-out;
+}
+
+/* Radar Button Mini Pulse */
+.radar-active {
+    animation: radar-ping 1s cubic-bezier(0, 0, 0.2, 1) forwards;
+}
+
+    /* @keyframes radar-ping {
+        0% { transform: scale(0.5); opacity: 1; border-width: 2px; }
+        100% { transform: scale(2.5); opacity: 0; border-width: 0px; }
+    } */
+
+/* Full Screen Sweep Animation */
+.full-sweep-active {
+    animation: full-sweep 2.5s cubic-bezier(0, 0, 0.2, 1) forwards;
+}
+
+@keyframes full-sweep {
+    0% {
+        transform: scale(0);
+        opacity: 0.8;
+        border-width: 5px;
+        background-color: rgba(16, 185, 129, 0.1);
+    }
+    100% {
+        transform: scale(100); /* Expands way past screen bounds */
+        opacity: 0;
+        border-width: 0px;
+        background-color: rgba(16, 185, 129, 0);
+    }
+}
