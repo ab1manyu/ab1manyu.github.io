@@ -10,6 +10,10 @@
   --font-body: "Inter", sans-serif;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background-color: var(--bg-color);
   color: var(--text-main);
@@ -78,13 +82,16 @@ body {
 ::-webkit-scrollbar {
   width: 6px;
 }
+
 ::-webkit-scrollbar-track {
   background: #000;
 }
+
 ::-webkit-scrollbar-thumb {
   background: #1a332a;
   border-radius: 3px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: var(--accent-solid);
 }
@@ -127,10 +134,67 @@ body {
     border-width: 5px;
     background-color: rgba(16, 185, 129, 0.1);
   }
+
   100% {
-    transform: scale(100); /* Expands way past screen bounds */
+    transform: scale(100);
+    /* Expands way past screen bounds */
     opacity: 0;
     border-width: 0px;
     background-color: rgba(16, 185, 129, 0);
   }
+}
+
+/* PAGE TRANSITION OVERLAY */
+#transition-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000;
+  z-index: 20000;
+  /* Extremely high to cover everything */
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 0.4s ease-in-out;
+}
+
+#transition-overlay.faded-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* GALLERY MODAL */
+#gallery-modal.active #modal-overlay {
+  opacity: 1;
+}
+
+#gallery-modal #modal-card {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.2s ease-out, transform 0.2s cubic-bezier(0.2, 0, 0.2, 1);
+}
+
+#gallery-modal.active #modal-card {
+  opacity: 1;
+  transform: scale(1);
+}
+
+
+
+/* Custom scrollbar for modal content if needed */
+#modal-card ::-webkit-scrollbar {
+  width: 4px;
+}
+
+#modal-card ::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+#modal-card ::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+}
+
+#modal-card ::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-solid);
 }

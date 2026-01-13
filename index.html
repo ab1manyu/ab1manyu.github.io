@@ -99,40 +99,15 @@
 		<span class="text-[6px] font-mono text-gray-500">LOCK_ON</span>
 	</div>
 
-	<nav class="fixed top-0 w-full z-50 border-b border-defense-border bg-black/80 backdrop-blur-md">
-		<div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-			<div class="flex items-center gap-4">
-				<div class="relative flex items-center justify-center w-10 h-10">
-					<div id="radar-pulse"
-						class="absolute w-full h-full border border-defense-accent rounded-full opacity-0 scale-0 pointer-events-none">
-					</div>
+	<div id="navbar-container"></div>
 
-					<button id="radar-trigger"
-						class="relative z-10 text-defense-accent hover:text-white transition-colors outline-none cursor-pointer">
-						<i data-lucide="satellite-dish" class="w-6 h-6"></i>
-					</button>
-				</div>
+	<!-- PAGE TRANSITION OVERLAY -->
+	<div id="transition-overlay"></div>
 
-				<div class="flex flex-col leading-none">
-					<span class="font-mono text-sm tracking-widest uppercase font-bold text-white">abi.</span>
-					<span id="radar-status" class="font-mono text-[10px] text-gray-500">SYS_ONLINE</span>
-				</div>
-			</div>
 
-			<div class="hidden md:flex gap-8 text-sm font-mono tracking-wider text-defense-muted">
-				<a href="#about" class="nav-item hover:text-white transition-colors py-1">01_INTEL</a>
-				<a href="#skills" class="nav-item hover:text-white transition-colors py-1">02_OPS</a>
-				<a href="#contact" class="nav-item hover:text-white transition-colors py-1">03_LINK</a>
-			</div>
-
-			<div class="sm:block font-mono text-xs text-gray-500" id="military-clock">
-				00:00:00 MST
-			</div>
-		</div>
-	</nav>
 
 	<main class="pt-24 pb-12 px-4 md:px-6 max-w-7xl mx-auto">
-		<section id="about" class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-24">
+		<section id="about" class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-24 scroll-mt-28">
 			<div class="glass-panel md:col-span-8 p-6 md:p-8 relative overflow-hidden group">
 				<div class="absolute top-4 right-4 font-mono text-xs text-gray-600">
 					0067
@@ -149,7 +124,8 @@
 					mission-critical software architecture. <br></br>Building resilient solutions
 					for defense and aerospace sectors.
 				</p>
-				<canvas id="matrix-rain" class="fixed top-0 left-0 w-full h-full z-[-1] opacity-20 pointer-events-none"></canvas>
+				<canvas id="matrix-rain"
+					class="fixed top-0 left-0 w-full h-full z-[-1] opacity-20 pointer-events-none"></canvas>
 			</div>
 
 			<div class="glass-panel md:col-span-4 p-6 md:p-8 flex flex-col justify-between relative">
@@ -233,7 +209,7 @@
 			</a>
 		</section>
 
-		<section id="skills" class="mb-24">
+		<section id="skills" class="mb-24 scroll-mt-28">
 			<div class="flex justify-between items-end mb-8">
 				<h2 class="text-3xl font-bold text-white">Operations</h2>
 				<div class="flex gap-2 items-center">
@@ -427,16 +403,42 @@
 			</div>
 		</section>
 
-		<section id="contact" class="max-w-4xl mx-auto mb-24">
+		<section id="contact" class="max-w-4xl mx-auto mb-24 scroll-mt-28">
 			<div class="flex justify-between items-end mb-8 px-4 md:px-0">
-				<h2 class="text-3xl font-bold text-white">Link</h2>
+				<h2 class="text-3xl font-bold text-white">Links</h2>
 				<div class="flex gap-2 items-center">
 					<div class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
 					<span class="font-mono text-xs text-red-500">AWAITING CONNECTION</span>
 				</div>
 			</div>
 
-			<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+				<a href="gallery.html" target=" _blank" rel="noopener noreferrer"
+					class="group glass-panel p-8 relative overflow-hidden hover:border-[#EA5506] transition-all duration-300">
+					<div
+						class="absolute -right-6 -bottom-6 text-white/5 group-hover:text-[#EA5506]/10 transition-colors duration-500">
+						<i data-lucide="camera" class="w-32 h-32"></i>
+					</div>
+
+					<div class="relative z-10 flex flex-col h-full justify-between min-h-[140px]">
+						<div class="flex justify-between items-start">
+							<div>
+								<div class="text-xs font-mono text-gray-500 mb-1">PORTFOLIO</div>
+								<h3 class="text-2xl font-bold text-white group-hover:text-[#EA5506] transition-colors">
+									Photography</h3>
+							</div>
+							<div
+								class="w-10 h-10 rounded-full border border-defense-border flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
+								<i data-lucide="arrow-up-right" class="w-5 h-5"></i>
+							</div>
+						</div>
+
+						<div class="mt-4">
+							<p class="text-sm text-gray-400 font-mono">Memories captured through my lens.</p>
+						</div>
+					</div>
+				</a>
 
 				<a href="https://www.linkedin.com/in/abimanyuananthu/" target="_blank" rel="noopener noreferrer"
 					class="group glass-panel p-8 relative overflow-hidden hover:border-[#0077b5] transition-all duration-300">
@@ -491,29 +493,13 @@
 					</div>
 				</a>
 
-				
+
 
 			</div>
 		</section>
 	</main>
 
-	<footer class="border-t border-defense-border bg-black py-8">
-		<div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
-			<div class="font-mono text-xs text-gray-600">
-				SYS_ID: 2025-PORTFOLIO<br />
-				LOC: UNKNOWN
-			</div>
-			<div class="flex gap-1">
-				<div class="w-2 h-2 bg-[#333] rounded-full"></div>
-				<div class="w-2 h-2 bg-[#333] rounded-full"></div>
-				<div class="w-2 h-2 bg-defense-accent rounded-full"></div>
-			</div>
-			<div class="font-mono text-xs text-gray-600 text-right">
-				&copy; 2025 UYNAMI<br />
-				ALL RIGHTS RESERVED
-			</div>
-		</div>
-	</footer>
+	<div id="footer-container"></div>
 
 	<script src="script.js"></script>
 </body>

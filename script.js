@@ -1,10 +1,295 @@
 document.addEventListener("DOMContentLoaded", () => {
+  injectNavbar();
+  injectFooter();
   lucide.createIcons();
   initRadar();
   initLoader();
   initScrollSpy();
   initMatrixRain();
+  initFadeTransitions();
+  initGalleryModal();
 });
+
+function injectNavbar() {
+  const container = document.getElementById("navbar-container");
+  if (!container) return;
+
+  const isGallery = window.location.pathname.includes("gallery.html");
+  const linkPrefix = isGallery ? "index.html" : "";
+  const radarId = isGallery ? "" : 'id="radar-trigger"';
+  const radarCursor = isGallery ? "cursor-default" : "cursor-pointer";
+  const radarIcon = isGallery ? "aperture" : "satellite-dish";
+
+  // Only rotate on gallery page
+  const rotateClass = isGallery ? "transition-transform duration-700 group-hover:rotate-180" : "";
+
+  container.innerHTML = `
+	<nav class="fixed top-0 w-full z-50 border-b border-defense-border bg-black/80 backdrop-blur-md">
+		<div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+			<div class="flex items-center gap-4">
+				<div class="relative flex items-center justify-center w-10 h-10">
+					<div id="radar-pulse"
+						class="absolute w-full h-full border border-defense-accent rounded-full opacity-0 scale-0 pointer-events-none">
+					</div>
+
+					<button ${radarId}
+						class="relative z-10 text-defense-accent hover:text-white transition-colors outline-none ${radarCursor} group">
+						<i data-lucide="${radarIcon}" class="w-6 h-6 ${rotateClass}"></i>
+					</button>
+				</div>
+
+				<div class="flex flex-col leading-none">
+					<span class="font-mono text-sm tracking-widest uppercase font-bold text-white">abi.</span>
+					<span id="radar-status" class="font-mono text-[10px] text-gray-500">SYS_ONLINE</span>
+				</div>
+			</div>
+
+			<div class="hidden md:flex gap-8 text-sm font-mono tracking-wider text-defense-muted">
+				<a href="${linkPrefix}#about" class="nav-item hover:text-white transition-colors py-1">01_INTEL</a>
+				<a href="${linkPrefix}#skills" class="nav-item hover:text-white transition-colors py-1">02_OPS</a>
+				<a href="${linkPrefix}#contact" class="nav-item hover:text-white transition-colors py-1">03_LINK</a>
+			</div>
+
+			<div class="sm:block font-mono text-xs text-gray-500" id="military-clock">
+				00:00:00 MST
+			</div>
+		</div>
+	</nav>
+  `;
+}
+
+function injectFooter() {
+  const container = document.getElementById("footer-container");
+  if (!container) return;
+
+  container.innerHTML = `
+	<footer class="border-t border-defense-border bg-black py-8">
+		<div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
+			<div class="font-mono text-xs text-gray-600">
+				SYS_ID: 2026-PORTFOLIO<br />
+				LOC: UNKNOWN
+			</div>
+			<div class="flex gap-1">
+				<div class="w-2 h-2 bg-[#333] rounded-full"></div>
+				<div class="w-2 h-2 bg-[#333] rounded-full"></div>
+				<div class="w-2 h-2 bg-defense-accent rounded-full"></div>
+			</div>
+			<div class="font-mono text-xs text-gray-600 text-right">
+				&copy; 2026 UYNAMI<br />
+				ALL RIGHTS RESERVED
+			</div>
+		</div>
+	</footer>
+  `;
+}
+
+function initGalleryModal() {
+  const modal = document.getElementById("gallery-modal");
+  if (!modal) return;
+
+  const overlay = document.getElementById("modal-overlay");
+  const closeBtn = document.getElementById("modal-close");
+  const modalTitle = document.getElementById("modal-title");
+  const modalDate = document.getElementById("modal-date");
+  const modalDesc = document.getElementById("modal-desc");
+
+  // Open Modal
+  const items = document.querySelectorAll(".gallery-item");
+  items.forEach(item => {
+    item.addEventListener("click", () => {
+      // 1. Populate Data
+      const title = item.getAttribute("data-title");
+      const date = item.getAttribute("data-date");
+      const desc = item.getAttribute("data-desc");
+      const imageSrc = item.getAttribute("data-image");
+      const location = item.getAttribute("data-location");
+
+      const modalLocation = document.getElementById("modal-location");
+
+      if (modalTitle) modalTitle.textContent = title;
+      if (modalDate) modalDate.textContent = date;
+      if (modalDesc) modalDesc.textContent = desc;
+      if (modalLocation && location) modalLocation.textContent = location;
+
+      // Handle Image vs Icon
+      const imageContainer = document.querySelector("#modal-card > div:first-child");
+      if (imageContainer) {
+        // 1. Remove existing image, icon (i), or lucide svg
+        const existingImg = imageContainer.querySelector("img");
+        const existingIcon = imageContainer.querySelector("i");
+        const existingSvg = imageContainer.querySelector("svg");
+
+        if (existingImg) existingImg.remove();
+        if (existingIcon) existingIcon.remove();
+        if (existingSvg) existingSvg.remove();
+
+        // 2. Append new content
+        if (imageSrc) {
+          const img = document.createElement("img");
+          img.src = imageSrc;
+          img.className = "w-full h-full object-contain max-h-[90%] fade-in cursor-zoom-in transition-transform duration-300 origin-center";
+
+          // Zoom Logic
+          let zoomLevel = 0; // 0: None, 1: 2.5x, 2: 5x
+          let animFrame = null;
+          let imgRect = null; // Cache rect to avoid layout thrashing
+
+          const updateZoom = (clientX, clientY) => {
+            if (!imgRect) return;
+            const x = ((clientX - imgRect.left) / imgRect.width) * 100;
+            const y = ((clientY - imgRect.top) / imgRect.height) * 100;
+            img.style.transformOrigin = `${x}% ${y}%`;
+          };
+
+          img.addEventListener("click", (e) => {
+            e.stopPropagation();
+
+            // Cycle Zoom: 0 -> 1 -> 2 -> 0
+            zoomLevel = (zoomLevel + 1) % 3;
+
+            // Cache rect only when entering zoom state or changing levels
+            if (zoomLevel > 0) {
+              imgRect = img.getBoundingClientRect();
+            }
+
+            // Apply Zoom Classes/Styles
+            img.classList.remove("scale-[1]", "scale-[2.5]", "scale-[5]");
+
+            if (zoomLevel === 0) {
+              img.style.transform = "scale(1)";
+              img.classList.remove("cursor-zoom-out");
+              img.classList.add("cursor-zoom-in");
+              img.style.transformOrigin = "center center"; // Reset position
+              imgRect = null; // Clear cache
+            } else if (zoomLevel === 1) {
+              img.style.transform = "scale(2.5)";
+
+              // Center zoom initially on click point
+              updateZoom(e.clientX, e.clientY);
+            } else if (zoomLevel === 2) {
+              img.style.transform = "scale(5)";
+              // Center zoom on click point for the deeper zoom too
+              img.classList.remove("cursor-zoom-in");
+              img.classList.add("cursor-zoom-out");
+              updateZoom(e.clientX, e.clientY);
+            }
+          });
+
+          img.addEventListener("mousemove", (e) => {
+            if (zoomLevel === 0) return;
+
+            // Optimize: Use requestAnimationFrame and cached rect
+            if (animFrame) cancelAnimationFrame(animFrame);
+
+            animFrame = requestAnimationFrame(() => {
+              updateZoom(e.clientX, e.clientY);
+            });
+          });
+
+          // Reset on leave
+          img.addEventListener("mouseleave", () => {
+            if (zoomLevel > 0) {
+              zoomLevel = 0;
+              img.style.transform = "scale(1)";
+              img.classList.remove("cursor-zoom-out");
+              img.classList.add("cursor-zoom-in");
+              img.style.transformOrigin = "center center";
+              imgRect = null;
+            }
+          });
+
+          imageContainer.insertBefore(img, imageContainer.firstChild);
+        } else {
+          const icon = document.createElement("i");
+          icon.setAttribute("data-lucide", "image");
+          icon.className = "w-32 h-32 text-gray-700";
+          imageContainer.insertBefore(icon, imageContainer.firstChild);
+          lucide.createIcons();
+        }
+      }
+
+      // New Camera Specs
+      const cam = item.getAttribute("data-cam") || "UNKNOWN";
+      const lens = item.getAttribute("data-lens") || "UNKNOWN";
+      const settings = item.getAttribute("data-settings") || "UNKNOWN";
+
+      const modalCam = document.getElementById("modal-cam");
+      const modalLens = document.getElementById("modal-lens");
+      const modalSettings = document.getElementById("modal-settings");
+
+      if (modalCam) modalCam.textContent = cam;
+      if (modalLens) modalLens.textContent = lens;
+      if (modalSettings) modalSettings.textContent = settings;
+
+      // 2. Show Modal
+      modal.classList.remove("hidden");
+      // Small delay to allow display:flex to apply before opacity transition
+      setTimeout(() => {
+        modal.classList.add("active");
+      }, 10);
+
+      // 3. Lock Scroll
+      document.body.style.overflow = "hidden";
+    });
+  });
+
+  // Close Modal Function
+  const closeModal = () => {
+    modal.classList.remove("active");
+    setTimeout(() => {
+      modal.classList.add("hidden");
+      document.body.style.overflow = "auto";
+    }, 300); // Match CSS duration
+  };
+
+  // Close Triggers
+  if (closeBtn) closeBtn.addEventListener("click", closeModal);
+  if (overlay) overlay.addEventListener("click", closeModal);
+
+  // Close on Escape
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !modal.classList.contains("hidden")) {
+      closeModal();
+    }
+  });
+}
+
+function initFadeTransitions() {
+  const overlay = document.getElementById("transition-overlay");
+  if (!overlay) return;
+
+  // 1. FADE IN ON LOAD
+  // Small delay to ensure browser paints black first
+  setTimeout(() => {
+    overlay.classList.add("faded-out");
+  }, 50);
+
+  // 2. FADE OUT ON NAVIGATE
+  // Intercept all clicks on standard links (including nav-items that change page)
+  const links = document.querySelectorAll("a"); // Catch all links
+
+  links.forEach(link => {
+    link.addEventListener("click", (e) => {
+      const href = link.getAttribute("href");
+
+      // Ignore:
+      // 1. Hash links (anchors on same page)
+      // 2. Target blank (new tabs)
+      // 3. Javascript: links
+      if (!href || href.startsWith("#") || href.startsWith("javascript:") || link.target === "_blank") return;
+
+      e.preventDefault();
+
+      // Start Fade Out (Black Screen)
+      overlay.classList.remove("faded-out");
+
+      // Wait for transition (400ms match css) then go
+      setTimeout(() => {
+        window.location.href = href;
+      }, 400);
+    });
+  });
+}
 
 function updateClock() {
   const now = new Date();
@@ -100,9 +385,8 @@ function initRadar() {
 
       jet.innerHTML = `
                 <i data-lucide="plane" class="w-6 h-6 text-defense-accent" style="transform: rotate(${rotation}deg)"></i>
-                <span class="text-[8px] font-mono text-defense-accent bg-black/80 px-1 border border-defense-accent">BOGEY_0${
-                  i + 1
-                }</span>
+                <span class="text-[8px] font-mono text-defense-accent bg-black/80 px-1 border border-defense-accent">BOGEY_0${i + 1
+        }</span>
             `;
 
       document.body.appendChild(jet);
@@ -153,6 +437,25 @@ function initLoader() {
   const bar = document.getElementById("loader-bar");
   const log = document.getElementById("loader-log");
   const body = document.body;
+
+  // Check if already booted this session
+  if (sessionStorage.getItem("booted")) {
+    if (loader) loader.remove();
+    body.style.overflow = "auto";
+
+    // Still trigger the name scramble immediately
+    setTimeout(() => {
+      const el = document.querySelector("#hero-name");
+      if (el) {
+        const fx = new TextScramble(el);
+        fx.setText("abimanyu ananthu");
+      }
+    }, 100);
+    return;
+  }
+
+  // Mark as booted for next time
+  sessionStorage.setItem("booted", "true");
 
   const logs = [
     "> MEMORY_TEST... PASS",
@@ -348,6 +651,21 @@ function initMatrixRain() {
     }
   };
 
-  // Run animation at 30FPS
-  setInterval(draw, 33);
+  // Run animation at ~30FPS using requestAnimationFrame
+  let lastTime = 0;
+  const fps = 30;
+  const interval = 1000 / fps;
+
+  const animate = (currentTime) => {
+    if (!lastTime) lastTime = currentTime;
+    const elapsed = currentTime - lastTime;
+
+    if (elapsed > interval) {
+      draw();
+      lastTime = currentTime - (elapsed % interval);
+    }
+    requestAnimationFrame(animate);
+  };
+
+  requestAnimationFrame(animate);
 }

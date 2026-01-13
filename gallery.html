@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>abi.</title>
+
+	<script src="https://cdn.tailwindcss.com"></script>
+
+	<script>
+		tailwind.config = {
+			theme: {
+				extend: {
+					fontFamily: {
+						sans: ["Inter", "sans-serif"],
+						mono: ["Share Tech Mono", "monospace"],
+					},
+					colors: {
+						defense: {
+							base: "#000000",
+							panel: "rgba(10, 25, 15, 0.6)",
+							border: "#1a332a",
+							accent: "#10b981",
+							muted: "#6b7280",
+						},
+					},
+					keyframes: {
+						slideRight: {
+							"0%": { transform: "translateX(-100%)" },
+							"100%": { transform: "translateX(300%)" },
+						},
+					},
+					animation: {
+						slideRight: "slideRight 2s linear infinite",
+					},
+				},
+			},
+		};
+	</script>
+
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Share+Tech+Mono&display=swap"
+		rel="stylesheet" />
+
+	<script src="https://unpkg.com/lucide@latest"></script>
+
+	<link rel="stylesheet" href="style.css" />
+</head>
+
+<body
+	class="antialiased bg-defense-base text-gray-200 font-sans selection:bg-emerald-900 selection:text-white overflow-hidden">
+
+
+	<div id="navbar-container"></div>
+
+	<!-- PAGE TRANSITION OVERLAY -->
+	<div id="transition-overlay"></div>
+
+	<main class="pt-24 pb-12 px-4 md:px-6 max-w-7xl mx-auto min-h-screen">
+		<div class="flex justify-between items-end mb-8 border-defense-border pb-4">
+			<div>
+				<div class="font-mono text-xs text-defense-accent mb-2">PERSPECTIVES_CAPTURED</div>
+				<h1 class="text-4xl font-bold text-white uppercase tracking-tight">Photography</h1>
+				<h1 class="text-md text-gray-500 tracking-tight">A showcase containing the experiences that I have
+					captured throughout my travel and daily life. Click on any image to view it in full resolution and
+					learn the history behind it.</h1>
+			</div>
+
+		</div>
+
+		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+			<!-- Gallery Item 1 -->
+			<div class="glass-panel p-0 group relative overflow-hidden aspect-video flex items-center justify-center cursor-pointer gallery-item"
+				data-location="Hampi, Karnataka, India" data-title="Lakshmi the Elephant" data-date="2026-01-04"
+				data-cam="SONY a6000" data-lens="40mm" data-settings="f/4 1/320s ISO 500"
+				data-image="gallery/lakshmi.JPG"
+				data-desc="The friendly face of Virupaksha Temple in Hampi, Lakshmi is an Indian Elephant you can meet inside of the temple and occasionally bathing in the Tungabhadra River. I got the opportunity to meet her twice while I was in Hampi. Once was during my visit to the Virupaksha Temple, at the end of my first day, where she was standing by the temple exit. She is very friendly and is trained to bless you by placing her trunk on your head after donating a rupee note to her. Unfortunately, I did not have any bills, so I placed a coin in her trunk and she was smart enough to notice and did not bless me. No hard feelings, but it goes to show how intelligent Lakshmi is. The next day, I was able to see her again in the morning around 9:00 AM at the Tungabhadra River, where 2 men were scrubbing her with a hard brush to give her a daily bath. I was able to get up close to her in the river, as close to splashing some water on her head. It was an extremely special moment and I feel lucky to have met Lakshmi during both days of my Hampi Trip.">
+				<div class="absolute inset-0 bg-defense-accent/0 group-hover:bg-white/10 transition-colors z-10">
+				</div>
+				<img src="gallery/lakshmi.JPG"
+					class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700">
+				<div
+					class="absolute bottom-4 left-4 font-mono text-[12px] font-bold text-white opacity-0 group-hover:opacity-100 transition-opacity">
+					LAKSHMI.JPG
+				</div>
+				<div
+					class="absolute top-0 left-0 w-full h-[1px] bg-defense-accent/20 transform -translate-x-full group-hover:animate-scan">
+				</div>
+			</div>
+
+
+			<!-- Gallery Item 2 -->
+			<div class="glass-panel p-0 group relative overflow-hidden aspect-video flex items-center justify-center cursor-pointer gallery-item"
+				data-location="Hampi, Karnataka, India" data-title="Tungabhadra River" data-date="2026-01-05"
+				data-cam="SONY a6000" data-lens="40mm" data-settings="f/20 1/20s ISO 100" data-image="gallery/hampi.JPG"
+				data-desc="Hampi is a city located in one of the southern states of India called Karnataka. At one time, the population of this city could have easily been upwards of 500,000+, yet now there are only about 3000 locals that live there. As a UNESCO world heritage site, Hampi brings in hundreds of thousands of tourists every year. This reigion is other worldly, containing mountains of boulders that stretch as far as the eyes can see, and ancient temples and structures that have intricate, beautiful and even impossible to fathom, all carved in stone. Unfortunately, the Hampi we see today will never match what it would have been due to constant invasions and desctructions by the Moghul Empire some 500 years ago, but many sites are being restored and areas are marked for preservation.">
+				<div class="absolute inset-0 bg-defense-accent/0 group-hover:bg-whit/10 transition-colors z-10">
+				</div>
+				<img src="gallery/hampi.JPG"
+					class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700">
+				<div
+					class="absolute bottom-4 left-4 font-mono text-[12px] text-white font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+					HAMPI.JPG
+				</div>
+				<div
+					class="absolute top-0 left-0 w-full h-[1px] bg-defense-accent/20 transform -translate-x-full group-hover:animate-scan">
+				</div>
+			</div>
+
+			<!-- Gallery Item 3 -->
+			<div class="glass-panel p-0 group relative overflow-hidden aspect-video flex items-center justify-center cursor-pointer gallery-item"
+				data-location="Halebidu, Karnataka, India" data-title="Hoysaleswara Temple" data-date="2026-01-04"
+				data-cam="SONY a6000" data-lens="40mm" data-settings="f/7.1 1/200s ISO 100"
+				data-image="gallery/halebidu.JPG"
+				data-desc="The Hoysaleswara Temple, also known as Halebidu Temple is a 12th century Shiva Temple. It was constructed during the mid 1100s. However it has been pillaged and plundered during the 14th century by Muslim invaders, and the temple had been abandoned since late 19th century. Since then, recovered pieces have been marked and slowly started to be restored. The temple is made out of soapstone, giving it a faded and dark finish. The level of intricacy and detail that this temple shows is unexplainable. The outer walls are layered with friezes (or bands) of elephants, dancers, horses, lions, and scenes from the Mahabarata, Ramayana, and the Puranas. Taking a close look at the image, we can see Indra and Indrani on Airavata (Right), one of the most iconic panels in the temple. Indra, the king of the gods, sits with his wife Indrani atop the divine elephant Airavata. To the left of Indra, in the middle of the image, we see Garuda is carrying Vishnu and Lakshmi on his shoulders.">
+				<div class="absolute inset-0 bg-defense-accent/0 group-hover:bg-white/10 transition-colors z-10">
+				</div>
+				<img src="gallery/halebidu.JPG"
+					class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700">
+				<div
+					class="absolute bottom-4 left-4 font-mono text-[12px] font-bold text-white opacity-0 group-hover:opacity-100 transition-opacity">
+					HALEBIDU.JPG
+				</div>
+				<div
+					class="absolute top-0 left-0 w-full h-[1px] bg-defense-accent/20 transform -translate-x-full group-hover:animate-scan">
+				</div>
+			</div>
+
+
+
+			<!-- Gallery Item 4 -->
+			<!-- <div class="glass-panel p-4 group relative overflow-hidden aspect-video flex items-center justify-center cursor-pointer gallery-item"
+				data-title="DRONE SURVEILLANCE" data-date="2024-05-15" data-cam="DJI MAVIC 3 PRO"
+				data-lens="70mm Telephoto" data-settings="f/2.8 1/1000s ISO 100"
+				data-desc="High-altitude aerial reconnaissance prototyping. Testing autonomous flight algorithms for persistent monitoring of border regions with thermal imaging arrays.">
+				<div class="absolute inset-0 bg-defense-accent/5 pattern-grid-lg opacity-20"></div>
+				<i data-lucide="image"
+					class="w-12 h-12 text-gray-700 group-hover:text-defense-accent transition-colors"></i>
+				<div
+					class="absolute bottom-4 left-4 font-mono text-[12px] text-defense-accent opacity-0 group-hover:opacity-100 transition-opacity">
+					IMG_004.RAW
+				</div>
+			</div> -->
+
+			<!-- Gallery Item 5 -->
+			<!-- <div class="glass-panel p-4 group relative overflow-hidden aspect-video flex items-center justify-center cursor-pointer gallery-item"
+				data-title="EXFILTRATION PROTOCOL" data-date="2024-03-01" data-cam="NIKON Z9" data-lens="85mm f/1.2"
+				data-settings="f/1.2 1/250s ISO 640"
+				data-desc="Field training exercise focused on secure data retrieval from compromised assets. Teams utilized signal jamming and physical security bypass techniques.">
+				<div class="absolute inset-0 bg-defense-accent/5 pattern-grid-lg opacity-20"></div>
+				<i data-lucide="image"
+					class="w-12 h-12 text-gray-700 group-hover:text-defense-accent transition-colors"></i>
+				<div
+					class="absolute bottom-4 left-4 font-mono text-[12px] text-defense-accent opacity-0 group-hover:opacity-100 transition-opacity">
+					IMG_005.RAW
+				</div>
+			</div> -->
+
+			<!-- Gallery Item 6 -->
+			<!-- <div class="glass-panel p-4 group relative overflow-hidden aspect-video flex items-center justify-center cursor-pointer gallery-item"
+				data-title="QUANTUM DECRYPTION" data-date="2024-01-10" data-cam="CANON R5" data-lens="15-35mm RF"
+				data-settings="f/5.6 1/30s ISO 3200"
+				data-desc="Experimental cryptanalysis lab setup. Investigating post-quantum cryptography standards and their resilience against quantum computing attacks.">
+				<div class="absolute inset-0 bg-defense-accent/5 pattern-grid-lg opacity-20"></div>
+				<i data-lucide="image"
+					class="w-12 h-12 text-gray-700 group-hover:text-defense-accent transition-colors"></i>
+				<div
+					class="absolute bottom-4 left-4 font-mono text-[12px] text-defense-accent opacity-0 group-hover:opacity-100 transition-opacity">
+					IMG_006.RAW
+				</div>
+			</div> -->
+		</div>
+
+		<!-- MODAL CONTAINER -->
+		<div id="gallery-modal" class="fixed inset-0 z-[60] hidden flex items-center justify-center px-4">
+			<!-- Overlay with Blur -->
+			<div id="modal-overlay"
+				class="absolute inset-0 bg-black/80 backdrop-blur-sm opacity-0 transition-opacity duration-300"></div>
+
+			<!-- Modal Card -->
+			<div id="modal-card"
+				class="relative w-[95vw] h-[95vh] bg-defense-base border border-defense-border rounded-lg shadow-2xl overflow-hidden flex flex-col md:flex-row">
+
+				<!-- Image Section (Left/Top) -->
+				<div
+					class="w-full md:w-3/4 bg-black/50 relative flex items-center justify-center border-b md:border-b-0 md:border-r border-defense-border h-1/2 md:h-full">
+					<!-- Actual Image would go here, using Icon for now -->
+					<i data-lucide="image" class="w-32 h-32 text-gray-700"></i>
+
+				</div>
+
+				<!-- Content Section (Right/Bottom) -->
+				<div
+					class="w-full md:w-1/4 p-8 flex flex-col bg-defense-panel backdrop-blur-md overflow-y-auto h-1/2 md:h-full">
+					<div class="flex justify-between items-start mb-6">
+						<div id="modal-location"
+							class="font-mono text-[10px] text-defense-muted uppercase tracking-widest">
+							LOCATION
+						</div>
+						<button id="modal-close" class="text-gray-400 hover:text-white transition-colors">
+							<i data-lucide="x" class="w-6 h-6"></i>
+						</button>
+					</div>
+
+					<h2 id="modal-title" class="text-2xl font-bold text-white mb-2 leading-tight">
+						OPERATION TITLE
+					</h2>
+
+					<div class="font-mono text-xs text-defense-accent mb-6" id="modal-date">
+						2024-00-00
+					</div>
+
+					<div class="font-sans text-sm text-gray-300 leading-relaxed mb-6" id="modal-desc">
+						Mission details redacted.
+					</div>
+
+					<div class="mt-auto pt-6 border-t border-defense-border">
+						<div class="font-mono text-[10px] text-defense-muted mb-2 uppercase tracking-wider">Camera Intel
+						</div>
+						<div class="grid grid-cols-1 gap-2 text-xs font-mono text-gray-400 mb-4">
+							<div class="flex items-center gap-2">
+								<i data-lucide="camera" class="w-3 h-3 text-defense-accent"></i>
+								<span id="modal-cam" class="text-white">UNK_BODY</span>
+							</div>
+							<div class="flex items-center gap-2">
+								<i data-lucide="aperture" class="w-3 h-3 text-defense-accent"></i>
+								<span id="modal-lens">UNK_OPTIC</span>
+							</div>
+							<div class="flex items-center gap-2">
+								<i data-lucide="sliders" class="w-3 h-3 text-defense-accent"></i>
+								<span id="modal-settings">UNK_PARAM</span>
+							</div>
+						</div>
+
+						<div class="flex gap-2">
+							<span
+								class="px-2 py-1 bg-defense-accent/10 border border-defense-accent/20 text-[10px] font-mono text-defense-accent rounded">INTEL</span>
+							<span
+								class="px-2 py-1 bg-defense-accent/10 border border-defense-accent/20 text-[10px] font-mono text-defense-accent rounded">OPS</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<div id="footer-container"></div>
+
+	<script src="script.js"></script>
+</body>
+
+</html>
