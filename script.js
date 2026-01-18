@@ -289,6 +289,14 @@ function initFadeTransitions() {
       }, 400);
     });
   });
+
+  // 3. HANDLE BACK BUTTON (bfcache)
+  window.addEventListener("pageshow", (event) => {
+    // If loaded from back-forward cache, ensure overlay is hidden
+    if (event.persisted) {
+      overlay.classList.add("faded-out");
+    }
+  });
 }
 
 function updateClock() {
@@ -516,7 +524,7 @@ class TextScramble {
       const from = oldText[i] || "";
       const to = newText[i] || "";
       const start = Math.floor(Math.random() * 5);
-      const end = i * 8 + 20;
+      const end = i * 2 + 10;
       this.queue.push({ from, to, start, end });
     }
     cancelAnimationFrame(this.frameRequest);
