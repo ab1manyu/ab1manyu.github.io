@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Photography - abi.</title>
+
+	<script src="https://cdn.tailwindcss.com"></script>
+
+	<script>
+		tailwind.config = {
+			theme: {
+				extend: {
+					fontFamily: {
+						sans: ["Inter", "sans-serif"],
+						mono: ["Share Tech Mono", "monospace"],
+					},
+					colors: {
+						defense: {
+							base: "#000000",
+							panel: "rgba(10, 25, 15, 0.6)",
+							border: "#1a332a",
+							accent: "#10b981",
+							muted: "#6b7280",
+						},
+					},
+				},
+			},
+		};
+	</script>
+
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Share+Tech+Mono&display=swap"
+		rel="stylesheet" />
+
+	<script src="https://unpkg.com/lucide@latest"></script>
+
+	<link rel="stylesheet" href="../style.css" />
+</head>
+
+<body
+	class="antialiased bg-defense-base text-gray-200 font-sans selection:bg-emerald-900 selection:text-white overflow-hidden">
+	<div id="loader">
+		<div class="w-64 md:w-96 relative font-mono">
+			<div class="flex justify-between text-xs text-gray-500 mb-2 uppercase tracking-widest">
+				<span>System_Boot</span>
+				<span id="loader-counter">000</span>
+			</div>
+			<div class="h-[2px] bg-defense-border w-full overflow-hidden relative mb-4">
+				<div id="loader-bar"
+					class="h-full bg-defense-accent w-0 absolute top-0 left-0 transition-all duration-75 ease-out">
+				</div>
+			</div>
+			<div class="h-24 overflow-hidden text-[10px] text-gray-600 font-mono leading-relaxed" id="loader-log">
+				> BIOS_CHECK... OK<br />
+			</div>
+		</div>
+	</div>
+
+	<div class="noise"></div>
+	<div class="dot-grid"></div>
+
+	<nav class="fixed top-0 w-full z-50 border-b border-defense-border bg-black/80 backdrop-blur-md">
+		<div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+			<a href="/" class="flex items-center gap-4">
+				<div class="relative flex items-center justify-center w-10 h-10">
+					<i data-lucide="satellite-dish" class="w-6 h-6 text-defense-accent"></i>
+				</div>
+				<div class="flex flex-col leading-none">
+					<span class="font-mono text-sm tracking-widest uppercase font-bold text-white">abi.</span>
+					<span class="font-mono text-[10px] text-gray-500">PHOTOGRAPHY</span>
+				</div>
+			</a>
+
+			<!-- Desktop Navigation -->
+			<div class="hidden md:flex items-center gap-8 text-sm font-mono tracking-wider text-defense-muted">
+				<a href="/#about" class="nav-item hover:text-white transition-colors py-1">01_INTEL</a>
+				<a href="/#skills" class="nav-item hover:text-white transition-colors py-1">02_OPS</a>
+				<a href="/#contact" class="nav-item hover:text-white transition-colors py-1">03_LINK</a>
+				<div class="relative">
+					<button id="more-dropdown-trigger" class="nav-item text-white transition-colors py-1 flex items-center gap-1">
+						<span>MORE</span>
+						<i id="more-dropdown-chevron" data-lucide="chevron-down" class="w-4 h-4 transition-transform duration-200"></i>
+					</button>
+					<div id="more-dropdown-panel" class="absolute top-full right-0 mt-3 w-48 glass-panel rounded-2xl shadow-lg p-2 z-50 hidden">
+						<a href="/photography/photography.html" class="block px-4 py-2 text-sm text-defense-accent bg-defense-border rounded-lg">
+							01_PICS
+						</a>
+					</div>
+				</div>
+			</div>
+
+			<!-- Clock (Desktop) -->
+			<div class="hidden md:block font-mono text-xs text-gray-500" id="military-clock">
+				00:00:00 MST
+			</div>
+
+			            <!-- Mobile Menu Trigger -->
+						<div class="md:hidden">
+							<button id="mobile-menu-trigger" class="text-defense-accent hover:text-white transition-colors">
+								<i data-lucide="menu" class="w-7 h-7"></i>
+							</button>
+						</div>
+					</div>
+				</nav>
+			
+				<!-- Fullscreen Mobile Menu Panel -->
+				<div id="mobile-menu-panel" class="fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl flex flex-col items-center justify-center transition-opacity duration-500 ease-in-out opacity-0 pointer-events-none">
+					<button id="mobile-menu-close" class="absolute top-5 right-5 text-gray-400 hover:text-white">
+						<i data-lucide="x" class="w-8 h-8"></i>
+					</button>
+					
+							<div id="mobile-menu-content" class="flex flex-col items-center gap-8 text-2xl md:text-3xl font-mono text-gray-400 transition-transform duration-300 ease-in-out transform scale-95">
+								<a href="/" id="mobile-link-home" class="mobile-nav-link hover:text-white transition-colors duration-300">HOME</a>
+								<div class="h-px w-20 bg-defense-border"></div>
+								<a href="/photography/photography.html" id="mobile-link-pics" class="mobile-nav-link text-defense-accent hover:text-white transition-colors duration-300">PICS</a>
+							</div>				</div>
+	<main class="pt-24 pb-12 px-4 md:px-6 max-w-7xl mx-auto">
+        <header class="text-center mb-12">
+            <h1 class="text-5xl font-bold text-white tracking-tighter">Photography</h1>
+            <p class="font-mono text-lg text-defense-accent mt-2">A collection of moments captured in time.</p>
+        </header>
+
+		<section id="gallery" class="mb-24">
+			<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+				
+                <!-- Placeholder Images -->
+				<div class="glass-panel p-2 group">
+					<img src="https://via.placeholder.com/600x400.png/1a332a/10b981?text=Photo+1" alt="Placeholder Image 1" class="w-full h-auto rounded-lg group-hover:opacity-75 transition-opacity">
+				</div>
+                <div class="glass-panel p-2 group">
+					<img src="https://via.placeholder.com/600x400.png/1a332a/10b981?text=Photo+2" alt="Placeholder Image 2" class="w-full h-auto rounded-lg group-hover:opacity-75 transition-opacity">
+				</div>
+                <div class="glass-panel p-2 group">
+					<img src="https://via.placeholder.com/600x400.png/1a332a/10b981?text=Photo+3" alt="Placeholder Image 3" class="w-full h-auto rounded-lg group-hover:opacity-75 transition-opacity">
+				</div>
+                <div class="glass-panel p-2 group">
+					<img src="https://via.placeholder.com/600x400.png/1a332a/10b981?text=Photo+4" alt="Placeholder Image 4" class="w-full h-auto rounded-lg group-hover:opacity-75 transition-opacity">
+				</div>
+                <div class="glass-panel p-2 group">
+					<img src="https://via.placeholder.com/600x400.png/1a332a/10b981?text=Photo+5" alt="Placeholder Image 5" class="w-full h-auto rounded-lg group-hover:opacity-75 transition-opacity">
+				</div>
+                <div class="glass-panel p-2 group">
+					<img src="https://via.placeholder.com/600x400.png/1a332a/10b981?text=Photo+6" alt="Placeholder Image 6" class="w-full h-auto rounded-lg group-hover:opacity-75 transition-opacity">
+				</div>
+                <div class="glass-panel p-2 group">
+					<img src="https://via.placeholder.com/600x400.png/1a332a/10b981?text=Photo+7" alt="Placeholder Image 7" class="w-full h-auto rounded-lg group-hover:opacity-75 transition-opacity">
+				</div>
+                <div class="glass-panel p-2 group">
+					<img src="https://via.placeholder.com/600x400.png/1a332a/10b981?text=Photo+8" alt="Placeholder Image 8" class="w-full h-auto rounded-lg group-hover:opacity-75 transition-opacity">
+				</div>
+
+			</div>
+		</section>
+	</main>
+
+	<footer class="border-t border-defense-border bg-black py-8">
+		<div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
+			<div class="font-mono text-xs text-gray-600">
+				SYS_ID: 2025-PORTFOLIO<br />
+				LOC: UNKNOWN
+			</div>
+			<div class="flex gap-1">
+				<div class="w-2 h-2 bg-[#333] rounded-full"></div>
+				<div class="w-2 h-2 bg-[#333] rounded-full"></div>
+				<div class="w-2 h-2 bg-defense-accent rounded-full"></div>
+			</div>
+			<div class="font-mono text-xs text-gray-600 text-right">
+				&copy; 2025 UYNAMI<br />
+				ALL RIGHTS RESERVED
+			</div>
+		</div>
+	</footer>
+
+	<script src="../script.js"></script>
+	<script>
+		lucide.createIcons();
+
+        function updateClock() {
+			const clock = document.getElementById("military-clock");
+			if (clock) {
+				const now = new Date();
+				const hours = String(now.getUTCHours()).padStart(2, "0");
+				const minutes = String(now.getUTCMinutes()).padStart(2, "0");
+				const seconds = String(now.getUTCSeconds()).padStart(2, "0");
+				clock.textContent = `${hours}:${minutes}:${seconds} ZULU`;
+			}
+		}
+
+		setInterval(updateClock, 1000);
+		updateClock();
+	</script>
+</body>
+
+</html>

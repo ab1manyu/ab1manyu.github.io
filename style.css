@@ -124,7 +124,7 @@ body {
 
 /* Full Screen Sweep Animation */
 .full-sweep-active {
-  animation: full-sweep 2.5s cubic-bezier(0, 0, 0.2, 1) forwards;
+  animation: full-sweep 1.5s linear forwards;
 }
 
 @keyframes full-sweep {
