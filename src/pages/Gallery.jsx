@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Camera, Image as ImageIcon, X, Aperture, Sliders } from 'lucide-react';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
 
 const galleryItems = [
   {
@@ -97,7 +95,6 @@ export default function Gallery() {
   return (
     <>
       <div className="dot-grid"></div>
-      <Navbar />
 
       <main className="pt-24 pb-12 px-4 md:px-6 max-w-7xl mx-auto min-h-screen relative z-10 transition-opacity duration-500">
         <div className="flex justify-between items-end mb-8 border-defense-border pb-4">
@@ -128,8 +125,6 @@ export default function Gallery() {
           ))}
         </div>
       </main>
-
-      <Footer />
 
       {/* Modal */}
       <div id="gallery-modal" className={`fixed inset-0 z-[60] flex items-center justify-center px-4 transition-all duration-300 ${selectedItem ? 'visible opacity-100' : 'invisible opacity-0'}`}>

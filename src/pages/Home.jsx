@@ -1,17 +1,43 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 import { Terminal, Shield, ArrowUpRight, Camera, Microscope, Calendar, GraduationCap } from 'lucide-react';
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import { Link, useLocation } from 'react-router-dom';
 import MatrixRain from '../components/MatrixRain';
 import CardMatrixRain from '../components/CardMatrixRain';
-import Loader from '../components/Loader';
-import BackgroundElements from '../components/BackgroundElements';
+import AsciiCats from '../components/AsciiCats';
 import { TextScramble } from '../utils/textScramble';
 
 export default function Home() {
   const heroNameRef = useRef(null);
+  const location = useLocation();
+  const isFirstMount = useRef(true);
+
+  useLayoutEffect(() => {
+    const isFirst = isFirstMount.current;
+    if (isFirst) {
+      isFirstMount.current = false;
+    }
+
+    if (location.hash) {
+      const id = location.hash.replace('#', '');
+      const element = document.getElementById(id);
+      if (element) {
+        if (isFirst) {
+          // Instantly jump to the layout position before first paint
+          const y = element.getBoundingClientRect().top + window.scrollY - 112;
+          window.scrollTo({ top: y, behavior: 'auto' });
+        } else {
+          // Smooth scroll for subsequent in-page hash changes
+          setTimeout(() => {
+            const y = element.getBoundingClientRect().top + window.scrollY - 112;
+            window.scrollTo({ top: y, behavior: 'smooth' });
+          }, 50);
+        }
+      }
+    } else if (isFirst) {
+      window.scrollTo(0, 0);
+    }
+  }, [location]);
 
   useEffect(() => {
     // 1. Text Scramble logic
@@ -76,11 +102,6 @@ export default function Home() {
 
   return (
     <>
-      <Loader />
-      {/* <MatrixRain /> */}
-      <BackgroundElements />
-      <Navbar />
-
       <main className="pt-24 pb-12 px-4 md:px-6 max-w-7xl mx-auto relative z-10 transition-opacity duration-500">
 
         {/* ABOUT SECTION */}
@@ -103,21 +124,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="glass-panel md:col-span-4 p-6 md:p-8 flex flex-col justify-between relative">
-            <div className="flex justify-between items-start">
-              <span className="font-mono text-xs text-gray-500">SECURITY_CLEARANCE</span>
-              <Shield className="text-gray-300 w-6 h-6" />
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-white mb-1">Secret</div>
-              <div className="text-xs font-mono text-gray-500 uppercase tracking-widest">
-                Active Status
-              </div>
-            </div>
-            <div className="w-full h-[1px] bg-defense-border mt-4 relative overflow-hidden">
-              <div className="absolute top-0 left-0 h-full w-1/3 bg-white animate-slideRight"></div>
-            </div>
-          </div>
+          <AsciiCats />
 
           <div className="glass-panel md:col-span-3 p-6 flex flex-col justify-center items-center text-center gap-2">
             <span className="font-mono text-6xl font-bold text-white">2+</span>
@@ -363,8 +370,6 @@ export default function Home() {
           </div>
         </section>
       </main>
-
-      <Footer />
     </>
   );
 }

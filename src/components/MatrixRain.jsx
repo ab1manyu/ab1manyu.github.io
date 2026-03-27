@@ -16,7 +16,7 @@ export default function MatrixRain() {
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
 
-    const fontSize = 14;
+    const fontSize = 8;
     const columns = Math.floor(canvas.width / fontSize);
     const drops = Array(columns).fill(1);
 

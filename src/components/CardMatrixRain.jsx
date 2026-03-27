@@ -23,7 +23,7 @@ export default function CardMatrixRain() {
     });
     resizeObserver.observe(parent);
 
-    const fontSize = 14;
+    const fontSize = 8;
     let drops = [];
     
     const initDrops = () => {

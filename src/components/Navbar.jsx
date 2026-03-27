@@ -1,27 +1,10 @@
 import { useEffect, useState } from 'react';
 import { SatelliteDish } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import Clock from './Clock';
 
 export default function Navbar() {
-  const [timeStr, setTimeStr] = useState('00:00:00 MST');
   const [radarStatus, setRadarStatus] = useState('SYS_ONLINE');
-
-  useEffect(() => {
-    const updateClock = () => {
-      const now = new Date();
-      const timeString = now.toLocaleTimeString("en-US", {
-        timeZone: "America/Denver",
-        hour12: false,
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-      });
-      setTimeStr(timeString + " MST");
-    };
-
-    const interval = setInterval(updateClock, 1000);
-    updateClock();
-    return () => clearInterval(interval);
-  }, []);
 
   useEffect(() => {
     const handleScanning = () => setRadarStatus('SCANNING...');
@@ -44,6 +27,19 @@ export default function Navbar() {
       window.removeEventListener('radar-complete', handleComplete);
     };
   }, []);
+
+  const handleScrollToHash = (e, hash) => {
+    if (window.location.pathname === '/' || window.location.pathname === '') {
+      e.preventDefault();
+      window.history.pushState(null, '', `/${hash}`);
+      const id = hash.replace('#', '');
+      const element = document.getElementById(id);
+      if (element) {
+        const y = element.getBoundingClientRect().top + window.scrollY - 112; // 112px = scroll-mt-28
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    }
+  };
 
   return (
     <nav className="fixed top-0 w-full z-50 border-b border-defense-border bg-black/80 backdrop-blur-md">
@@ -68,14 +64,12 @@ export default function Navbar() {
         </div>
 
         <div className="hidden md:flex gap-8 text-sm font-mono tracking-wider text-defense-muted">
-          <a href="/#about" className="nav-item hover:text-white transition-colors py-1">01_INTEL</a>
-          <a href="/#skills" className="nav-item hover:text-white transition-colors py-1">02_OPS</a>
-          <a href="/#contact" className="nav-item hover:text-white transition-colors py-1">03_LINK</a>
+          <Link to="/#about" onClick={(e) => handleScrollToHash(e, '#about')} className="nav-item hover:text-white transition-colors py-1">01_INTEL</Link>
+          <Link to="/#skills" onClick={(e) => handleScrollToHash(e, '#skills')} className="nav-item hover:text-white transition-colors py-1">02_OPS</Link>
+          <Link to="/#contact" onClick={(e) => handleScrollToHash(e, '#contact')} className="nav-item hover:text-white transition-colors py-1">03_LINK</Link>
         </div>
 
-        <div className="sm:block font-mono text-xs text-defense-muted">
-          {timeStr}
-        </div>
+        <Clock />
       </div>
     </nav>
   );
