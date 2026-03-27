@@ -129,6 +129,32 @@
   animation: radar-ping 1s cubic-bezier(0, 0, 0.2, 1) forwards;
 }
 
+.dot-grid-edge-flash {
+  background-image: radial-gradient(var(--accent-solid) 1px, transparent 1px);
+  background-size: 20px 20px;
+  -webkit-mask-image: linear-gradient(to right, black 0%, transparent 18%, transparent 82%, black 100%);
+  mask-image: linear-gradient(to right, black 0%, transparent 18%, transparent 82%, black 100%);
+  animation: dot-edge-pulse 1s ease-out forwards;
+}
+
+@keyframes dot-edge-pulse {
+  0% {
+    opacity: 0;
+  }
+
+  6% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
 .full-sweep-active {
   animation: full-sweep 1.5s linear forwards;
 }
@@ -150,10 +176,21 @@
 }
 
 @keyframes fadeInOut {
-  0% { opacity: 0; }
-  5% { opacity: 1; }
-  75% { opacity: 1; }
-  100% { opacity: 0; }
+  0% {
+    opacity: 0;
+  }
+
+  5% {
+    opacity: 1;
+  }
+
+  75% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
 }
 
 #transition-overlay {

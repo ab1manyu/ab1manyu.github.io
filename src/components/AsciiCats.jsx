@@ -3,11 +3,9 @@ import { useNavigate } from 'react-router-dom';
 
 const eyesList = ['-', 'o', '>', '<'];
 
-function Cat({ initialN1, initialN2, isRandomlyActive }) {
-  const [isHovered, setIsHovered] = useState(false);
+function Cat({ initialN1, initialN2, isLit, onClick }) {
   const [n1, setN1] = useState(initialN1);
   const [n2, setN2] = useState(initialN2);
-  const navigate = useNavigate();
 
   const invert = (e) => {
     if (e === 'o') return 'o';
@@ -18,11 +16,9 @@ function Cat({ initialN1, initialN2, isRandomlyActive }) {
   };
 
   const handleMouseEnter = () => {
-    setIsHovered(true);
     let h1 = invert(n1);
     let h2 = invert(n2);
 
-    // wink chance
     if (Math.random() < 0.9) {
       if (Math.random() < 0.5) h1 = eyesList[Math.floor(Math.random() * eyesList.length)];
       else h2 = eyesList[Math.floor(Math.random() * eyesList.length)];
@@ -33,26 +29,20 @@ function Cat({ initialN1, initialN2, isRandomlyActive }) {
   };
 
   const handleMouseLeave = () => {
-    setIsHovered(false);
+    setN1(initialN1);
+    setN2(initialN2);
   };
 
-  // Text color override for active cat, rest remain green defense-accent
-  const colorClass = isRandomlyActive
-    ? "text-white drop-shadow-[0_0_8px_rgba(255,255,255,1)] relative z-20 cursor-pointer"
-    : "text-defense-accent opacity-70 relative z-10 cursor-default";
-
-  const handleClick = () => {
-    if (isRandomlyActive) {
-      navigate('/blank-gallery');
-    }
-  };
+  const colorClass = isLit
+    ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,1)] relative z-20 cursor-pointer'
+    : 'text-defense-accent opacity-70 relative z-10 cursor-pointer';
 
   return (
     <div
       className={`flex flex-col items-center justify-center transition-all duration-300 whitespace-pre ${colorClass}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      onClick={handleClick}
+      onClick={onClick}
     >
       <div className="leading-[1.2]">{" /\\_/\\ "}</div>
       <div className="leading-[1.2]">{`( ${n1}.${n2} )`}</div>
@@ -63,14 +53,15 @@ function Cat({ initialN1, initialN2, isRandomlyActive }) {
 
 export default function AsciiCats() {
   const [gridSize, setGridSize] = useState({ rows: 5, cols: 6 });
-  const [activeRandomCat, setActiveRandomCat] = useState(null);
+  const [litCats, setLitCats] = useState(new Set());
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 640) {
-        setGridSize({ rows: 3, cols: 7 });
+        setGridSize({ rows: 3, cols: 4 });
       } else {
-        setGridSize({ rows: 5, cols: 6 });
+        setGridSize({ rows: 4, cols: 5 });
       }
     };
     handleResize();
@@ -78,7 +69,6 @@ export default function AsciiCats() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Initial grid generated based on size
   const initialGrid = useMemo(() => {
     let grid = [];
     for (let r = 0; r < gridSize.rows; r++) {
@@ -93,22 +83,25 @@ export default function AsciiCats() {
     return grid;
   }, [gridSize.rows, gridSize.cols]);
 
-  const handleMouseEnterCard = () => {
-    const randomR = Math.floor(Math.random() * gridSize.rows);
-    const randomC = Math.floor(Math.random() * gridSize.cols);
-    setActiveRandomCat(`${randomR}-${randomC}`);
-  };
+  const totalCats = gridSize.rows * gridSize.cols;
 
-  const handleMouseLeaveCard = () => {
-    setActiveRandomCat(null);
+  const handleCatClick = (key) => {
+    setLitCats(prev => {
+      const next = new Set(prev);
+      if (next.has(key)) {
+        next.delete(key);
+      } else {
+        next.add(key);
+      }
+      if (next.size === totalCats) {
+        setTimeout(() => navigate('/kai'), 200);
+      }
+      return next;
+    });
   };
 
   return (
-    <div
-      className="glass-panel md:col-span-4 relative flex flex-col items-center justify-center py-6 px-1 sm:p-6 overflow-hidden min-h-[160px] group border border-defense-border hover:border-defense-accent transition-colors cursor-default"
-      onMouseEnter={handleMouseEnterCard}
-      onMouseLeave={handleMouseLeaveCard}
-    >
+    <div className="glass-panel md:col-span-4 relative flex flex-col items-center justify-center py-6 px-1 sm:p-6 overflow-hidden min-h-[160px] group border border-defense-border hover:border-defense-accent transition-colors cursor-default">
       <div className="absolute inset-0 bg-[#060f09] opacity-80 pointer-events-none"></div>
 
       <div className="relative z-10 flex flex-col items-center justify-center gap-3 sm:gap-2 font-mono text-[12px] sm:text-[10px]">
@@ -119,7 +112,8 @@ export default function AsciiCats() {
                 key={cat.key}
                 initialN1={cat.n1}
                 initialN2={cat.n2}
-                isRandomlyActive={activeRandomCat === cat.key}
+                isLit={litCats.has(cat.key)}
+                onClick={() => handleCatClick(cat.key)}
               />
             ))}
           </div>

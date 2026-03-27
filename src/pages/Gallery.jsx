@@ -42,6 +42,10 @@ export default function Gallery() {
   const [zoomLevel, setZoomLevel] = useState(0);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     // Intersection Observer for glass-panels
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {

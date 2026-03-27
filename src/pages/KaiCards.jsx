@@ -60,7 +60,7 @@ const cardsData = Array.from({ length: totalCards }, (_, i) => {
   };
 });
 
-export default function BlankGallery() {
+export default function KaiCards() {
   const cardsRef = useRef([]);
 
   useEffect(() => {

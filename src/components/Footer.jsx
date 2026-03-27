@@ -2,7 +2,7 @@ import { useLocation } from 'react-router-dom';
 
 export default function Footer() {
   const location = useLocation();
-  const isLocked = location.pathname === '/blank-gallery';
+  const isLocked = location.pathname === '/kai';
 
   return (
     <footer className={`border-t border-defense-border bg-black py-8 ${isLocked ? 'fixed bottom-0 w-full z-50' : ''}`}>

@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react';
-import { SatelliteDish } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { SatelliteDish, Camera } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 import Clock from './Clock';
 
 export default function Navbar() {
+  const location = useLocation();
+  const isGallery = location.pathname === '/gallery' || location.pathname === '/gallery.html';
+
   const [radarStatus, setRadarStatus] = useState('SYS_ONLINE');
+  const [shutterStatus, setShutterStatus] = useState('SYS_ONLINE');
 
   useEffect(() => {
     const handleScanning = () => setRadarStatus('SCANNING...');
@@ -35,10 +39,16 @@ export default function Navbar() {
       const id = hash.replace('#', '');
       const element = document.getElementById(id);
       if (element) {
-        const y = element.getBoundingClientRect().top + window.scrollY - 112; // 112px = scroll-mt-28
+        const y = element.getBoundingClientRect().top + window.scrollY - 112;
         window.scrollTo({ top: y, behavior: 'smooth' });
       }
     }
+  };
+
+  const handleCameraClick = () => {
+    setShutterStatus('CLICK!');
+    window.dispatchEvent(new Event('camera-flash'));
+    setTimeout(() => setShutterStatus('SYS_ONLINE'), 900);
   };
 
   return (
@@ -47,19 +57,41 @@ export default function Navbar() {
         <div className="flex items-center gap-4">
           <div className="relative flex items-center justify-center w-10 h-10">
             <div id="radar-pulse" className="absolute w-full h-full border border-defense-accent rounded-full opacity-0 scale-0 pointer-events-none"></div>
-            <button id="radar-trigger" className="relative z-10 text-defense-accent hover:text-white transition-colors outline-none cursor-pointer group" onClick={(e) => {
-              e.currentTarget.previousElementSibling.classList.remove("radar-active");
-              void e.currentTarget.previousElementSibling.offsetWidth;
-              e.currentTarget.previousElementSibling.classList.add("radar-active");
-              window.dispatchEvent(new Event('radar-ping'));
-            }}>
-              <SatelliteDish className="w-6 h-6" />
-            </button>
+
+            {isGallery ? (
+              <button
+                className="relative z-10 text-defense-accent hover:text-white transition-colors outline-none cursor-pointer"
+                onClick={handleCameraClick}
+              >
+                <Camera className="w-6 h-6" />
+              </button>
+            ) : (
+              <button
+                id="radar-trigger"
+                className="relative z-10 text-defense-accent hover:text-white transition-colors outline-none cursor-pointer group"
+                onClick={(e) => {
+                  e.currentTarget.previousElementSibling.classList.remove('radar-active');
+                  void e.currentTarget.previousElementSibling.offsetWidth;
+                  e.currentTarget.previousElementSibling.classList.add('radar-active');
+                  window.dispatchEvent(new Event('radar-ping'));
+                }}
+              >
+                <SatelliteDish className="w-6 h-6" />
+              </button>
+            )}
           </div>
 
           <div className="flex flex-col leading-none min-w-[5.5rem]">
             <span className="font-mono text-sm tracking-widest uppercase font-bold text-white">abi.</span>
-            <span id="radar-status" className={`font-mono text-[10px] ${radarStatus === 'SYS_ONLINE' ? 'text-gray-500' : 'text-defense-accent'}`}>{radarStatus}</span>
+            {isGallery ? (
+              <span className={`font-mono text-[10px] transition-colors duration-200 ${shutterStatus === 'CLICK!' ? 'text-defense-accent' : 'text-gray-500'}`}>
+                {shutterStatus}
+              </span>
+            ) : (
+              <span id="radar-status" className={`font-mono text-[10px] ${radarStatus === 'SYS_ONLINE' ? 'text-gray-500' : 'text-defense-accent'}`}>
+                {radarStatus}
+              </span>
+            )}
           </div>
         </div>
 
