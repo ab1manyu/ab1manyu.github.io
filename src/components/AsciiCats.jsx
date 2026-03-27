@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const eyesList = ['-', 'o', '>', '<'];
 
@@ -6,6 +7,7 @@ function Cat({ initialN1, initialN2, isRandomlyActive }) {
   const [isHovered, setIsHovered] = useState(false);
   const [n1, setN1] = useState(initialN1);
   const [n2, setN2] = useState(initialN2);
+  const navigate = useNavigate();
 
   const invert = (e) => {
     if (e === 'o') return 'o';
@@ -37,13 +39,20 @@ function Cat({ initialN1, initialN2, isRandomlyActive }) {
   // Text color override for active cat, rest remain green defense-accent
   const colorClass = isRandomlyActive
     ? "text-white drop-shadow-[0_0_8px_rgba(255,255,255,1)] relative z-20 cursor-pointer"
-    : "text-defense-accent opacity-70 relative z-10 cursor-grab";
+    : "text-defense-accent opacity-70 relative z-10 cursor-default";
+
+  const handleClick = () => {
+    if (isRandomlyActive) {
+      navigate('/blank-gallery');
+    }
+  };
 
   return (
     <div
       className={`flex flex-col items-center justify-center transition-all duration-300 whitespace-pre ${colorClass}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onClick={handleClick}
     >
       <div className="leading-[1.2]">{" /\\_/\\ "}</div>
       <div className="leading-[1.2]">{`( ${n1}.${n2} )`}</div>
@@ -96,7 +105,7 @@ export default function AsciiCats() {
 
   return (
     <div
-      className="glass-panel md:col-span-4 relative flex flex-col items-center justify-center py-6 px-1 sm:p-6 overflow-hidden min-h-[160px] group border border-defense-border hover:border-defense-accent transition-colors cursor-grab"
+      className="glass-panel md:col-span-4 relative flex flex-col items-center justify-center py-6 px-1 sm:p-6 overflow-hidden min-h-[160px] group border border-defense-border hover:border-defense-accent transition-colors cursor-default"
       onMouseEnter={handleMouseEnterCard}
       onMouseLeave={handleMouseLeaveCard}
     >
