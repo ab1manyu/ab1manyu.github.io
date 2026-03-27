@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
-import { Terminal, Shield, ArrowUpRight, Camera, Github, Linkedin, Microscope, Calendar, GraduationCap } from 'lucide-react';
+import { Terminal, Shield, ArrowUpRight, Camera, Microscope, Calendar, GraduationCap } from 'lucide-react';
+import { FaGithub, FaLinkedin } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -322,7 +323,7 @@ export default function Home() {
 
             <a href="https://www.linkedin.com/in/abimanyuananthu/" target="_blank" rel="noopener noreferrer" className="group glass-panel p-8 relative overflow-hidden hover:border-[#0077b5] transition-all duration-300">
               <div className="absolute -right-6 -bottom-6 text-white/5 group-hover:text-[#0077b5]/10 transition-colors duration-500">
-                <Linkedin className="w-32 h-32" />
+                <FaLinkedin className="w-32 h-32" />
               </div>
               <div className="relative z-10 flex flex-col h-full justify-between min-h-[140px]">
                 <div className="flex justify-between items-start">
@@ -342,7 +343,7 @@ export default function Home() {
 
             <a href="https://github.com/ab1manyu" target="_blank" rel="noopener noreferrer" className="group glass-panel p-8 relative overflow-hidden hover:border-defense-accent transition-all duration-300">
               <div className="absolute -right-6 -bottom-6 text-white/5 group-hover:text-defense-accent/10 transition-colors duration-500">
-                <Github className="w-32 h-32" />
+                <FaGithub className="w-32 h-32" />
               </div>
               <div className="relative z-10 flex flex-col h-full justify-between min-h-[140px]">
                 <div className="flex justify-between items-start">
