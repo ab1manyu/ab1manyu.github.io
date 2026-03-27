@@ -22,12 +22,12 @@ const images = [
   '/kai/kai5.jpg',
   '/kai/kai6.jpg',
   '/kai/kai7.jpg',
-  // '/kai/kai8.jpg',
-  // '/kai/kai9.jpg',
-  // '/kai/kai10.jpg',
+  '/kai/kai8.jpg',
+  '/kai/kai9.jpg',
+  '/kai/kai10.jpg',
 ];
 
-const totalCards = 10;
+const totalCards = 20;
 
 const moves = [
   { name: 'Earthquake', dmg: 100, type: types.find(t => t.name === 'Fighting') },
@@ -51,7 +51,7 @@ const cardsData = Array.from({ length: totalCards }, (_, i) => {
   return {
     id: i,
     name: `Kai`,
-    hp: Math.floor(Math.random() * 800 + 100) % 10 * 10,
+    hp: Math.floor(Math.random() * 800 + 100) % 10 * 10 + 40,
     type,
     image: images[i % images.length],
     attack1: shuffledMoves[0],
@@ -292,7 +292,7 @@ export default function BlankGallery() {
                 {/* Footer small stats */}
                 <div className="mt-auto">
                   <div className="flex justify-between text-[6px] sm:text-[8px] font-bold border-t border-defense-border py-1 mb-1 px-1">
-                    <div className="text-center text-[#2d8a4e]">weakness<br /><span className="text-xs text-defense-accent">x2</span></div>
+                    <div className="text-center text-[#2d8a4e]">weakness<br /><span className="text-xs text-defense-accent">x0</span></div>
                     <div className="text-center text-[#2d8a4e]">resistance<br /><span className="text-xs text-defense-accent">-30</span></div>
                     <div className="text-center text-[#2d8a4e]">retreat cost<br /><span className="text-xs tracking-widest text-defense-accent">* *</span></div>
                   </div>

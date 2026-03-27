@@ -127,7 +127,7 @@ export default function Home() {
           <AsciiCats />
 
           <div className="glass-panel md:col-span-3 p-6 flex flex-col justify-center items-center text-center gap-2">
-            <span className="font-mono text-6xl font-bold text-white">2+</span>
+            <span className="font-mono text-6xl font-bold text-white">3+</span>
             <span className="text-xs text-gray-500 uppercase tracking-widest font-mono">YEARS OF EXPERIENCE</span>
           </div>
 
