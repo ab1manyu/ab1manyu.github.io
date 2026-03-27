@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 const eyesList = ['-', 'o', '>', '<'];
 
-function Cat({ initialN1, initialN2, isLit, onClick }) {
+function Cat({ initialN1, initialN2, isLit, onClick, sweeping, sweepDelay }) {
   const [n1, setN1] = useState(initialN1);
   const [n2, setN2] = useState(initialN2);
 
@@ -18,12 +18,10 @@ function Cat({ initialN1, initialN2, isLit, onClick }) {
   const handleMouseEnter = () => {
     let h1 = invert(n1);
     let h2 = invert(n2);
-
     if (Math.random() < 0.9) {
       if (Math.random() < 0.5) h1 = eyesList[Math.floor(Math.random() * eyesList.length)];
       else h2 = eyesList[Math.floor(Math.random() * eyesList.length)];
     }
-
     setN1(h1);
     setN2(h2);
   };
@@ -37,9 +35,21 @@ function Cat({ initialN1, initialN2, isLit, onClick }) {
     ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,1)] relative z-20 cursor-pointer'
     : 'text-defense-accent opacity-70 relative z-10 cursor-pointer';
 
+  const sweepStyle = sweeping
+    ? {
+      transitionProperty: 'color, filter, opacity',
+      transitionDuration: '180ms',
+      transitionDelay: `${sweepDelay}ms`,
+      color: '#4ade80',
+      filter: 'drop-shadow(0 0 10px #4ade80)',
+      opacity: 0.5,
+    }
+    : {};
+
   return (
     <div
       className={`flex flex-col items-center justify-center transition-all duration-300 whitespace-pre ${colorClass}`}
+      style={sweepStyle}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={onClick}
@@ -52,8 +62,9 @@ function Cat({ initialN1, initialN2, isLit, onClick }) {
 }
 
 export default function AsciiCats() {
-  const [gridSize, setGridSize] = useState({ rows: 5, cols: 6 });
+  const [gridSize, setGridSize] = useState({ rows: 4, cols: 5 });
   const [litCats, setLitCats] = useState(new Set());
+  const [sweeping, setSweeping] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -61,7 +72,7 @@ export default function AsciiCats() {
       if (window.innerWidth < 640) {
         setGridSize({ rows: 3, cols: 4 });
       } else {
-        setGridSize({ rows: 4, cols: 5 });
+        setGridSize({ rows: 4, cols: 4 });
       }
     };
     handleResize();
@@ -84,6 +95,9 @@ export default function AsciiCats() {
   }, [gridSize.rows, gridSize.cols]);
 
   const totalCats = gridSize.rows * gridSize.cols;
+  const maxDiagonal = (gridSize.rows - 1) + (gridSize.cols - 1);
+  const sweepStepMs = 60;
+  const sweepDuration = maxDiagonal * sweepStepMs + 200;
 
   const handleCatClick = (key) => {
     setLitCats(prev => {
@@ -94,7 +108,10 @@ export default function AsciiCats() {
         next.add(key);
       }
       if (next.size === totalCats) {
-        setTimeout(() => navigate('/kai'), 200);
+        setTimeout(() => {
+          setSweeping(true);
+          setTimeout(() => navigate('/kai'), sweepDuration + 100);
+        }, 150);
       }
       return next;
     });
@@ -107,13 +124,15 @@ export default function AsciiCats() {
       <div className="relative z-10 flex flex-col items-center justify-center gap-3 sm:gap-2 font-mono text-[12px] sm:text-[10px]">
         {initialGrid.map((row, r) => (
           <div key={`row-${r}`} className="flex flex-row gap-3 sm:gap-3">
-            {row.map((cat) => (
+            {row.map((cat, c) => (
               <Cat
                 key={cat.key}
                 initialN1={cat.n1}
                 initialN2={cat.n2}
                 isLit={litCats.has(cat.key)}
                 onClick={() => handleCatClick(cat.key)}
+                sweeping={sweeping}
+                sweepDelay={(r + c) * sweepStepMs}
               />
             ))}
           </div>
