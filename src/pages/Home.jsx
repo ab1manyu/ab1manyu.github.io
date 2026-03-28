@@ -1,5 +1,5 @@
-import { useEffect, useLayoutEffect, useRef } from 'react';
-import { Terminal, Shield, ArrowUpRight, Camera, Microscope, Calendar, GraduationCap } from 'lucide-react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { Terminal, Gamepad2, ArrowUpRight, Camera, Microscope, Calendar, GraduationCap } from 'lucide-react';
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
 import { Link, useLocation } from 'react-router-dom';
 import MatrixRain from '../components/MatrixRain';
@@ -8,6 +8,7 @@ import AsciiCats from '../components/AsciiCats';
 import { TextScramble } from '../utils/textScramble';
 
 export default function Home() {
+  const [activeSchool, setActiveSchool] = useState('gatech');
   const heroNameRef = useRef(null);
   const location = useLocation();
   const isFirstMount = useRef(true);
@@ -248,49 +249,121 @@ export default function Home() {
             <div className="glass-panel md:col-span-2 p-8 relative overflow-hidden group flex flex-col justify-center">
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+PHBhdGggZD0iTTAgNDBMMCAwSDEiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjEpIiBmaWxsPSJub25lIi8+PC9zdmc+')] opacity-20"></div>
               <div className="relative z-10 flex flex-col md:flex-row gap-8 h-full">
-                <div className="flex-1 border-b md:border-b-0 md:border-r border-defense-border pb-4 md:pb-0 md:pr-8 flex flex-col justify-center">
-                  <div className="text-xs font-mono text-defense-accent mb-2">ACADEMIA</div>
-                  <h3 className="text-3xl font-bold text-white mb-1">RUTGERS</h3>
-                  <h4 className="text-xl text-gray-400 mb-4">UNIVERSITY</h4>
-                  <div className="flex items-center gap-3 text-sm text-gray-300 mb-2">
-                    <GraduationCap className="w-4 h-4 text-defense-accent" />
-                    <span>B.S. Computer Engineering</span>
-                  </div>
-                  <div className="flex items-center gap-3 text-sm text-gray-500 font-mono">
-                    <Calendar className="w-4 h-4" />
-                    <span>Class of 2023</span>
+
+                {/* LEFT — school tabs */}
+                <div className="flex-1 border-b md:border-b-0 md:border-r border-defense-border pb-4 md:pb-0 md:pr-8 flex flex-col gap-0">
+                  <div className="text-xs font-mono text-defense-accent mb-4">ACADEMIA</div>
+
+                  {/* Tabs — side by side on mobile, stacked on md+ */}
+                  <div className="flex flex-row md:flex-col gap-0">
+
+                    {/* Georgia Tech tab */}
+                    <button
+                      onClick={() => setActiveSchool('gatech')}
+                      className={`text-left flex-1 rounded-lg px-3 py-3 transition-all duration-200 group/tab border border-transparent`}
+                    >
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className={`text-xl md:text-2xl font-bold transition-colors ${activeSchool === 'gatech' ? 'text-[#B3A369]' : 'text-gray-500 group-hover/tab:text-gray-300'
+                          }`}>GEORGIA</h3>
+                      </div>
+                      <h4 className={`text-xs md:text-sm mb-3 transition-colors ${activeSchool === 'gatech' ? 'text-gray-300' : 'text-gray-600 group-hover/tab:text-gray-500'
+                        }`}>INSTITUTE OF TECHNOLOGY</h4>
+                      <div className="flex items-center gap-2 text-xs text-gray-400 mb-1">
+                        <GraduationCap className="w-3 h-3 text-defense-accent shrink-0" />
+                        <span>M.S. Computer Science</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-500 font-mono">
+                        <Calendar className="w-3 h-3 shrink-0" />
+                        <span>Class of 2028</span>
+                      </div>
+                    </button>
+
+                    {/* Horizontal divider on md+ only */}
+                    <div className="hidden md:block md:h-px bg-defense-border md:my-3" />
+
+                    {/* Rutgers tab */}
+                    <button
+                      onClick={() => setActiveSchool('rutgers')}
+                      className={`text-left flex-1 rounded-lg px-3 py-3 transition-all duration-200 group/tab border border-transparent`}
+                    >
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className={`text-xl md:text-2xl font-bold transition-colors ${activeSchool === 'rutgers' ? 'text-[#cc0033]' : 'text-gray-500 group-hover/tab:text-gray-300'
+                          }`}>RUTGERS</h3>
+                      </div>
+                      <h4 className={`text-xs md:text-sm mb-3 transition-colors ${activeSchool === 'rutgers' ? 'text-gray-300' : 'text-gray-600 group-hover/tab:text-gray-500'
+                        }`}>UNIVERSITY</h4>
+                      <div className="flex items-center gap-2 text-xs text-gray-400 mb-1">
+                        <GraduationCap className="w-3 h-3 text-defense-accent shrink-0" />
+                        <span>B.S. Computer Engineering</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-500 font-mono">
+                        <Calendar className="w-3 h-3 shrink-0" />
+                        <span>Class of 2023</span>
+                      </div>
+                    </button>
+
                   </div>
                 </div>
 
+                {/* RIGHT — swappable content panel */}
                 <div className="flex-1 flex flex-col justify-center gap-4">
-                  <div className="pt-2">
-                    <span className="text-xs font-mono text-gray-500 block mb-2">REL_COURSES</span>
-                    <div className="flex flex-wrap gap-2">
-                      <span className="px-2 py-1 bg-white/5 border border-defense-border rounded text-[10px] text-gray-300 font-mono">Data Science</span>
-                      <span className="px-2 py-1 bg-white/5 border border-defense-border rounded text-[10px] text-gray-300 font-mono">Machine Learning</span>
-                      <span className="px-2 py-1 bg-white/5 border border-defense-border rounded text-[10px] text-gray-300 font-mono">Agile Development</span>
-                      <span className="px-2 py-1 bg-white/5 border border-defense-border rounded text-[10px] text-gray-300 font-mono">Comp Arch</span>
-                    </div>
-                  </div>
-
-                  <div className="pt-4 border-t border-defense-border mt-4">
-                    <div className="flex justify-between items-end mb-3">
-                      <span className="text-xs font-mono text-gray-500 block">RESEARCH_LAB</span>
-                      <Microscope className="w-3 h-3 text-defense-muted" />
-                    </div>
-                    <a href="https://rutgers.alma.exlibrisgroup.com/discovery/delivery/01RUT_INST:01RUT/12676941630004646?lang=en&viewerServiceCode=AlmaViewer" className="block outline-none" target="_blank" rel="noreferrer">
-                      <div className="bg-white/5 border border-defense-border rounded p-4 hover:border-defense-accent transition-colors group/research">
-                        <div className="flex flex-col gap-2 mb-3">
-                          <span className="text-xs font-bold text-white group-hover/research:text-defense-accent transition-colors">
-                            An Approach To Disposing of Unwanted Pet Hairs From Homes Using Electrostatic Attraction
-                          </span>
+                  {activeSchool === 'gatech' ? (
+                    <>
+                      <div className="pt-2">
+                        <span className="text-xs font-mono text-gray-500 block mb-2">SPECIALIZATION</span>
+                        <div className="flex flex-wrap gap-2">
+                          <span className="px-2 py-1 bg-white/5 border border-defense-border rounded text-[10px] text-gray-300 font-mono">Artificial Intelligence</span>
                         </div>
-                        <p className="text-[11px] text-gray-400 leading-relaxed">
-                          Developed an electronic device to efficiently collect and dispose of fallen pet hairs, addressing health risks associated with the million tons of hair shed annually by pets worldwide.
-                        </p>
                       </div>
-                    </a>
-                  </div>
+                      <div className="pt-4 border-t border-defense-border mt-4">
+                        <div className="flex justify-between items-end mb-3">
+                          <span className="text-xs font-mono text-gray-500 block">CURRENT_COURSE</span>
+                          <Gamepad2 className="w-3 h-3 text-defense-muted" />
+                        </div>
+                        <div className="bg-white/5 border border-defense-border rounded p-4">
+                          <div className="flex flex-col gap-2 mb-3">
+                            <span className="text-xs font-bold text-white">
+                              Game AI <span className="text-gray-500 pl-2">CS 7632</span>
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-gray-400 leading-relaxed">
+                            Learning about agent movement, path planning, decision making, goal-oriented behavior, learning, and procedural content generation
+                          </p>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="pt-2">
+                        <span className="text-xs font-mono text-gray-500 block mb-2">REL_COURSES</span>
+                        <div className="flex flex-wrap gap-2">
+                          <span className="px-2 py-1 bg-white/5 border border-defense-border rounded text-[10px] text-gray-300 font-mono">Data Science</span>
+                          <span className="px-2 py-1 bg-white/5 border border-defense-border rounded text-[10px] text-gray-300 font-mono">Machine Learning</span>
+                          <span className="px-2 py-1 bg-white/5 border border-defense-border rounded text-[10px] text-gray-300 font-mono">Agile Development</span>
+                          <span className="px-2 py-1 bg-white/5 border border-defense-border rounded text-[10px] text-gray-300 font-mono">Comp Arch</span>
+                        </div>
+                      </div>
+
+                      <div className="pt-4 border-t border-defense-border mt-4">
+                        <div className="flex justify-between items-end mb-3">
+                          <span className="text-xs font-mono text-gray-500 block">RESEARCH_LAB</span>
+                          <Microscope className="w-3 h-3 text-defense-muted" />
+                        </div>
+                        <a href="https://rutgers.alma.exlibrisgroup.com/discovery/delivery/01RUT_INST:01RUT/12676941630004646?lang=en&viewerServiceCode=AlmaViewer" className="block outline-none" target="_blank" rel="noreferrer">
+                          <div className="bg-white/5 border border-defense-border rounded p-4 hover:border-defense-accent transition-colors group/research">
+                            <div className="flex flex-col gap-2 mb-3">
+                              <span className="text-xs font-bold text-white group-hover/research:text-defense-accent transition-colors">
+                                An Approach To Disposing of Unwanted Pet Hairs From Homes Using Electrostatic Attraction
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-gray-400 leading-relaxed">
+                              Developed an electronic device to efficiently collect and dispose of fallen pet hairs, addressing health risks associated with the million tons of hair shed annually by pets worldwide.
+                            </p>
+                          </div>
+                        </a>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
