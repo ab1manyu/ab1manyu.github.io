@@ -327,7 +327,7 @@ export default function Home() {
                             </span>
                           </div>
                           <p className="text-[11px] text-gray-400 leading-relaxed">
-                            Learning about agent movement, path planning, decision making, goal-oriented behavior, learning, and procedural content generation
+                            Using Unity and C# to create AI agents that can navigate, plan, and make decisions in a game environment.
                           </p>
                         </div>
                       </div>
