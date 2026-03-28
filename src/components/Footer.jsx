@@ -57,7 +57,7 @@ export default function Footer() {
 
   return (
     <footer
-      className={`border-t border-defense-border bg-black py-8 ${isLocked ? 'fixed bottom-0 w-full z-50' : ''}`}
+      className={`hidden md:block border-t border-defense-border bg-black py-8 ${isLocked ? 'fixed bottom-0 w-full z-50' : ''}`}
     >
       <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
         <div className="font-mono text-xs text-gray-600">

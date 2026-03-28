@@ -25,6 +25,7 @@ const images = [
 ];
 
 const totalCards = 20;
+const LEGENDARY_CHANCE = 0.15; // 15%
 
 const moves = [
   { name: 'Earthquake', dmg: 100, type: types.find(t => t.name === 'Fighting') },
@@ -41,19 +42,47 @@ const moves = [
   { name: 'Leaf Storm', dmg: 130, type: types.find(t => t.name === 'Grass') }
 ];
 
+const legendaryMoves = [
+  { name: 'Kai Mega Punch ', dmg: 250, type: types.find(t => t.name === 'Fighting') },
+  { name: 'Kai Blast', dmg: 200, type: types.find(t => t.name === 'Fighting') },
+];
+
+// Fisher-Yates shuffle
+const shuffle = (arr) => {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+};
+
+const shuffledImages = shuffle(images);
+
 const cardsData = Array.from({ length: totalCards }, (_, i) => {
   const shuffledMoves = [...moves].sort(() => 0.5 - Math.random());
+  const shuffledLegendaryMoves = [...legendaryMoves].sort(() => 0.5 - Math.random());
   const type = shuffledMoves[0].type;
+  const isLegendary = Math.random() < LEGENDARY_CHANCE;
 
   return {
     id: i,
-    name: `Kai`,
-    hp: Math.floor(Math.random() * 800 + 100) % 10 * 10 + 40,
+    name: isLegendary ? `✦ Kai ✦` : `Kai`,
+    hp: isLegendary
+      ? Math.floor(Math.random() * 200 + 250) % 10 * 10 + 200// 250–450 for legendary
+      : Math.floor(Math.random() * 800 + 100) % 10 * 10 + 40,
     type,
-    image: images[i % images.length],
-    attack1: shuffledMoves[0],
-    attack2: shuffledMoves[1],
-    flavor: 'A mysterious entity discovered deep within the archives. Its origins remain unknown.'
+    isLegendary,
+    image: isLegendary ? '/kai/kaiLegendary.jpg' : shuffledImages[i % shuffledImages.length],
+    attack1: isLegendary
+      ? { ...shuffledLegendaryMoves[0], dmg: shuffledLegendaryMoves[0].dmg + 40 }
+      : shuffledMoves[0],
+    attack2: isLegendary
+      ? { ...shuffledLegendaryMoves[1], dmg: shuffledLegendaryMoves[1].dmg + 40 }
+      : shuffledMoves[1],
+    flavor: isLegendary
+      ? 'An ancient being of immeasurable power. Long thought to be a myth — now undeniable.'
+      : 'A mysterious entity discovered deep within the archives. Its origins remain unknown.'
   };
 });
 
@@ -248,7 +277,7 @@ export default function KaiCards() {
   return (
     <div
       id="kaicards-container"
-      className="bg-defense-base min-h-screen w-full flex items-center justify-center pt-16 pb-8 touch-none select-none"
+      className="min-h-screen w-full flex items-center justify-center pt-16 pb-8 touch-none select-none"
       style={{ userSelect: 'none', WebkitUserSelect: 'none' }}
     >
       <style>{`
@@ -256,59 +285,119 @@ export default function KaiCards() {
         #kaicards-container:active { cursor: grabbing; }
       `}</style>
 
+      {/* Bottom glow — only on /kai */}
+      <div
+        className="pointer-events-none fixed inset-x-0 bottom-0 z-0"
+        style={{
+          height: '45vh',
+          background: 'radial-gradient(ellipse 80% 60% at 50% 100%, rgba(16,185,129,0.13) 0%, rgba(16,185,129,0.05) 45%, transparent 100%)',
+        }}
+      />
+
       <div className="relative w-full max-w-[280px] sm:max-w-[340px] aspect-[5/7] flex items-center justify-center">
         {cardsData.map((card, idx) => (
           <div
             key={card.id}
             ref={el => cardsRef.current[idx] = el}
-            className="absolute inset-0 border border-defense-border rounded-xl flex flex-col overflow-hidden shadow-2xl pointer-events-auto bg-[#060f09] text-defense-accent font-mono"
+            className="absolute inset-0 rounded-xl flex flex-col overflow-hidden shadow-2xl pointer-events-auto font-mono"
             style={{
               willChange: 'transform, opacity',
-              visibility: 'hidden'
+              visibility: 'hidden',
+              border: card.isLegendary ? '1.5px solid #c8960c' : '1px solid var(--border-color)',
+              color: card.isLegendary ? '#f0c040' : 'var(--accent-solid)',
+              boxShadow: card.isLegendary ? '0 0 24px rgba(200,150,12,0.35), 0 4px 32px rgba(0,0,0,0.8)' : undefined,
             }}
           >
-            <div className="flex-1 w-full h-full flex flex-col p-1 sm:p-2 rounded-sm bg-[#060f09]">
+            <div
+              className="flex-1 w-full h-full flex flex-col p-1 sm:p-2 rounded-sm"
+              style={{ background: card.isLegendary ? '#16100a' : '#060f09' }}
+            >
 
               {/* Header */}
               <div className="flex justify-between items-center mb-1 px-1">
-                <div className="font-extrabold text-sm sm:text-base leading-none tracking-tight">{card.name}</div>
-                <div className="flex items-center gap-1 text-defense-accent font-bold leading-none">
+                <div
+                  className="font-extrabold text-sm sm:text-base leading-none tracking-tight"
+                  style={card.isLegendary ? { color: '#f0c040', textShadow: '0 0 8px rgba(240,192,64,0.6)' } : {}}
+                >{card.name}</div>
+                <div className="flex items-center gap-1 font-bold leading-none" style={{ color: card.isLegendary ? '#f0c040' : undefined }}>
                   <span className="text-[8px] sm:text-[10px] mr-[2px]">HP</span>
                   <span className="text-sm sm:text-base">{card.hp}</span>
-                  <div className="w-4 h-4 rounded-full border border-defense-border bg-[#0a1a10] flex items-center justify-center p-[2px] ml-1">
-                    <card.type.icon className="w-full h-full" style={{ color: card.type.color }} />
+                  <div
+                    className="w-4 h-4 rounded-full flex items-center justify-center p-[2px] ml-1"
+                    style={{
+                      border: card.isLegendary ? '1px solid #c8960c' : '1px solid var(--border-color)',
+                      background: card.isLegendary ? '#231808' : '#0a1a10',
+                    }}
+                  >
+                    <card.type.icon className="w-full h-full" style={{ color: card.isLegendary ? '#f0c040' : card.type.color }} />
                   </div>
                 </div>
               </div>
 
               {/* Picture Frame */}
-              <div className="w-full aspect-[4/3] border rounded-[6px] border-defense-border bg-black overflow-hidden relative mb-1">
+              <div
+                className="w-full aspect-[4/3] rounded-[6px] bg-black overflow-hidden relative mb-1"
+                style={{ border: card.isLegendary ? '1px solid #c8960c' : '1px solid var(--border-color)' }}
+              >
                 <img src={card.image} alt={card.name} className="w-full h-full object-cover" draggable={false} />
+                {card.isLegendary && (
+                  <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(180deg, rgba(200,150,12,0.08) 0%, transparent 40%)' }} />
+                )}
               </div>
 
               {/* Sub Metadata Bar */}
-              <div className="w-full bg-[#0a1a10] text-[7px] sm:text-[8px] font-bold italic text-center py-[2px] sm:py-1 mb-1 sm:mb-2 border-y border-defense-border text-defense-accent">
-                NO. {card.id.toString().padStart(3, '0')} Kitty Cat Length: 2&apos;0,  Weight: 10lbs
+              <div
+                className="w-full text-[7px] sm:text-[8px] font-bold italic text-center py-[2px] sm:py-1 mb-1 sm:mb-2"
+                style={{
+                  background: card.isLegendary ? '#1a1000' : '#0a1a10',
+                  borderTop: card.isLegendary ? '1px solid #c8960c' : '1px solid var(--border-color)',
+                  borderBottom: card.isLegendary ? '1px solid #c8960c' : '1px solid var(--border-color)',
+                  color: card.isLegendary ? '#c8960c' : undefined,
+                }}
+              >
+                {card.isLegendary ? '✦ LEGENDARY ✦' : `NO. ${card.id.toString().padStart(3, '0')} Kitty Cat Length: 2'0,  Weight: 10lbs`}
               </div>
 
               {/* Moves / Stats */}
-              <div className="flex-1 flex flex-col px-1 sm:px-2 z-10 relative bg-[#08120b] rounded-lg border-defense-border p-1">
-                <div className="flex items-center justify-between border-b border-defense-border pb-1 sm:pb-2 mb-1 sm:mb-2 text-defense-accent">
+              <div
+                className="flex-1 flex flex-col px-1 sm:px-2 z-10 relative rounded-lg p-1"
+                style={{ background: card.isLegendary ? '#110c00' : '#08120b' }}
+              >
+                <div
+                  className="flex items-center justify-between pb-1 sm:pb-2 mb-1 sm:mb-2"
+                  style={{
+                    borderBottom: card.isLegendary ? '1px solid #c8960c' : '1px solid var(--border-color)',
+                    color: card.isLegendary ? '#f0c040' : undefined,
+                  }}
+                >
                   <div className="flex items-center gap-1 sm:gap-2">
-                    <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full border border-defense-border bg-[#0a1a10] flex items-center justify-center p-[2px]">
-                      <card.attack1.type.icon className="w-full h-full" style={{ color: card.attack1.type.color }} />
+                    <div
+                      className="w-3 h-3 sm:w-4 sm:h-4 rounded-full flex items-center justify-center p-[2px]"
+                      style={{
+                        border: card.isLegendary ? '1px solid #c8960c' : '1px solid var(--border-color)',
+                        background: card.isLegendary ? '#231808' : '#0a1a10',
+                      }}
+                    >
+                      <card.attack1.type.icon className="w-full h-full" style={{ color: card.isLegendary ? '#f0c040' : card.attack1.type.color }} />
                     </div>
                     <span className="font-bold text-xs sm:text-sm tracking-tight">{card.attack1.name}</span>
                   </div>
                   <span className="font-extrabold text-xs sm:text-sm">{card.attack1.dmg}</span>
                 </div>
 
-                <div className="flex items-center justify-between pb-1 sm:pb-2 mb-1 text-defense-accent">
+                <div
+                  className="flex items-center justify-between pb-1 sm:pb-2 mb-1"
+                  style={{ color: card.isLegendary ? '#f0c040' : undefined }}
+                >
                   <div className="flex items-center gap-1 sm:gap-2">
-                    <div className="flex gap-[2px]">
-                      <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full border border-defense-border bg-[#0a1a10] flex items-center justify-center p-[2px]">
-                        <card.attack2.type.icon className="w-full h-full" style={{ color: card.attack2.type.color }} />
-                      </div>
+                    <div
+                      className="w-3 h-3 sm:w-4 sm:h-4 rounded-full flex items-center justify-center p-[2px]"
+                      style={{
+                        border: card.isLegendary ? '1px solid #c8960c' : '1px solid var(--border-color)',
+                        background: card.isLegendary ? '#231808' : '#0a1a10',
+                      }}
+                    >
+                      <card.attack2.type.icon className="w-full h-full" style={{ color: card.isLegendary ? '#f0c040' : card.attack2.type.color }} />
                     </div>
                     <span className="font-bold text-xs sm:text-sm tracking-tight">{card.attack2.name}</span>
                   </div>
@@ -318,17 +407,32 @@ export default function KaiCards() {
 
               {/* Footer small stats */}
               <div className="mt-auto">
-                <div className="flex justify-between text-[6px] sm:text-[8px] font-bold border-t border-defense-border py-1 mb-1 px-1">
-                  <div className="text-center text-[#2d8a4e]">weakness<br /><span className="text-xs text-defense-accent">x0</span></div>
-                  <div className="text-center text-[#2d8a4e]">resistance<br /><span className="text-xs text-defense-accent">-30</span></div>
-                  <div className="text-center text-[#2d8a4e]">retreat cost<br /><span className="text-xs tracking-widest text-defense-accent">* *</span></div>
+                <div
+                  className="flex justify-between text-[6px] sm:text-[8px] font-bold py-1 mb-1 px-1"
+                  style={{
+                    borderTop: card.isLegendary ? '1px solid #c8960c' : '1px solid var(--border-color)',
+                    color: card.isLegendary ? '#8a6a00' : '#2d8a4e',
+                  }}
+                >
+                  <div className="text-center">weakness<br /><span className="text-xs" style={{ color: card.isLegendary ? '#f0c040' : undefined }}>x0</span></div>
+                  <div className="text-center">resistance<br /><span className="text-xs" style={{ color: card.isLegendary ? '#f0c040' : undefined }}>-30</span></div>
+                  <div className="text-center">retreat cost<br /><span className="text-xs tracking-widest" style={{ color: card.isLegendary ? '#f0c040' : undefined }}>* *</span></div>
                 </div>
-                <div className="text-[7px] sm:text-[9px] italic border-t border-defense-border pt-1 px-1 leading-tight text-center font-mono text-[#2d8a4e]">
+                <div
+                  className="text-[7px] sm:text-[9px] italic pt-1 px-1 leading-tight text-center font-mono"
+                  style={{
+                    borderTop: card.isLegendary ? '1px solid #c8960c' : '1px solid var(--border-color)',
+                    color: card.isLegendary ? '#a07820' : '#2d8a4e',
+                  }}
+                >
                   {card.flavor}
                 </div>
-                <div className="flex justify-between items-center mt-1 px-1 text-[6px] sm:text-[7px] font-bold text-[#1f6036]">
+                <div
+                  className="flex justify-between items-center mt-1 px-1 text-[6px] sm:text-[7px] font-bold"
+                  style={{ color: card.isLegendary ? '#6a4800' : '#1f6036' }}
+                >
                   <span>Illus. Abimanyu</span>
-                  <span>{card.id + 1}/{totalCards} ⋆</span>
+                  <span>{card.isLegendary ? '★ LEGENDARY ★' : `${card.id + 1}/${totalCards} ⋆`}</span>
                 </div>
               </div>
             </div>
