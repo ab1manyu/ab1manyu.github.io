@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Camera, Image as ImageIcon, X, Aperture, Sliders } from 'lucide-react';
 
 const galleryItems = [
@@ -39,7 +39,12 @@ const galleryItems = [
 
 export default function Gallery() {
   const [selectedItem, setSelectedItem] = useState(null);
-  const [zoomLevel, setZoomLevel] = useState(0);
+
+  // Zoom / pan refs (match old script.js logic exactly)
+  const zoomLevelRef = useRef(0);
+  const imgRectRef = useRef(null);
+  const animFrameRef = useRef(null);
+  const modalImgRef = useRef(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -82,18 +87,71 @@ export default function Gallery() {
     };
   }, [selectedItem]);
 
+  const resetZoom = useCallback((img) => {
+    zoomLevelRef.current = 0;
+    imgRectRef.current = null;
+    img.style.transform = "scale(1)";
+    img.style.transformOrigin = "center center";
+    img.style.cursor = "zoom-in";
+  }, []);
+
+  const updateOrigin = useCallback((img, clientX, clientY) => {
+    const rect = imgRectRef.current;
+    if (!rect) return;
+    const x = ((clientX - rect.left) / rect.width) * 100;
+    const y = ((clientY - rect.top) / rect.height) * 100;
+    img.style.transformOrigin = `${x}% ${y}%`;
+  }, []);
+
+  const handleImgClick = useCallback((e) => {
+    e.stopPropagation();
+    const img = modalImgRef.current;
+    if (!img) return;
+
+    zoomLevelRef.current = (zoomLevelRef.current + 1) % 3;
+    const level = zoomLevelRef.current;
+
+    if (level > 0) {
+      imgRectRef.current = img.getBoundingClientRect();
+    }
+
+    if (level === 0) {
+      resetZoom(img);
+    } else if (level === 1) {
+      img.style.transform = "scale(2.5)";
+      img.style.cursor = "zoom-in";
+      updateOrigin(img, e.clientX, e.clientY);
+    } else {
+      img.style.transform = "scale(5)";
+      img.style.cursor = "zoom-out";
+      updateOrigin(img, e.clientX, e.clientY);
+    }
+  }, [resetZoom, updateOrigin]);
+
+  const handleImgMouseMove = useCallback((e) => {
+    if (zoomLevelRef.current === 0) return;
+    const img = modalImgRef.current;
+    if (!img) return;
+    if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+    animFrameRef.current = requestAnimationFrame(() => {
+      updateOrigin(img, e.clientX, e.clientY);
+    });
+  }, [updateOrigin]);
+
+  const handleImgMouseLeave = useCallback(() => {
+    const img = modalImgRef.current;
+    if (!img) return;
+    if (zoomLevelRef.current > 0) resetZoom(img);
+  }, [resetZoom]);
+
   const openItem = (item) => {
     setSelectedItem(item);
-    setZoomLevel(0);
+    zoomLevelRef.current = 0;
+    imgRectRef.current = null;
   };
 
   const closeItem = () => {
     setSelectedItem(null);
-  };
-
-  const handleZoom = (e) => {
-    e.stopPropagation();
-    setZoomLevel((prev) => (prev + 1) % 3);
   };
 
   return (
@@ -137,11 +195,15 @@ export default function Gallery() {
         {selectedItem && (
           <div className={`relative w-[95vw] h-[95vh] bg-defense-base border border-defense-border rounded-lg shadow-2xl overflow-hidden flex flex-col md:flex-row transition-transform duration-300 ${selectedItem ? 'scale-100' : 'scale-95'}`}>
             <div className="w-full md:w-3/4 bg-black/50 relative flex items-center justify-center border-b md:border-b-0 md:border-r border-defense-border h-1/2 md:h-full overflow-hidden">
-              <img 
-                src={selectedItem.image} 
-                onClick={handleZoom}
-                className={`w-full h-full object-contain max-h-[90%] transition-transform duration-300 origin-center ${zoomLevel === 0 ? 'cursor-zoom-in scale-100' : zoomLevel === 1 ? 'cursor-zoom-in scale-[2.5]' : 'cursor-zoom-out scale-[5]'}`} 
-                alt={selectedItem.title} 
+              <img
+                ref={modalImgRef}
+                src={selectedItem.image}
+                onClick={handleImgClick}
+                onMouseMove={handleImgMouseMove}
+                onMouseLeave={handleImgMouseLeave}
+                style={{ transition: 'transform 0.3s ease', transformOrigin: 'center center', cursor: 'zoom-in' }}
+                className="w-full h-full object-contain max-h-[90%] origin-center"
+                alt={selectedItem.title}
               />
             </div>
 
