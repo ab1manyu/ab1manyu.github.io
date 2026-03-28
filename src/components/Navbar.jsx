@@ -14,9 +14,9 @@ export default function Navbar() {
     const handleScanning = () => setRadarStatus('SCANNING...');
     const handleRevealed = () => {
       setRadarStatus(prev => {
-        if (prev === 'SCANNING...') return '1 PLANE';
+        if (prev === 'SCANNING...') return '1 TARGET';
         const count = parseInt(prev.split(' ')[0]) || 0;
-        return `${count + 1} PLANES`;
+        return `${count + 1} TARGETS`;
       });
     };
     const handleComplete = () => setRadarStatus('SYS_ONLINE');
@@ -82,9 +82,13 @@ export default function Navbar() {
           </div>
 
           <div className="flex flex-col leading-none min-w-[5.5rem]">
-            <span className="font-mono text-sm tracking-widest uppercase font-bold text-white">abi.</span>
+            <Link
+              to="/"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="font-mono text-sm tracking-widest uppercase font-bold text-white  transition-colors"
+            >abi.</Link>
             {isGallery ? (
-              <span className={`font-mono text-[10px] transition-colors duration-200 ${shutterStatus === 'CLICK!' ? 'text-defense-accent' : 'text-gray-500'}`}>
+              <span className={`font-mono text-[10px] transition-colors duration-200 ${shutterStatus === 'SYS_ONLINE' ? 'text-gray-500' : 'text-defense-accent'}`}>
                 {shutterStatus}
               </span>
             ) : (
