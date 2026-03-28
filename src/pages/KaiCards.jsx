@@ -12,9 +12,6 @@ const types = [
 ];
 
 const images = [
-  // '/gallery/lakshmi.JPG',
-  // '/gallery/hampi.JPG',
-  // '/gallery/halebidu.JPG'
   '/kai/kai.jpg',
   '/kai/kai2.jpg',
   '/kai/kai3.jpg',
@@ -62,20 +59,27 @@ const cardsData = Array.from({ length: totalCards }, (_, i) => {
 
 export default function KaiCards() {
   const cardsRef = useRef([]);
+  // Virtual progress: each integer = one full card step
+  const progressRef = useRef(0);
 
   useEffect(() => {
-    // Center the scroll position at exactly 70 full cards (70 * 800 = 56000)
-    // This provides massive headroom to scroll upwards through previous cards
-    setTimeout(() => window.scrollTo(0, 56000), 50);
-
     let ticking = false;
-    let scrollTimeout = null;
-    let lastScrollY = window.scrollY;
-    let scrollDirection = 1;
+    let snapRAF = null;
+    let snapTimeout = null;
+
+    // Drag state
+    let isDragging = false;
+    let dragStartY = 0;
+    let dragStartProgress = 0;
+    // Velocity tracking
+    let lastEventY = 0;
+    let lastEventTime = 0;
+    let velocity = 0;
+
+    const N = totalCards;
 
     const updateCards = () => {
-      const p = window.scrollY / 800;
-      const N = totalCards;
+      const p = progressRef.current;
 
       cardsRef.current.forEach((el, idx) => {
         if (!el) return;
@@ -92,8 +96,7 @@ export default function KaiCards() {
           const peel = N - v;
           zIndex = 1000;
           scale = 1 + (peel * 0.5);
-          transformY = -(peel * 600); // Fly UP
-          // Add a small randomized alternating flip angle as it peels
+          transformY = -(peel * 600);
           const angleDir = idx % 2 === 0 ? -1 : 1;
           rotate = peel * 12 * angleDir;
           opacity = 1 - peel;
@@ -110,7 +113,6 @@ export default function KaiCards() {
           }
         }
 
-        // Optimization: if fully transparent or effectively hidden, remove from paint
         if (opacity < 0.01) {
           el.style.visibility = 'hidden';
           el.style.pointerEvents = 'none';
@@ -126,188 +128,212 @@ export default function KaiCards() {
       ticking = false;
     };
 
-    let snapRAF = null;
+    const requestUpdate = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateCards);
+        ticking = true;
+      }
+    };
 
-    const smoothScrollTo = (targetY) => {
+    // Smooth snap to nearest integer progress
+    const snapTo = (target) => {
       if (snapRAF) cancelAnimationFrame(snapRAF);
-      const startY = window.scrollY;
-      const distance = targetY - startY;
+      const start = progressRef.current;
+      const distance = target - start;
       const startTime = performance.now();
-      const duration = 100; // Slower glide
+      const duration = 250;
 
-      // easeOutQuart curve for buttery deceleration
-      const easeOut = (t) => 1 - Math.pow(1 - t, 100);
+      const easeOut = (t) => 1 - Math.pow(1 - t, 3);
 
-      const animate = (currentTime) => {
-        const elapsed = currentTime - startTime;
+      const animate = (now) => {
+        const elapsed = now - startTime;
         const progress = Math.min(elapsed / duration, 1);
-
-        window.scrollTo(0, startY + distance * easeOut(progress));
-
+        progressRef.current = start + distance * easeOut(progress);
+        requestUpdate();
         if (progress < 1) {
           snapRAF = window.requestAnimationFrame(animate);
         } else {
+          progressRef.current = target;
           snapRAF = null;
+          requestUpdate();
         }
       };
 
       snapRAF = window.requestAnimationFrame(animate);
     };
 
-    // Interrupt automatic glide if the user physically takes control
-    const interruptSnap = () => {
-      if (snapRAF) {
-        cancelAnimationFrame(snapRAF);
-        snapRAF = null;
-      }
+    const scheduleSnap = () => {
+      if (snapTimeout) clearTimeout(snapTimeout);
+      snapTimeout = setTimeout(() => {
+        // Use velocity to decide direction
+        const target = velocity > 0
+          ? Math.ceil(progressRef.current)
+          : Math.floor(progressRef.current);
+        if (Math.abs(progressRef.current - target) > 0.01) {
+          snapTo(target);
+        }
+        velocity = 0;
+      }, 120);
     };
 
-    window.addEventListener('wheel', interruptSnap, { passive: true });
-    window.addEventListener('touchstart', interruptSnap, { passive: true });
-
-    const handleScroll = () => {
-      const currentY = window.scrollY;
-      if (currentY !== lastScrollY) {
-        scrollDirection = currentY > lastScrollY ? 1 : -1;
-        lastScrollY = currentY;
-      }
-
-      if (!ticking) {
-        window.requestAnimationFrame(updateCards);
-        ticking = true;
-      }
-
-      if (scrollTimeout) {
-        clearTimeout(scrollTimeout);
-      }
-
-      // Debounce: wait 150ms after user stops scrolling to force a snap glide
-      scrollTimeout = setTimeout(() => {
-        let targetY;
-        if (scrollDirection === 1) {
-          targetY = Math.ceil(window.scrollY / 800) * 800;
-        } else {
-          targetY = Math.floor(window.scrollY / 800) * 800;
-        }
-
-        // Check if we aren't perfectly resting before pulling
-        if (Math.abs(window.scrollY - targetY) > 2) {
-          smoothScrollTo(targetY);
-        }
-      }, 150);
+    // ── Pointer events (mouse + touch via pointer API) ──────────────────────
+    const onPointerDown = (e) => {
+      if (snapRAF) { cancelAnimationFrame(snapRAF); snapRAF = null; }
+      isDragging = true;
+      dragStartY = e.clientY;
+      dragStartProgress = progressRef.current;
+      lastEventY = e.clientY;
+      lastEventTime = performance.now();
+      velocity = 0;
+      e.currentTarget.setPointerCapture(e.pointerId);
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    const onPointerMove = (e) => {
+      if (!isDragging) return;
+      const dy = e.clientY - dragStartY;
+      // 200px drag = 1 card step; negative = scroll forward (next card)
+      progressRef.current = dragStartProgress - dy / 200;
+      requestUpdate();
+
+      const now = performance.now();
+      const dt = now - lastEventTime;
+      if (dt > 0) {
+        velocity = (lastEventY - e.clientY) / dt; // px/ms, positive = drag up = next card
+      }
+      lastEventY = e.clientY;
+      lastEventTime = now;
+    };
+
+    const onPointerUp = () => {
+      if (!isDragging) return;
+      isDragging = false;
+      scheduleSnap();
+    };
+
+    // ── Wheel (desktop scroll) ───────────────────────────────────────────────
+    const onWheel = (e) => {
+      e.preventDefault();
+      if (snapRAF) { cancelAnimationFrame(snapRAF); snapRAF = null; }
+      progressRef.current += e.deltaY / 400;
+      velocity = e.deltaY > 0 ? 1 : -1;
+      requestUpdate();
+      scheduleSnap();
+    };
+
+    const container = document.getElementById('kaicards-container');
+    if (container) {
+      container.addEventListener('pointerdown', onPointerDown);
+      container.addEventListener('pointermove', onPointerMove);
+      container.addEventListener('pointerup', onPointerUp);
+      container.addEventListener('pointercancel', onPointerUp);
+      container.addEventListener('wheel', onWheel, { passive: false });
+    }
 
     // Initial paint
     updateCards();
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('wheel', interruptSnap);
-      window.removeEventListener('touchstart', interruptSnap);
-      if (scrollTimeout) clearTimeout(scrollTimeout);
+      if (container) {
+        container.removeEventListener('pointerdown', onPointerDown);
+        container.removeEventListener('pointermove', onPointerMove);
+        container.removeEventListener('pointerup', onPointerUp);
+        container.removeEventListener('pointercancel', onPointerUp);
+        container.removeEventListener('wheel', onWheel);
+      }
+      if (snapTimeout) clearTimeout(snapTimeout);
       if (snapRAF) cancelAnimationFrame(snapRAF);
     };
   }, []);
 
   return (
-    <div className="bg-defense-base min-h-screen relative z-10 w-full pt-16">
+    <div
+      id="kaicards-container"
+      className="bg-defense-base min-h-screen w-full flex items-center justify-center pt-16 pb-8 touch-none select-none"
+      style={{ userSelect: 'none', WebkitUserSelect: 'none' }}
+    >
       <style>{`
-        html::-webkit-scrollbar, body::-webkit-scrollbar, *::-webkit-scrollbar {
-          display: none !important;
-          width: 0 !important;
-        }
-        html, body {
-          -ms-overflow-style: none !important;
-          scrollbar-width: none !important;
-        }
+        #kaicards-container { cursor: grab; }
+        #kaicards-container:active { cursor: grabbing; }
       `}</style>
 
-      {/* Single dummy element ensuring window attains scroll height */}
-      <div style={{ padding: '0', margin: '0', position: 'absolute', top: 0, left: 0, width: '1px', height: '120000px' }}></div>
+      <div className="relative w-full max-w-[280px] sm:max-w-[340px] aspect-[5/7] flex items-center justify-center">
+        {cardsData.map((card, idx) => (
+          <div
+            key={card.id}
+            ref={el => cardsRef.current[idx] = el}
+            className="absolute inset-0 border border-defense-border rounded-xl flex flex-col overflow-hidden shadow-2xl pointer-events-auto bg-[#060f09] text-defense-accent font-mono"
+            style={{
+              willChange: 'transform, opacity',
+              visibility: 'hidden'
+            }}
+          >
+            <div className="flex-1 w-full h-full flex flex-col p-1 sm:p-2 rounded-sm bg-[#060f09]">
 
-      {/* Fixed position overlay */}
-      <div className="fixed inset-0 flex items-center justify-center pointer-events-none pb-16 pt-16 z-20">
-        <div className="relative w-full max-w-[280px] sm:max-w-[340px] aspect-[5/7] flex items-center justify-center">
-          {cardsData.map((card, idx) => (
-            <div
-              key={card.id}
-              ref={el => cardsRef.current[idx] = el}
-              className="absolute inset-0 border border-defense-border rounded-xl flex flex-col overflow-hidden shadow-2xl pointer-events-auto cursor-pointer hover:border-defense-accent transition-colors duration-300 bg-[#060f09] text-defense-accent font-mono"
-              style={{
-                willChange: 'transform, opacity, z-index',
-                visibility: 'hidden' // hide until JS repaints frame 1
-              }}
-            >
-              <div className="flex-1 w-full h-full flex flex-col p-1 sm:p-2 rounded-sm bg-[#060f09]">
-
-                {/* Header */}
-                <div className="flex justify-between items-center mb-1 px-1">
-                  <div className="font-extrabold text-sm sm:text-base leading-none tracking-tight">{card.name}</div>
-                  <div className="flex items-center gap-1 text-defense-accent font-bold leading-none">
-                    <span className="text-[8px] sm:text-[10px] mr-[2px]">HP</span>
-                    <span className="text-sm sm:text-base">{card.hp}</span>
-                    <div className="w-4 h-4 rounded-full border border-defense-border bg-[#0a1a10] flex items-center justify-center p-[2px] ml-1">
-                      <card.type.icon className="w-full h-full" style={{ color: card.type.color }} />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Picture Frame */}
-                <div className="w-full aspect-[4/3] border rounded-[6px] border-defense-border bg-black overflow-hidden relative mb-1 group">
-                  <img src={card.image} alt={card.name} className="w-full h-full object-cover" />
-                </div>
-
-                {/* Sub Metadata Bar */}
-                <div className="w-full bg-[#0a1a10] text-[7px] sm:text-[8px] font-bold italic text-center py-[2px] sm:py-1 mb-1 sm:mb-2 border-y border-defense-border text-defense-accent">
-                  NO. {card.id.toString().padStart(3, '0')} Kitty Cat Length: 2'0,  Weight: 10lbs
-                </div>
-
-                {/* Moves / Stats */}
-                <div className="flex-1 flex flex-col px-1 sm:px-2 z-10 relative bg-[#08120b] rounded-lg  border-defense-border p-1">
-                  <div className="flex items-center justify-between border-b border-defense-border pb-1 sm:pb-2 mb-1 sm:mb-2 text-defense-accent">
-                    <div className="flex items-center gap-1 sm:gap-2">
-                      <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full border border-defense-border bg-[#0a1a10] flex items-center justify-center p-[2px]">
-                        <card.attack1.type.icon className="w-full h-full" style={{ color: card.attack1.type.color }} />
-                      </div>
-                      <span className="font-bold text-xs sm:text-sm tracking-tight">{card.attack1.name}</span>
-                    </div>
-                    <span className="font-extrabold text-xs sm:text-sm">{card.attack1.dmg}</span>
-                  </div>
-
-                  <div className="flex items-center justify-between pb-1 sm:pb-2 mb-1 text-defense-accent">
-                    <div className="flex items-center gap-1 sm:gap-2">
-                      <div className="flex gap-[2px]">
-                        <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full border border-defense-border bg-[#0a1a10] flex items-center justify-center p-[2px]">
-                          <card.attack2.type.icon className="w-full h-full" style={{ color: card.attack2.type.color }} />
-                        </div>
-                      </div>
-                      <span className="font-bold text-xs sm:text-sm tracking-tight">{card.attack2.name}</span>
-                    </div>
-                    <span className="font-extrabold text-xs sm:text-sm">{card.attack2.dmg}</span>
-                  </div>
-                </div>
-
-                {/* Footer small stats */}
-                <div className="mt-auto">
-                  <div className="flex justify-between text-[6px] sm:text-[8px] font-bold border-t border-defense-border py-1 mb-1 px-1">
-                    <div className="text-center text-[#2d8a4e]">weakness<br /><span className="text-xs text-defense-accent">x0</span></div>
-                    <div className="text-center text-[#2d8a4e]">resistance<br /><span className="text-xs text-defense-accent">-30</span></div>
-                    <div className="text-center text-[#2d8a4e]">retreat cost<br /><span className="text-xs tracking-widest text-defense-accent">* *</span></div>
-                  </div>
-                  <div className="text-[7px] sm:text-[9px] italic border-t border-defense-border pt-1 px-1 leading-tight text-center font-mono text-[#2d8a4e]">
-                    {card.flavor}
-                  </div>
-                  <div className="flex justify-between items-center mt-1 px-1 text-[6px] sm:text-[7px] font-bold text-[#1f6036]">
-                    <span>Illus. Abimanyu</span>
-                    <span>{card.id + 1}/{totalCards} ⋆</span>
+              {/* Header */}
+              <div className="flex justify-between items-center mb-1 px-1">
+                <div className="font-extrabold text-sm sm:text-base leading-none tracking-tight">{card.name}</div>
+                <div className="flex items-center gap-1 text-defense-accent font-bold leading-none">
+                  <span className="text-[8px] sm:text-[10px] mr-[2px]">HP</span>
+                  <span className="text-sm sm:text-base">{card.hp}</span>
+                  <div className="w-4 h-4 rounded-full border border-defense-border bg-[#0a1a10] flex items-center justify-center p-[2px] ml-1">
+                    <card.type.icon className="w-full h-full" style={{ color: card.type.color }} />
                   </div>
                 </div>
               </div>
+
+              {/* Picture Frame */}
+              <div className="w-full aspect-[4/3] border rounded-[6px] border-defense-border bg-black overflow-hidden relative mb-1">
+                <img src={card.image} alt={card.name} className="w-full h-full object-cover" draggable={false} />
+              </div>
+
+              {/* Sub Metadata Bar */}
+              <div className="w-full bg-[#0a1a10] text-[7px] sm:text-[8px] font-bold italic text-center py-[2px] sm:py-1 mb-1 sm:mb-2 border-y border-defense-border text-defense-accent">
+                NO. {card.id.toString().padStart(3, '0')} Kitty Cat Length: 2&apos;0,  Weight: 10lbs
+              </div>
+
+              {/* Moves / Stats */}
+              <div className="flex-1 flex flex-col px-1 sm:px-2 z-10 relative bg-[#08120b] rounded-lg border-defense-border p-1">
+                <div className="flex items-center justify-between border-b border-defense-border pb-1 sm:pb-2 mb-1 sm:mb-2 text-defense-accent">
+                  <div className="flex items-center gap-1 sm:gap-2">
+                    <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full border border-defense-border bg-[#0a1a10] flex items-center justify-center p-[2px]">
+                      <card.attack1.type.icon className="w-full h-full" style={{ color: card.attack1.type.color }} />
+                    </div>
+                    <span className="font-bold text-xs sm:text-sm tracking-tight">{card.attack1.name}</span>
+                  </div>
+                  <span className="font-extrabold text-xs sm:text-sm">{card.attack1.dmg}</span>
+                </div>
+
+                <div className="flex items-center justify-between pb-1 sm:pb-2 mb-1 text-defense-accent">
+                  <div className="flex items-center gap-1 sm:gap-2">
+                    <div className="flex gap-[2px]">
+                      <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full border border-defense-border bg-[#0a1a10] flex items-center justify-center p-[2px]">
+                        <card.attack2.type.icon className="w-full h-full" style={{ color: card.attack2.type.color }} />
+                      </div>
+                    </div>
+                    <span className="font-bold text-xs sm:text-sm tracking-tight">{card.attack2.name}</span>
+                  </div>
+                  <span className="font-extrabold text-xs sm:text-sm">{card.attack2.dmg}</span>
+                </div>
+              </div>
+
+              {/* Footer small stats */}
+              <div className="mt-auto">
+                <div className="flex justify-between text-[6px] sm:text-[8px] font-bold border-t border-defense-border py-1 mb-1 px-1">
+                  <div className="text-center text-[#2d8a4e]">weakness<br /><span className="text-xs text-defense-accent">x0</span></div>
+                  <div className="text-center text-[#2d8a4e]">resistance<br /><span className="text-xs text-defense-accent">-30</span></div>
+                  <div className="text-center text-[#2d8a4e]">retreat cost<br /><span className="text-xs tracking-widest text-defense-accent">* *</span></div>
+                </div>
+                <div className="text-[7px] sm:text-[9px] italic border-t border-defense-border pt-1 px-1 leading-tight text-center font-mono text-[#2d8a4e]">
+                  {card.flavor}
+                </div>
+                <div className="flex justify-between items-center mt-1 px-1 text-[6px] sm:text-[7px] font-bold text-[#1f6036]">
+                  <span>Illus. Abimanyu</span>
+                  <span>{card.id + 1}/{totalCards} ⋆</span>
+                </div>
+              </div>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     </div>
   );
