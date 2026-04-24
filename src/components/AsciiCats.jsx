@@ -107,6 +107,30 @@ export default function AsciiCats() {
       } else {
         next.add(key);
       }
+
+      const rows = gridSize.rows;
+      const cols = gridSize.cols;
+      const corners = [
+        `0-0`,
+        `0-${cols - 1}`,
+        `${rows - 1}-0`,
+        `${rows - 1}-${cols - 1}`
+      ];
+
+      // Check if corners are lit
+      const allCornersLit = corners.every(c => next.has(c));
+      
+      // If corners are lit and possibly some others, but let's make it more specific:
+      // Pattern: Only corners lit or Corners + something else?
+      // "corners being highlighted" usually means the 4 corners.
+      // I'll trigger it if the 4 corners are lit, even if others are too.
+      if (allCornersLit && next.size === 4) {
+         setTimeout(() => {
+          setSweeping(true);
+          setTimeout(() => navigate('/pokedex'), sweepDuration + 100);
+        }, 150);
+      }
+
       if (next.size === totalCats) {
         setTimeout(() => {
           setSweeping(true);

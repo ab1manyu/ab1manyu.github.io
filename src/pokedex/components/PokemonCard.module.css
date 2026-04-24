@@ -1,0 +1,184 @@
+.card {
+  position: relative;
+  background: transparent;
+  border: none;
+  padding: 10px 8px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: not-allowed;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  min-width: 0;
+  text-align: center;
+  font-family: inherit;
+  z-index: 1;
+  width: 100%;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--border);
+  clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
+  z-index: -2;
+  transition: background 0.3s;
+}
+
+.card::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  background: var(--bg-card);
+  clip-path: polygon(7px 0, calc(100% - 7px) 0, 100% 7px, 100% calc(100% - 7px), calc(100% - 7px) 100%, 7px 100%, 0 calc(100% - 7px), 0 7px);
+  z-index: -1;
+  transition: background 0.3s;
+}
+
+.cardCaught {
+  cursor: pointer;
+}
+.cardCaught::before {
+  background: var(--border-bright);
+}
+
+.cardCaught:hover {
+  transform: translateY(-3px);
+  filter: drop-shadow(0 4px 8px var(--card-theme, var(--theme-color)));
+}
+.cardCaught:hover::before {
+  background: var(--card-theme, var(--theme-color));
+}
+.cardCaught:hover::after {
+  background: var(--bg-card-hover);
+}
+
+.cardCaught:hover .img {
+  filter: brightness(1.1) saturate(1.1) drop-shadow(0 2px 8px var(--card-theme, var(--theme-color)));
+}
+
+.cardUncaught {
+  opacity: 0.55;
+}
+
+.dexNum {
+  font-family: var(--font-pixel);
+  font-size: 7px;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  width: 100%;
+  text-align: left;
+}
+
+.imgWrap {
+  position: relative;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.img {
+  max-width: 64px;
+  max-height: 64px;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  transition: filter 0.2s ease;
+}
+
+.imgCaught {
+  filter: none;
+}
+
+.imgSilhouette {
+  filter: brightness(0);
+}
+
+.unknownOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-pixel);
+  font-size: 18px;
+  color: var(--text-muted);
+  opacity: 0.5;
+}
+
+.name {
+  font-family: var(--font-pixel);
+  font-size: 7px;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+  word-break: break-word;
+  line-height: 1.4;
+}
+
+.cardCaught .name {
+  color: var(--text-primary);
+}
+
+.cardCaught:hover .name {
+  color: var(--text-primary);
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.4);
+}
+
+.cardList {
+  flex-direction: row;
+  justify-content: flex-start;
+  text-align: left;
+  padding: 8px 16px;
+}
+.cardList .imgWrap {
+  width: 48px;
+  height: 48px;
+  margin-right: 16px;
+}
+.cardList .img {
+  max-width: 40px;
+  max-height: 40px;
+}
+.cardList .dexNum {
+  width: auto;
+  margin-right: 24px;
+}
+.cardList .name {
+  font-size: 10px;
+  margin: auto 0;
+}
+
+.typeRow {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.typePill {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: var(--font-pixel);
+  font-size: 6px;
+  color: #fff;
+  letter-spacing: 1px;
+  text-shadow: 0 0 2px rgba(0,0,0,0.5);
+  clip-path: polygon(4px 0, calc(100% - 4px) 0, 100% 50%, calc(100% - 4px) 100%, 4px 100%, 0 50%);
+}
+
+.hiddenCard {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.animateIn {
+  animation: slide-up-fade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slide-up-fade {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}

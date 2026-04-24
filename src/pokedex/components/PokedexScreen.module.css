@@ -1,0 +1,145 @@
+.screen {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+/* matrixGrid removed to use site-wide dot grid */
+.matrixGrid {
+  display: none;
+}
+
+/* ─── Filter Bar ──────────────────────────────────────────────── */
+.filterBar {
+  display: flex;
+  gap: 8px;
+  padding: 12px max(32px, 15vw);
+  background: #000;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.filterBtn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  letter-spacing: 0.5px;
+  padding: 7px 12px;
+  cursor: pointer;
+  z-index: 1;
+  border: none;
+}
+
+.filterBtn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--border);
+  clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0 calc(100% - 6px), 0 6px);
+  z-index: -2;
+  transition: background 0.2s;
+}
+
+.filterBtn::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  background: var(--bg-card);
+  clip-path: polygon(5px 0, calc(100% - 5px) 0, 100% 5px, 100% calc(100% - 5px), calc(100% - 5px) 100%, 5px 100%, 0 calc(100% - 5px), 0 5px);
+  z-index: -1;
+  transition: background 0.2s;
+}
+
+.filterBtn:hover {
+  color: var(--text-primary);
+}
+
+.filterBtn:hover::before {
+  background: var(--border-bright);
+}
+
+.filterActive {
+  color: var(--text-primary);
+}
+
+.filterActive::before {
+  background: var(--theme-color);
+}
+
+.filterActive::after {
+  background: rgba(var(--theme-color), 0.08);
+}
+
+.filterCount {
+  background: var(--bg-primary);
+  border-radius: 99px;
+  padding: 1px 6px;
+  font-size: 7px;
+  color: var(--text-secondary);
+}
+
+/* ─── Grid ───────────────────────────────────────────────────── */
+.grid {
+  flex: 1;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 8px;
+  padding: 16px 20px;
+  align-content: start;
+}
+
+.listView {
+  display: flex !important;
+  flex-direction: column;
+  padding: 16px max(32px, 15vw);
+}
+
+/* ─── Empty State ────────────────────────────────────────────── */
+.emptyState {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 40px 20px;
+  animation: fadeInUp 0.4s ease;
+}
+
+.emptyIcon {
+  font-size: 48px;
+  color: var(--text-muted);
+  opacity: 0.4;
+}
+
+.emptyText {
+  font-family: var(--font-pixel);
+  font-size: 11px;
+  color: var(--text-secondary);
+  letter-spacing: 1px;
+}
+
+.emptySubtext {
+  font-family: var(--font-main);
+  font-size: 13px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .viewText {
+    display: none;
+  }
+  .viewIcon {
+    font-size: 12px;
+  }
+}

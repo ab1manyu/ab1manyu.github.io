@@ -1,0 +1,598 @@
+.battle {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background grid removed to use site-wide dot grid */
+.grid {
+  display: none;
+}
+
+/* Arena */
+.arena {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 520px;
+  padding: 24px 20px;
+  animation: fadeInUp 0.4s ease;
+  position: relative;
+}
+
+@media (max-width: 600px),
+(max-height: 700px) {
+  .arena {
+    padding-bottom: clamp(60px, 20vh, 200px);
+  }
+}
+
+/* Wild Pokemon Name Banner */
+.wildBanner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: transparent;
+  border: none;
+  padding: 10px 20px;
+  width: 55%;
+  align-self: flex-start;
+  z-index: 10;
+  bottom: 25px;
+}
+
+.wildBanner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--border);
+  clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0 calc(100% - 6px), 0 6px);
+  z-index: -2;
+}
+
+.wildBanner::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  background: var(--bg-secondary);
+  clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0 calc(100% - 6px), 0 6px);
+  z-index: -1;
+}
+
+.wildLabel {
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  color: var(--theme-color);
+  letter-spacing: 2px;
+}
+
+.wildName {
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  font-weight: bold;
+  color: var(--text-primary);
+  /* letter-spacing: 1px; */
+  transition: color 0.3s ease;
+}
+
+.wildNameMatch {
+  color: var(--theme-color) !important;
+  animation: pulse-glow 1.5s ease-in-out infinite;
+  text-shadow: 0 0 10px rgba(var(--theme-color-rgb), 0.5);
+}
+
+.wildNameSmall {
+  font-size: 8px;
+}
+
+.wildNameMini {
+  font-size: 6px;
+}
+
+.spriteArea {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  width: 45%;
+  max-width: 200px;
+  height: 200px;
+  align-self: flex-end;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 5px;
+}
+
+.spriteArea::after {
+  content: '';
+  position: absolute;
+  bottom: 50px;
+  width: 140px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--theme-color);
+  opacity: 0.35;
+  box-shadow: 0 0 30px var(--theme-color);
+  z-index: 0;
+}
+
+.spriteAreaCaught::after {
+  background: var(--green);
+  opacity: 0.5;
+  box-shadow: 0 0 30px var(--green);
+}
+
+.spriteLoader {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spriteLoaderSpinner {
+  display: block;
+  width: 48px;
+  height: 48px;
+  border: 3px solid var(--border);
+  border-top-color: var(--theme-color);
+  border-radius: 50%;
+  animation: pokeball-spin 0.8s linear infinite;
+}
+
+.sprite {
+  max-width: 160px;
+  max-height: 160px;
+  bottom: 55px;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  image-rendering: crisp-edges;
+  pointer-events: none;
+  user-select: none;
+  z-index: 1;
+  position: relative;
+  animation: slide-in-pokemon 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes slide-in-pokemon {
+  from {
+    transform: translateX(100px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse-shadow {
+
+  0%,
+  100% {
+    filter: brightness(0) drop-shadow(0 0 5px var(--theme-color));
+  }
+
+  50% {
+    filter: brightness(0) drop-shadow(0 0 15px var(--theme-color));
+  }
+}
+
+.spriteVisible {
+  opacity: 1;
+}
+
+.spriteSilhouette {
+  animation: pulse-shadow 2s infinite, float 3s ease-in-out infinite, slide-in-pokemon 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.spriteRevealed {
+  filter: brightness(1) saturate(1);
+  animation: reveal 0.8s ease forwards, float 3s ease-in-out 0.8s infinite;
+}
+
+@keyframes slide-out-pokemon {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  to {
+    transform: translateX(100px);
+    opacity: 0;
+  }
+}
+
+.spriteRanAway {
+  animation: slide-out-pokemon 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards !important;
+  filter: brightness(0) !important;
+}
+
+/* Catch particle burst */
+.catchBurst {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.catchParticle {
+  position: absolute;
+  width: 6px;
+  height: 8px;
+  background: var(--c);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: confetti-burst 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  will-change: transform, opacity;
+}
+
+/* Message Box */
+.messageBox {
+  position: relative;
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 14px 20px;
+  margin-top: 100px;
+  z-index: 10;
+}
+
+.messageBox::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--border);
+  clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
+  z-index: -2;
+  transition: background 0.2s;
+}
+
+.messageBox::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  background: var(--bg-card);
+  clip-path: polygon(7px 0, calc(100% - 7px) 0, 100% 7px, 100% calc(100% - 7px), calc(100% - 7px) 100%, 7px 100%, 0 calc(100% - 7px), 0 7px);
+  z-index: -1;
+  transition: background 0.2s;
+}
+
+.messageBoxWrong {
+  animation: shake 0.4s ease;
+}
+
+.messageBoxWrong::before {
+  background: var(--theme-color);
+}
+
+.messageBoxWrong::after {
+  background: rgba(var(--theme-color-rgb), 0.08);
+}
+
+.messageBoxCaught::before {
+  background: var(--green);
+}
+
+.messageBoxCaught::after {
+  background: rgba(67, 212, 125, 0.08);
+}
+
+.messageText {
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  color: var(--text-primary);
+  line-height: 1.8;
+  letter-spacing: 0.5px;
+  min-height: 16px;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+/* Guess Form */
+.guessForm {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  border: none;
+  padding: 0 16px;
+  z-index: 10;
+  transition: all 0.4s ease-out;
+}
+
+.hiddenForm {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.inputWrapper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--border-bright);
+  clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
+  z-index: -2;
+  transition: all 0.4s ease-out;
+}
+
+.inputWrapper::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  background: var(--bg-card);
+  clip-path: polygon(7px 0, calc(100% - 7px) 0, 100% 7px, 100% calc(100% - 7px), calc(100% - 7px) 100%, 7px 100%, 0 calc(100% - 7px), 0 7px);
+  z-index: -1;
+}
+
+.inputWrapper:focus-within {
+  filter: drop-shadow(0 0 8px rgba(var(--theme-color-rgb), 0.5));
+}
+
+.inputWrapper:focus-within::before {
+  background: var(--theme-color);
+  opacity: 0.3;
+}
+
+.inputShake {
+  animation: shake 0.4s ease;
+}
+
+.inputPrefix {
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  color: var(--theme-color);
+  flex-shrink: 0;
+}
+
+.guessInput {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none !important;
+  box-shadow: none !important;
+  color: var(--text-primary);
+  font-family: var(--font-pixel);
+  font-size: 11px;
+  padding: 14px 0;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.guessInput::placeholder {
+  color: var(--text-muted);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.buttonRow {
+  display: flex;
+  gap: 10px;
+}
+
+.catchButton {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: transparent;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 1;
+  filter: drop-shadow(0 4px 5px rgba(var(--theme-color-rgb), 0.3));
+}
+
+.catchButton::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--theme-color);
+  clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0 50%);
+  z-index: -2;
+}
+
+.catchButton::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  background: var(--theme-color);
+  clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0 50%);
+  z-index: -1;
+  transition: background 0.2s;
+}
+
+.catchButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  filter: drop-shadow(0 6px 15px rgba(var(--theme-color-rgb), 0.5));
+}
+
+.catchButton:hover:not(:disabled)::after {
+  filter: brightness(1.2);
+}
+
+.catchButtonMatch {
+  filter: drop-shadow(0 0 15px rgba(var(--theme-color-rgb), 0.8));
+  animation: button-pulse 1.5s infinite;
+}
+
+@keyframes button-pulse {
+
+  0%,
+  100% {
+    filter: drop-shadow(0 0 5px rgba(var(--theme-color-rgb), 0.5));
+    transform: scale(1);
+  }
+
+  50% {
+    filter: drop-shadow(0 0 15px rgba(var(--theme-color-rgb), 0.8));
+    transform: scale(1.02);
+  }
+}
+
+.catchButton:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.catchButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pokeballBtn {
+  font-size: 14px;
+}
+
+.runButton {
+  position: relative;
+  background: transparent;
+  color: var(--text-secondary);
+  border: none;
+  padding: 12px 20px;
+  font-family: var(--font-pixel);
+  font-weight: 600;
+  font-size: 9px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.runButton::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--border-bright);
+  clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0 50%);
+  z-index: -2;
+  transition: background 0.2s;
+}
+
+.runButton::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  background: var(--bg-card);
+  clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0 50%);
+  z-index: -1;
+}
+
+.runButton:hover {
+  color: var(--text-primary);
+  transform: translateY(-1px);
+}
+
+.runButton:hover::before {
+  background: var(--theme-color);
+}
+
+/* Next banner */
+.nextBanner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-muted);
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  letter-spacing: 2px;
+  animation: fadeIn 0.5s ease;
+}
+
+.nextDots {
+  display: flex;
+  gap: 4px;
+}
+
+.nextDots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  animation: pulse-glow 1s ease-in-out infinite;
+}
+
+.nextDots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.nextDots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+
+/* All caught screen */
+.allCaught {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  animation: fadeInUp 0.6s ease;
+  background: var(--bg-card);
+  padding: 40px 30px;
+  border: none;
+  filter:
+    drop-shadow(0 0 1px var(--border-bright)) drop-shadow(0 24px 48px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 40px rgba(249, 199, 79, 0.15));
+  clip-path: polygon(16px 0, calc(100% - 16px) 0, 100% 50%, calc(100% - 16px) 100%, 16px 100%, 0 50%);
+  position: relative;
+  z-index: 10;
+  max-width: 90vw;
+  width: 100%;
+  margin: auto;
+}
+
+.allCaughtInner {
+  position: relative;
+  z-index: 1;
+}
+
+.trophy {
+  font-size: 72px;
+  filter: drop-shadow(0 0 20px rgba(249, 199, 79, 0.6));
+  animation: float 3s ease-in-out infinite;
+  margin-bottom: 10px;
+}
+
+.allCaughtTitle {
+  font-family: var(--font-pixel);
+  font-size: 16px;
+  color: var(--yellow);
+  text-shadow: 0 0 20px rgba(249, 199, 79, 0.5);
+  letter-spacing: 2px;
+  text-align: center;
+}
+
+.allCaughtSub {
+  font-family: var(--font-pixel);
+  color: var(--text-primary);
+  font-size: 10px;
+  line-height: 1.6;
+  text-align: center;
+}
