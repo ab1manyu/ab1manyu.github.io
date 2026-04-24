@@ -3,7 +3,18 @@ import { Camera, Image as ImageIcon, X, Aperture, Sliders } from 'lucide-react';
 
 const galleryItems = [
   {
-    id: 1,
+    id: 4,
+    location: "Mumbai, Maharashtra, India",
+    title: "Chhatrapati Shivaji Terminus",
+    date: "2026-01-02",
+    cam: "SONY a6000",
+    lens: " 17mm",
+    settings: "f/4 1/1000s ISO 100",
+    image: "/gallery/cst.JPG",
+    desc: "Chhatrapati Shivaji Terminus (CST), officially Chhatrapati Shivaji Maharaj Terminus (CSMT), is a historic railway terminus and UNESCO World Heritage Site in the center of Mumbai. No matter what time of the day it is, it's always busy and restless, you're never to be by yourself here. The architecture follows an Indo Gothic style, and full of detailed work and color."
+  },
+  {
+    id: 3,
     location: "Hampi, Karnataka, India",
     title: "Lakshmi the Elephant",
     date: "2026-01-04",
@@ -25,7 +36,7 @@ const galleryItems = [
     desc: "Hampi is a city located in one of the southern states of India called Karnataka. At one time, the population of this city could have easily been upwards of 500,000+, yet now there are only about 3000 locals that live there. As a UNESCO world heritage site, Hampi brings in hundreds of thousands of tourists every year. This reigion is other worldly, containing mountains of boulders that stretch as far as the eyes can see, and ancient temples and structures that have intricate, beautiful and even impossible to fathom, all carved in stone. Unfortunately, the Hampi we see today will never match what it would have been due to constant invasions and desctructions by the Moghul Empire some 500 years ago, but many sites are being restored and areas are marked for preservation."
   },
   {
-    id: 3,
+    id: 1,
     location: "Halebidu, Karnataka, India",
     title: "Hoysaleswara Temple",
     date: "2026-01-04",
