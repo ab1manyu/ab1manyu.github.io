@@ -64,8 +64,8 @@ export default function Footer() {
     >
       <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
         <div className="font-mono text-xs text-gray-600">
-          ︽︽︽︽︽︽︽<br />
-          SYS_ID: 0.1.0
+          ︽︾︽︾︽︾︽<br />
+          SYS_ID: 0.1.1
         </div>
 
         {/* 3 dots */}
@@ -81,7 +81,7 @@ export default function Footer() {
 
         <div className="font-mono text-xs text-gray-600 text-right">
           ®	2026 UYNAMI<br />
-          ︾︾︾︾︾︾︾
+          ︾︽︾︽︾︽︾
         </div>
       </div>
     </footer>
