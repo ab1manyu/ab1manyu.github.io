@@ -1,0 +1,80 @@
+.card {
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s;
+  display: block;
+}
+
+.cardIcon {
+  position: absolute;
+  right: -1.5rem;
+  bottom: -1.5rem;
+  color: rgba(255, 255, 255, 0.05);
+  transition: color 0.5s;
+}
+
+.cardTitle {
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 700;
+  color: white;
+  transition: color 0.3s;
+}
+
+.cardLinkWrap {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  border: 1px solid #1a332a; /* border-defense-border */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  color: white;
+}
+
+.cardPhoto:hover {
+  border-color: #EA5506;
+}
+.cardPhoto:hover .cardIcon {
+  color: rgba(234, 85, 6, 0.1);
+}
+.cardPhoto:hover .cardTitle {
+  color: #EA5506;
+}
+.cardPhoto:hover .cardLinkWrap {
+  background-color: white;
+  color: black;
+  border-color: white;
+}
+
+.cardLinkedIn:hover {
+  border-color: #0077b5;
+}
+.cardLinkedIn:hover .cardIcon {
+  color: rgba(0, 119, 181, 0.1);
+}
+.cardLinkedIn:hover .cardTitle {
+  color: #0077b5;
+}
+.cardLinkedIn:hover .cardLinkWrap {
+  background-color: white;
+  color: black;
+  border-color: white;
+}
+
+.cardGitHub:hover {
+  border-color: #10b981; /* border-defense-accent */
+}
+.cardGitHub:hover .cardIcon {
+  color: rgba(16, 185, 129, 0.1);
+}
+.cardGitHub:hover .cardTitle {
+  color: #10b981;
+}
+.cardGitHub:hover .cardLinkWrap {
+  background-color: white;
+  color: black;
+  border-color: white;
+}

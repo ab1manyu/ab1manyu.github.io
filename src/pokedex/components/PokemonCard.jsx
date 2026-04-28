@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { TYPE_COLORS } from "../data/unovaPokemon";
+import { TYPE_COLORS } from "../data/pokemonData";
 import styles from "./PokemonCard.module.css";
 
 const SPRITE_BASE = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/";

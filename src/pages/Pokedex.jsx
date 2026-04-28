@@ -3,13 +3,24 @@ import PokedexCore from '../pokedex/PokedexCore';
 
 export default function Pokedex() {
   useLayoutEffect(() => {
-    // Hide footer on this page
     const footer = document.querySelector('footer');
-    if (footer) footer.style.display = 'none';
     
+    const updateFooterVisibility = () => {
+      if (footer) {
+        if (window.innerWidth <= 768) {
+          footer.style.display = 'none';
+        } else {
+          footer.style.display = 'block';
+        }
+      }
+    };
+
+    updateFooterVisibility();
+    window.addEventListener('resize', updateFooterVisibility);
     window.scrollTo(0, 0);
     
     return () => {
+      window.removeEventListener('resize', updateFooterVisibility);
       if (footer) footer.style.display = 'block';
     };
   }, []);

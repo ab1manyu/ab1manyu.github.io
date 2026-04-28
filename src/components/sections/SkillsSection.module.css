@@ -1,0 +1,106 @@
+.academiaBg {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+PHBhdGggZD0iTTAgNDBMMCAwSDEiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjEpIiBmaWxsPSJub25lIi8+PC9zdmc+");
+  opacity: 0.2;
+}
+
+.tab {
+  text-align: left;
+  flex: 1 1 0%;
+  border-radius: 0.5rem;
+  padding: 0.75rem 0.75rem;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+.schoolTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  transition: color 0.2s;
+}
+
+@media (min-width: 768px) {
+  .schoolTitle {
+    font-size: 1.5rem;
+  }
+}
+
+.schoolSubtitle {
+  font-size: 0.75rem;
+  margin-bottom: 0.75rem;
+  transition: color 0.2s;
+}
+
+@media (min-width: 768px) {
+  .schoolSubtitle {
+    font-size: 0.875rem;
+  }
+}
+
+.gatechActive .schoolTitle {
+  color: #B3A369;
+}
+
+.gatechInactive .schoolTitle {
+  color: #6b7280;
+}
+.tab:hover.gatechInactive .schoolTitle {
+  color: #d1d5db; /* text-gray-300 */
+}
+
+.gatechActive .schoolSubtitle {
+  color: #d1d5db; /* text-gray-300 */
+}
+
+.gatechInactive .schoolSubtitle {
+  color: #4b5563; /* text-gray-600 */
+}
+.tab:hover.gatechInactive .schoolSubtitle {
+  color: #6b7280; /* text-gray-500 */
+}
+
+.rutgersActive .schoolTitle {
+  color: #cc0033;
+}
+
+.rutgersInactive .schoolTitle {
+  color: #6b7280;
+}
+.tab:hover.rutgersInactive .schoolTitle {
+  color: #d1d5db;
+}
+
+.rutgersActive .schoolSubtitle {
+  color: #d1d5db;
+}
+
+.rutgersInactive .schoolSubtitle {
+  color: #4b5563;
+}
+.tab:hover.rutgersInactive .schoolSubtitle {
+  color: #6b7280;
+}
+
+.researchCard {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid #1a332a; /* border-defense-border */
+  border-radius: 0.25rem;
+  padding: 1rem;
+  transition: border-color 0.2s;
+}
+
+.researchCard:hover {
+  border-color: #10b981; /* border-defense-accent */
+}
+
+.researchTitle {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: white;
+  transition: color 0.2s;
+}
+
+.researchCard:hover .researchTitle {
+  color: #10b981; /* text-defense-accent */
+}

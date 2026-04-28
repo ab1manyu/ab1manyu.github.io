@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { resetRun, exportData, importData, getLastCaughtTime } from "../db/pokemonDB";
-import { UNOVA_POKEMON, TYPE_COLORS, getEarnedBadges, TYPE_TOTALS } from "../data/unovaPokemon";
-import styles from "./StatsModal.module.css";
+import { getEarnedBadges, TYPE_COLORS, getTypeTotals } from "../data/pokemonData";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { GENERATIONS } from "../PokedexCore";
+import styles from "./OptionsModal.module.css";
 
 function formatDuration(ms) {
   const s = Math.floor(ms / 1000);
@@ -24,15 +26,20 @@ function formatDate(ms) {
   );
 }
 
-export default function StatsModal({ caughtIds, runStart, onClose, onReset }) {
+export default function OptionsModal({ caughtIds, runStart, onClose, onReset, generation, generationData, setGeneration }) {
   const caughtCount = caughtIds.size;
-  const total = UNOVA_POKEMON.length;
+  const total = generationData.length;
   const targetProgress = total > 0 ? Math.round((caughtCount / total) * 100) : 0;
   const [displayProgress, setDisplayProgress] = useState(0);
   const [mounted, setMounted] = useState(false);
 
-  const earnedBadges = useMemo(() => getEarnedBadges(caughtIds), [caughtIds]);
-  const typesWithBadges = Object.keys(TYPE_COLORS).filter(t => TYPE_TOTALS[t]);
+  const earnedBadges = useMemo(() => getEarnedBadges(generationData, caughtIds), [generationData, caughtIds]);
+  const typeTotals = useMemo(() => getTypeTotals(generationData), [generationData]);
+  const isFairyGen = ['kalos', 'alola', 'galar', 'paldea'].includes(generation);
+  const typesWithBadges = Object.keys(TYPE_COLORS).filter(t => {
+    if (t === 'fairy' && !isFairyGen) return false;
+    return typeTotals[t];
+  });
 
   useEffect(() => {
     setMounted(true);
@@ -53,45 +60,60 @@ export default function StatsModal({ caughtIds, runStart, onClose, onReset }) {
 
 
   const [elapsed, setElapsed] = useState(Date.now() - runStart);
+  const [isClosing, setIsClosing] = useState(false);
   const [completeTime, setCompleteTime] = useState(null);
   const fileInputRef = useRef(null);
   const overlayRef = useRef(null);
 
+  const triggerClose = useCallback(() => {
+    if (isClosing) return;
+    setIsClosing(true);
+    setTimeout(() => {
+      onClose();
+    }, 150);
+  }, [isClosing, onClose]);
+
   // live elapsed timer
   useEffect(() => {
     let id;
-    if (caughtCount >= total) {
-      getLastCaughtTime().then(lastTime => {
+    if (total > 0 && caughtCount >= total) {
+      getLastCaughtTime(generation).then(lastTime => {
         if (lastTime) {
           setCompleteTime(lastTime - runStart);
           setElapsed(lastTime - runStart);
         }
       });
     } else {
+      setCompleteTime(null);
       id = setInterval(() => setElapsed(Date.now() - runStart), 1000);
     }
     return () => { if (id) clearInterval(id); };
-  }, [runStart, caughtCount, total]);
+  }, [runStart, caughtCount, total, generation]);
 
   // close on overlay click
   const handleOverlayClick = (e) => {
-    if (e.target === overlayRef.current) onClose();
+    if (e.target === overlayRef.current) triggerClose();
   };
 
   // close on Escape
   useEffect(() => {
-    const handler = (e) => { if (e.key === "Escape") onClose(); };
+    const handler = (e) => { if (e.key === "Escape") triggerClose(); };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [onClose]);
+  }, [triggerClose]);
+
+  const switchGeneration = (dir) => {
+    const currentIndex = GENERATIONS.indexOf(generation);
+    const nextIndex = (currentIndex + dir + GENERATIONS.length) % GENERATIONS.length;
+    setGeneration(GENERATIONS[nextIndex]);
+  };
 
   const [confirmReset, setConfirmReset] = useState(false);
 
   const handleReset = async () => {
-    await resetRun();
+    await resetRun(generation);
     setConfirmReset(false);
     onReset();
-    onClose();
   };
 
   const handleImport = (e) => {
@@ -99,21 +121,26 @@ export default function StatsModal({ caughtIds, runStart, onClose, onReset }) {
     if (!file) return;
     const reader = new FileReader();
     reader.onload = async (ev) => {
-      await importData(ev.target.result);
+      await importData(generation, ev.target.result);
       onReset();
-      onClose();
     };
     reader.readAsText(file);
   };
 
   return (
-    <div className={styles.overlay} ref={overlayRef} onClick={handleOverlayClick}>
-      <div className={styles.modal} role="dialog" aria-label="Run Statistics">
+    <div className={`${styles.overlay} ${isClosing ? styles.closing : ''}`} ref={overlayRef} onClick={handleOverlayClick}>
+      <div className={`${styles.modal} ${isClosing ? styles.closing : ''}`} role="dialog" aria-label="Run Statistics">
 
         {/* Header */}
         <div className={styles.header}>
-          <span className={styles.headerLabel}>STATS</span>
-          <button className={styles.closeBtn} onClick={onClose} aria-label="Close">✕</button>
+          <span className={styles.headerLabel}>OPTIONS</span>
+        </div>
+
+        {/* Generation Switcher */}
+        <div className={styles.genSwitcher}>
+          <button className={styles.genBtn} onClick={() => switchGeneration(-1)}><ChevronDown /></button>
+          <span className={styles.genLabel}>{generation.toUpperCase()} POKÉDEX</span>
+          <button className={styles.genBtn} onClick={() => switchGeneration(1)}><ChevronUp /></button>
         </div>
 
         {/* % Slider */}
@@ -140,7 +167,7 @@ export default function StatsModal({ caughtIds, runStart, onClose, onReset }) {
           </div>
           <div className={styles.statCard}>
             <span className={styles.statLabel}>REMAINING</span>
-            <span className={styles.statValue}>{total - caughtCount}</span>
+            <span className={styles.statValue}>{Math.max(0, total - caughtCount)}</span>
           </div>
           <div className={styles.statCard}>
             <span className={styles.statLabel}>STARTED</span>
@@ -162,17 +189,17 @@ export default function StatsModal({ caughtIds, runStart, onClose, onReset }) {
               const isEarned = earnedBadges.includes(type);
               const color = TYPE_COLORS[type];
               return (
-                <div 
-                  key={type} 
+                <div
+                  key={type}
                   className={`${styles.badgeSlot} ${isEarned ? styles.badgeEarned : ''}`}
                   title={`${type.toUpperCase()} TYPE`}
                   style={isEarned ? { '--badge-color': color, boxShadow: `0 0 12px ${color}80` } : {}}
                 >
-                  <span 
+                  <span
                     className={styles.badgeText}
                     style={isEarned ? { color: '#fff' } : {}}
                   >
-                    {type.substring(0,3).toUpperCase()}
+                    {type.substring(0, 3).toUpperCase()}
                   </span>
                 </div>
               )
@@ -182,7 +209,7 @@ export default function StatsModal({ caughtIds, runStart, onClose, onReset }) {
 
         {/* Actions */}
         <div className={styles.actions}>
-          <button id="stats-export-btn" className={styles.actionBtn} onClick={exportData}>
+          <button id="stats-export-btn" className={styles.actionBtn} onClick={() => exportData(generation)}>
             EXPORT
           </button>
           <button id="stats-import-btn" className={styles.actionBtn} onClick={() => fileInputRef.current?.click()}>
@@ -201,7 +228,7 @@ export default function StatsModal({ caughtIds, runStart, onClose, onReset }) {
               RESET
             </button>
           ) : (
-             <div className={styles.confirmRow}>
+            <div className={styles.confirmRow}>
               <span className={styles.confirmLabel}>CONFIRM RESET?</span>
               <button className={`${styles.actionBtn} ${styles.confirmYes}`} onClick={handleReset}>YES</button>
               <button className={styles.actionBtn} onClick={() => setConfirmReset(false)}>NO</button>

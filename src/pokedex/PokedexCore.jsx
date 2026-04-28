@@ -1,27 +1,41 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { getCaughtIds, getRunStart, getSeenBadges, addSeenBadge } from "./db/pokemonDB";
-import { UNOVA_POKEMON, getEarnedBadges } from "./data/unovaPokemon";
+import { getEarnedBadges } from "./data/pokemonData";
 import BattleScreen from "./components/BattleScreen";
 import PokedexScreen from "./components/PokedexScreen";
-import StatsModal from "./components/StatsModal";
+import OptionsModal from "./components/OptionsModal";
 import styles from "./PokedexCore.module.css";
 import "./pokedex-global.css";
 
+export const GENERATIONS = ['kanto', 'johto', 'hoenn', 'sinnoh', 'unova', 'kalos', 'alola', 'galar', 'paldea'];
+
 export default function PokedexCore() {
   const [view, setView] = useState("battle"); // battle | pokedex
+  const [currentGeneration, setCurrentGeneration] = useState("unova");
+  const [generationData, setGenerationData] = useState([]);
+
   const [caughtIds, setCaughtIds] = useState(new Set());
   const [runStart, setRunStart] = useState(Date.now());
-  const [loading, setLoading] = useState(true);
+  const [dataLoaded, setDataLoaded] = useState(false);
   const [showStats, setShowStats] = useState(false);
   const [toasts, setToasts] = useState([]); // [{id, type, title, sub}]
 
   const refreshData = useCallback(async () => {
-    const ids = await getCaughtIds();
-    const start = await getRunStart();
-    setCaughtIds(ids);
-    setRunStart(start);
-    setLoading(false);
-  }, []);
+    setDataLoaded(false);
+    try {
+      const ids = await getCaughtIds(currentGeneration);
+      const start = await getRunStart(currentGeneration);
+      setCaughtIds(ids);
+      setRunStart(start);
+
+      const module = await import(`./data/generations/${currentGeneration}.json`);
+      setGenerationData(module.default || module);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setDataLoaded(true);
+    }
+  }, [currentGeneration]);
 
   useEffect(() => {
     refreshData();
@@ -39,16 +53,20 @@ export default function PokedexCore() {
 
   // Achievement checking
   useEffect(() => {
-    if (loading) return;
-    const earned = getEarnedBadges(caughtIds);
-    getSeenBadges().then(seen => {
-      const newlyEarned = earned.filter(badge => !seen.includes(badge));
+    if (!dataLoaded || generationData.length === 0) return;
+    const earned = getEarnedBadges(generationData, caughtIds);
+    const isFairyGen = ['kalos', 'alola', 'galar', 'paldea'].includes(currentGeneration);
+    getSeenBadges(currentGeneration).then(seen => {
+      const newlyEarned = earned.filter(badge => {
+        if (badge === 'fairy' && !isFairyGen) return false;
+        return !seen.includes(badge);
+      });
       newlyEarned.forEach(badge => {
-        addSeenBadge(badge);
+        addSeenBadge(currentGeneration, badge);
         addToast("badge", "NEW BADGE!", `${badge.toUpperCase()} TYPE MASTERED`);
       });
     });
-  }, [caughtIds, loading]);
+  }, [caughtIds, dataLoaded, currentGeneration, generationData]);
 
   const addToast = (type, title, sub) => {
     const id = Date.now() + Math.random();
@@ -63,11 +81,11 @@ export default function PokedexCore() {
   };
 
   const handleCatch = async () => {
-    const ids = await getCaughtIds();
+    const ids = await getCaughtIds(currentGeneration);
     setCaughtIds(ids);
   };
 
-  if (loading) {
+  if (!dataLoaded) {
     return (
       <div className={styles.loadingScreen}>
         <span className={styles.pokeballSpinner} />
@@ -78,21 +96,32 @@ export default function PokedexCore() {
 
   return (
     <div className={styles.app}>
-      {/* Navbar is now external, so we just render the main content */}
       <main className={styles.main}>
         {view === "battle" ? (
-          <BattleScreen caughtIds={caughtIds} onCatch={handleCatch} />
+          <BattleScreen
+            caughtIds={caughtIds}
+            onCatch={handleCatch}
+            generation={currentGeneration}
+            generationData={generationData}
+          />
         ) : (
-          <PokedexScreen caughtIds={caughtIds} />
+          <PokedexScreen
+            caughtIds={caughtIds}
+            generation={currentGeneration}
+            generationData={generationData}
+          />
         )}
       </main>
 
       {showStats && (
-        <StatsModal
+        <OptionsModal
           caughtIds={caughtIds}
           runStart={runStart}
           onClose={() => setShowStats(false)}
           onReset={refreshData}
+          generation={currentGeneration}
+          generationData={generationData}
+          setGeneration={setCurrentGeneration}
         />
       )}
 

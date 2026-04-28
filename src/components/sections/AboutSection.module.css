@@ -1,0 +1,83 @@
+.domainTag {
+  display: inline-block;
+  padding: 4px 12px;
+  border: 1px solid var(--defense-border, rgba(255, 255, 255, 0.1));
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-family: monospace;
+  transition: all 0.3s;
+  cursor: crosshair;
+}
+
+.domainPython:hover {
+  transform: translateY(-4px);
+  background: #3776AB;
+  border-color: #3776AB;
+  color: white;
+  box-shadow: 0 0 15px rgba(55, 118, 171, 0.5);
+}
+
+.domainReact:hover {
+  transform: translateY(-4px);
+  background: #61DAFB;
+  border-color: #61DAFB;
+  color: black;
+  box-shadow: 0 0 15px rgba(97, 218, 251, 0.5);
+}
+
+.domainJava:hover {
+  transform: translateY(-4px);
+  background: #f89820;
+  border-color: #f89820;
+  color: white;
+  box-shadow: 0 0 15px rgba(248, 152, 32, 0.5);
+}
+
+.domainMatlab:hover {
+  transform: translateY(-4px);
+  background: #e77e24;
+  border-color: #e77e24;
+  color: white;
+  box-shadow: 0 0 15px rgba(231, 126, 36, 0.5);
+}
+
+.domainUIUX:hover {
+  transform: translateY(-4px);
+  background: #ec4899;
+  border-color: #ec4899;
+  color: white;
+  box-shadow: 0 0 15px rgba(236, 72, 153, 0.5);
+}
+
+.domainAI:hover {
+  transform: translateY(-4px);
+  background: #9333ea;
+  border-color: #9333ea;
+  color: white;
+  box-shadow: 0 0 15px rgba(147, 51, 234, 0.5);
+}
+
+.domainData:hover {
+  transform: translateY(-4px);
+  background: #14b8a6;
+  border-color: #14b8a6;
+  color: white;
+  box-shadow: 0 0 15px rgba(20, 184, 166, 0.5);
+}
+
+.resumeCard {
+  transition: background-color 0.2s;
+}
+
+.resumeCard:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.resumeIconWrap {
+  transition: all 0.2s;
+}
+
+.resumeCard:hover .resumeIconWrap {
+  background-color: white;
+  color: black;
+}

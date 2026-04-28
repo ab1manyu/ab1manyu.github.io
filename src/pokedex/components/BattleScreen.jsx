@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import { getRandomUnovaPokemon, getPokemonByName, UNOVA_COUNT, TYPE_COLORS } from "../data/unovaPokemon";
+import { getRandomPokemon, getPokemonByName, TYPE_COLORS } from "../data/pokemonData";
 import { catchPokemon } from "../db/pokemonDB";
 import styles from "./BattleScreen.module.css";
 
@@ -9,7 +9,7 @@ function getSpriteUrl(id) {
   return `${SPRITE_BASE}${id}.png`;
 }
 
-export default function BattleScreen({ caughtIds, onCatch }) {
+export default function BattleScreen({ caughtIds, onCatch, generation, generationData }) {
   const [wildPokemon, setWildPokemon] = useState(null);
   const [guess, setGuess] = useState("");
   const [phase, setPhase] = useState("guessing"); // guessing | caught | wrong | ran_away | all_caught
@@ -40,11 +40,12 @@ export default function BattleScreen({ caughtIds, onCatch }) {
 
   const spawnNewPokemon = useCallback(() => {
     const ids = [...caughtIdsRef.current];
-    if (ids.length >= UNOVA_COUNT) {
+    if (!generationData || generationData.length === 0) return;
+    if (ids.length >= generationData.length) {
       setPhase("all_caught");
       return;
     }
-    const pokemon = getRandomUnovaPokemon(ids);
+    const pokemon = getRandomPokemon(generationData, ids);
     setWildPokemon(pokemon);
     setGuess("");
     setPhase("guessing");
@@ -68,7 +69,7 @@ export default function BattleScreen({ caughtIds, onCatch }) {
       });
 
     setTimeout(() => inputRef.current?.focus(), 100);
-  }, []);
+  }, [generationData]);
 
   const isMatch = useMemo(() => {
     if (!wildPokemon || phase === "caught" || phase === "ran_away") return false;
@@ -88,8 +89,11 @@ export default function BattleScreen({ caughtIds, onCatch }) {
   }, [isMatch, phase, wildPokemon]);
 
   useEffect(() => {
-    spawnNewPokemon();
-  }, [spawnNewPokemon]);
+    // only spawn if we don't have one or if the generation changed
+    if (generationData && generationData.length > 0) {
+      spawnNewPokemon();
+    }
+  }, [generationData]); // trigger spawn on gen switch
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -99,7 +103,7 @@ export default function BattleScreen({ caughtIds, onCatch }) {
       setPhase("caught");
       setRevealed(true);
       setMessage(`You caught ${capitalize(wildPokemon.name)}!`);
-      await catchPokemon(wildPokemon.id);
+      await catchPokemon(generation, wildPokemon.id);
       await onCatch();
       setTimeout(() => spawnNewPokemon(), 3200);
     } else {
@@ -159,7 +163,9 @@ export default function BattleScreen({ caughtIds, onCatch }) {
         <div className={styles.allCaught}>
           <div className={styles.trophy}>🏆</div>
           <h2 className={styles.allCaughtTitle}>POKÉDEX COMPLETE!</h2>
-          <p className={styles.allCaughtSub}>You've caught all 156 Unova Pokémon!</p>
+          <p className={styles.allCaughtSub}>
+            You've caught all {generationData.length} {capitalize(generation)} Pokémon!
+          </p>
         </div>
       </div>
     );
@@ -230,7 +236,6 @@ export default function BattleScreen({ caughtIds, onCatch }) {
               className={`${styles.catchButton} ${isMatch ? styles.catchButtonMatch : ""}`}
               disabled={!guess.trim() || phase === "caught"}
             >
-              <span className={styles.pokeballBtn} aria-hidden="true">◉</span>
               CATCH!
             </button>
             <button

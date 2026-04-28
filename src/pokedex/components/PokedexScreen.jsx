@@ -1,10 +1,9 @@
 import { useState, useMemo, useEffect } from "react";
-import { UNOVA_POKEMON } from "../data/unovaPokemon";
 import PokemonCard from "./PokemonCard";
 import PokemonDetail from "./PokemonDetail";
 import styles from "./PokedexScreen.module.css";
 
-export default function PokedexScreen({ caughtIds }) {
+export default function PokedexScreen({ caughtIds, generationData }) {
   const [selectedPokemon, setSelectedPokemon] = useState(null);
   const [filter, setFilter] = useState("all");
   const [viewMode, setViewMode] = useState("card");
@@ -13,17 +12,17 @@ export default function PokedexScreen({ caughtIds }) {
     document.documentElement.style.setProperty('--theme-color', "#8b51f7ff");
     document.documentElement.style.setProperty('--theme-color-rgb', "6, 15, 9");
   }, []);
-  const filters = ["all", "caught", "???"];
 
   const filtered = useMemo(() => {
-    if (filter === "caught") return UNOVA_POKEMON.filter((p) => caughtIds.has(p.id));
-    if (filter === "uncaught") return UNOVA_POKEMON.filter((p) => !caughtIds.has(p.id));
-    return UNOVA_POKEMON;
-  }, [filter, caughtIds]);
+    if (!generationData) return [];
+    if (filter === "caught") return generationData.filter((p) => caughtIds.has(p.id));
+    if (filter === "uncaught") return generationData.filter((p) => !caughtIds.has(p.id));
+    return generationData;
+  }, [filter, caughtIds, generationData]);
 
   const caughtCount = caughtIds.size;
-  const total = UNOVA_POKEMON.length;
-  const uncaughtCount = total - caughtCount;
+  const total = generationData ? generationData.length : 0;
+  const uncaughtCount = Math.max(0, total - caughtCount);
 
   return (
     <div className={styles.screen}>
@@ -58,9 +57,9 @@ export default function PokedexScreen({ caughtIds }) {
           onClick={() => setViewMode(prev => prev === "card" ? "list" : "card")}
         >
           {viewMode === "card" ? (
-             <><span className={styles.viewIcon}>≡</span> <span className={styles.viewText}>LIST</span></>
+            <><span className={styles.viewIcon}>≡</span> <span className={styles.viewText}>LIST</span></>
           ) : (
-             <><span className={styles.viewIcon}>☷</span> <span className={styles.viewText}>GRID</span></>
+            <><span className={styles.viewIcon}>☷</span> <span className={styles.viewText}>GRID</span></>
           )}
         </button>
       </div>
@@ -68,9 +67,8 @@ export default function PokedexScreen({ caughtIds }) {
       {/* Empty state */}
       {filtered.length === 0 && filter === "caught" && (
         <div className={styles.emptyState}>
-          <span className={styles.emptyIcon}>◉</span>
-          <p className={styles.emptyText}>No Pokémon caught yet!</p>
-          <p className={styles.emptySubtext}>Head to the Battle screen to start catching.</p>
+          <p className={styles.emptyText}>You haven't caught anything</p>
+          <p className={styles.emptyText}>in this region.</p>
         </div>
       )}
 

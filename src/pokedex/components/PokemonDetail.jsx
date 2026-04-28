@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
-import { TYPE_COLORS } from "../data/unovaPokemon";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { TYPE_COLORS } from "../data/pokemonData";
 import styles from "./PokemonDetail.module.css";
 
 const SPRITE_BASE = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/";
@@ -23,6 +23,39 @@ export default function PokemonDetail({ pokemon, onClose }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isClosing, setIsClosing] = useState(false);
+  const [closeDirection, setCloseDirection] = useState("right");
+  
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+  const panelRef = useRef(null);
+
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e) => {
+    if (panelRef.current && panelRef.current.scrollTop > 0) return;
+    setTouchEnd(null);
+    setTouchStart({ x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY });
+  };
+
+  const onTouchMove = (e) => {
+    if (!touchStart) return;
+    setTouchEnd({ x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY });
+  };
+
+  const onTouchEndEvent = () => {
+    if (!touchStart || !touchEnd) return;
+    const distanceX = touchStart.x - touchEnd.x;
+    const distanceY = touchStart.y - touchEnd.y;
+    const isDownSwipe = distanceY < -minSwipeDistance;
+    const isMostlyVertical = Math.abs(distanceY) > Math.abs(distanceX);
+    
+    if (isDownSwipe && isMostlyVertical && window.innerWidth <= 768) {
+      handleClose("down");
+    }
+    
+    setTouchStart(null);
+    setTouchEnd(null);
+  };
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -54,7 +87,8 @@ export default function PokemonDetail({ pokemon, onClose }) {
     fetchData();
   }, [fetchData]);
 
-  const handleClose = useCallback(() => {
+  const handleClose = useCallback((direction = "right") => {
+    setCloseDirection(direction);
     setIsClosing(true);
     setTimeout(() => {
       onClose();
@@ -63,7 +97,7 @@ export default function PokemonDetail({ pokemon, onClose }) {
 
   // Close on backdrop click
   const handleBackdrop = (e) => {
-    if (e.target === e.currentTarget && !isClosing) handleClose();
+    if (e.target === e.currentTarget && !isClosing) handleClose("right");
   };
 
   return (
@@ -74,7 +108,13 @@ export default function PokemonDetail({ pokemon, onClose }) {
       aria-modal="true"
       aria-label={`Details for ${pokemon.name}`}
     >
-      <div className={`${styles.panel} ${isClosing ? styles.slideOut : ""}`}>
+      <div 
+        className={`${styles.panel} ${isClosing ? (closeDirection === "down" ? styles.slideDownOut : styles.slideOut) : ""}`}
+        ref={panelRef}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEndEvent}
+      >
         {loading && (
           <div className={styles.loadingState}>
             <span className={styles.spinner} />
