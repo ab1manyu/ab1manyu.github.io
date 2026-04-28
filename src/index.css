@@ -155,19 +155,71 @@
   }
 }
 
+.dot-grid-pulse {
+  background-image: radial-gradient(var(--accent-solid) 1px, transparent 1px);
+  background-size: 20px 20px;
+  -webkit-mask-image: radial-gradient(circle at bottom center, transparent 45%, black 50%, transparent 60%);
+  mask-image: radial-gradient(circle at bottom center, transparent 45%, black 50%, transparent 60%);
+  -webkit-mask-position: bottom center;
+  mask-position: bottom center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  animation: wave-function 3s cubic-bezier(0.2, 0, 0, 1) forwards;
+}
+
+@keyframes wave-function {
+  0% {
+    -webkit-mask-size: 0vmax 0vmax;
+    mask-size: 0vmax 0vmax;
+    opacity: 0;
+  }
+
+  5% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+
+  100% {
+    -webkit-mask-size: 250vmax 250vmax;
+    mask-size: 250vmax 250vmax;
+    opacity: 0;
+  }
+}
+
+
 .full-sweep-active {
   animation: full-sweep 1.5s linear forwards;
 }
 
 .pokeball-shake {
-  animation: pokeball-shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+  animation: pokeball-shake 0.5s cubic-bezier(.36, .07, .19, .97) both;
 }
 
 @keyframes pokeball-shake {
-  10%, 90% { transform: translate3d(-1px, 0, 0) rotate(-10deg); }
-  20%, 80% { transform: translate3d(2px, 0, 0) rotate(15deg); }
-  30%, 50%, 70% { transform: translate3d(-4px, 0, 0) rotate(-20deg); }
-  40%, 60% { transform: translate3d(4px, 0, 0) rotate(20deg); }
+
+  10%,
+  90% {
+    transform: translate3d(-1px, 0, 0) rotate(-10deg);
+  }
+
+  20%,
+  80% {
+    transform: translate3d(2px, 0, 0) rotate(15deg);
+  }
+
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-4px, 0, 0) rotate(-20deg);
+  }
+
+  40%,
+  60% {
+    transform: translate3d(4px, 0, 0) rotate(20deg);
+  }
 }
 
 @keyframes full-sweep {
