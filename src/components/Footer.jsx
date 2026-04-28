@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import gsap from 'gsap';
 
 const ACCENT = '#10b981';
+const INACTIVE_GRAY = '#4b5563'; // rgb(75 85 99)
 const WHITE = '#ffffff';
 
 export default function Footer() {
@@ -62,19 +63,18 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
         <div className="font-mono text-xs text-gray-600">
           SYS_ID: 2026-PORTFOLIO<br />
-          LOC: UNKNOWN
+          0.1.0
         </div>
 
         {/* 3 dots */}
         <div
           ref={dotsRef}
           onClick={triggerGlitch}
-          className="flex gap-1 cursor-pointer select-none"
-          title="[GLITCH]"
+          className="flex gap-1 cursor-select select-none"
         >
           {/* <div className="glitch-dot w-2 h-2 bg-defense-accent rounded-full" /> */}
-          <div className="glitch-dot w-2 h-2 bg-[#333] rounded-full" />
-          <div className="glitch-dot w-2 h-2 bg-[#333] rounded-full" />
+          <div className="glitch-dot w-2 h-2 bg-gray-600 rounded-full" />
+          <div className="glitch-dot w-2 h-2 bg-gray-600 rounded-full" />
         </div>
 
         <div className="font-mono text-xs text-gray-600 text-right">
