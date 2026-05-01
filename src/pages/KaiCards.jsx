@@ -339,7 +339,7 @@ export default function KaiCards() {
                 className="w-full aspect-[4/3] rounded-[6px] bg-black overflow-hidden relative mb-1"
                 style={{ border: card.isLegendary ? '1px solid #c8960c' : '1px solid var(--border-color)' }}
               >
-                <img src={card.image} alt={card.name} className="w-full h-full object-cover" draggable={false} />
+                <img src={card.image} alt={card.name} loading="lazy" className="w-full h-full object-cover" draggable={false} />
                 {card.isLegendary && (
                   <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(180deg, rgba(200,150,12,0.08) 0%, transparent 40%)' }} />
                 )}

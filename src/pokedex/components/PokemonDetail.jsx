@@ -151,6 +151,7 @@ export default function PokemonDetail({ pokemon, onClose }) {
                 <img
                   src={`${SPRITE_BASE}${pokemon.id}.png`}
                   alt={capitalize(data.name)}
+                  loading="lazy"
                   className={styles.sprite}
                 />
               </div>
