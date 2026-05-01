@@ -1,127 +1,79 @@
-import { useState, useRef, useEffect } from 'react';
-import { Microscope, Calendar, GraduationCap, Gamepad2, ArrowLeft, BookOpen } from 'lucide-react';
+import { useState, useRef, useEffect, useLayoutEffect } from 'react';
+import { Microscope, Calendar, GraduationCap, ArrowLeft, ArrowUp } from 'lucide-react';
+import gsap from 'gsap';
+import { TextScramble } from '../../utils/textScramble';
 import styles from './SkillsSection.module.css';
-
-const COURSES = [
-  {
-    id: "cs7632",
-    title: "Game AI",
-    number: "CS 7632",
-    icon: Gamepad2,
-    description: "Using Unity and C# to create AI agents that can navigate, plan, and make decisions in a game environment.",
-    topics: [
-      {
-        id: "pathfinding",
-        title: "Pathfinding",
-        content: (
-          <div className="space-y-4">
-            <p className="text-sm text-gray-300 leading-relaxed">
-              Pathfinding involves algorithms that find the shortest route between two points. A common approach uses <strong>A* (A-Star)</strong>, which combines the benefits of Dijkstra's algorithm and Greedy Best-First-Search.
-            </p>
-            <div className="w-full aspect-video border border-defense-border bg-black/50 rounded flex items-center justify-center">
-              <span className="font-mono text-defense-muted text-xs">[ Pathfinding Diagram Placeholder ]</span>
-            </div>
-            <ul className="space-y-2 mt-4">
-              <li className="flex gap-2 text-xs text-gray-400 items-start">
-                <span className="text-defense-accent shrink-0">›</span>
-                <span>NavMeshes partition the environment into convex polygons for efficient agent traversal.</span>
-              </li>
-              <li className="flex gap-2 text-xs text-gray-400 items-start">
-                <span className="text-defense-accent shrink-0">›</span>
-                <span>Heuristics (like Manhattan or Euclidean distance) optimize the search graph.</span>
-              </li>
-            </ul>
-          </div>
-        )
-      },
-      {
-        id: "ballistic",
-        title: "Ballistic Trajectory",
-        content: (
-          <div className="space-y-4">
-            <p className="text-sm text-gray-300 leading-relaxed">
-              Calculating the trajectory of projectiles considering physics variables like gravity, drag, and initial velocity to hit a specific target.
-            </p>
-            <ul className="space-y-2">
-              <li className="flex gap-2 text-xs text-gray-400 items-start">
-                <span className="text-defense-accent shrink-0">›</span>
-                <span>Requires solving quadratic equations for intercept points.</span>
-              </li>
-            </ul>
-          </div>
-        )
-      },
-      {
-        id: "procedural",
-        title: "Procedural Generation",
-        content: (
-          <div className="space-y-4">
-            <p className="text-sm text-gray-300 leading-relaxed">
-              Algorithms to automatically generate content like levels, terrains, and structures, ensuring replayability and scale.
-            </p>
-          </div>
-        )
-      }
-    ]
-  },
-  {
-    id: "cs7641",
-    title: "Machine Learning",
-    number: "CS 7641",
-    icon: BookOpen,
-    description: "In-depth study of algorithms for supervised, unsupervised, and reinforcement learning.",
-    topics: [
-      {
-        id: "supervised",
-        title: "Supervised Learning",
-        content: (
-          <div className="space-y-4">
-            <p className="text-sm text-gray-300 leading-relaxed">
-              Training models using labeled datasets to predict outputs for unseen data.
-            </p>
-            <ul className="space-y-2">
-              <li className="flex gap-2 text-xs text-gray-400 items-start">
-                <span className="text-defense-accent shrink-0">›</span>
-                <span>Algorithms include SVMs, Decision Trees, and Neural Networks.</span>
-              </li>
-            </ul>
-          </div>
-        )
-      },
-      {
-        id: "unsupervised",
-        title: "Unsupervised Learning",
-        content: (
-          <div className="space-y-4">
-            <p className="text-sm text-gray-300 leading-relaxed">
-              Finding hidden patterns or intrinsic structures in input data without explicit labels (e.g., K-Means clustering, PCA).
-            </p>
-          </div>
-        )
-      }
-    ]
-  }
-];
+import { COURSES } from './coursesData';
 
 export default function AcademiaBlock() {
   const [activeSchool, setActiveSchool] = useState('gatech');
   const [currentView, setCurrentView] = useState('main'); // 'main' | 'notes'
   const [selectedCourseId, setSelectedCourseId] = useState(null);
   const [selectedTopicId, setSelectedTopicId] = useState(null);
+  const contentRef = useRef(null);
+  const textRef = useRef(null);
+  const rightPanelRef = useRef(null);
+
+  useLayoutEffect(() => {
+    if (contentRef.current) {
+      gsap.fromTo(
+        contentRef.current,
+        { opacity: 0, y: 15 },
+        { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }
+      );
+    }
+
+    if (textRef.current) {
+      const fx = new TextScramble(textRef.current);
+      fx.setText(currentView === 'notes' ? 'BACK' : 'ACADEMIA');
+    }
+  }, [currentView]);
+
+  useLayoutEffect(() => {
+    let ctx;
+    if (currentView === 'main' && rightPanelRef.current) {
+      ctx = gsap.context(() => {
+        gsap.fromTo(
+          rightPanelRef.current,
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }
+        );
+      });
+    }
+    return () => ctx && ctx.revert();
+  }, [activeSchool, currentView]);
 
   const handleCourseClick = (courseId) => {
-    setSelectedCourseId(courseId);
-    const course = COURSES.find(c => c.id === courseId);
-    if (course && course.topics && course.topics.length > 0) {
-      setSelectedTopicId(course.topics[0].id);
-    }
-    setCurrentView('notes');
+    if (!contentRef.current) return;
+    gsap.to(contentRef.current, {
+      opacity: 0,
+      y: -15,
+      duration: 0.3,
+      ease: "power2.in",
+      onComplete: () => {
+        setSelectedCourseId(courseId);
+        const course = COURSES.find(c => c.id === courseId);
+        if (course && course.topics && course.topics.length > 0) {
+          setSelectedTopicId(course.topics[0].id);
+        }
+        setCurrentView('notes');
+      }
+    });
   };
 
   const handleBack = () => {
-    setCurrentView('main');
-    setSelectedCourseId(null);
-    setSelectedTopicId(null);
+    if (!contentRef.current) return;
+    gsap.to(contentRef.current, {
+      opacity: 0,
+      y: -15,
+      duration: 0.3,
+      ease: "power2.in",
+      onComplete: () => {
+        setCurrentView('main');
+        setSelectedCourseId(null);
+        setSelectedTopicId(null);
+      }
+    });
   };
 
   if (currentView === 'notes') {
@@ -131,7 +83,7 @@ export default function AcademiaBlock() {
     return (
       <div className="glass-panel md:col-span-2 relative overflow-hidden group h-full min-h-[400px]">
         <div className={styles.academiaBg}></div>
-        <div className="p-8 flex flex-col h-full md:absolute md:inset-0">
+        <div className="p-8 flex flex-col h-full md:absolute md:inset-0" ref={contentRef}>
           <div className="relative z-10 flex-1 min-h-0 flex flex-col md:flex-row gap-8 overflow-hidden">
 
             {/* LEFT SIDEBAR - Topics Navigation */}
@@ -142,8 +94,8 @@ export default function AcademiaBlock() {
                   className="flex items-center gap-2 text-xs font-mono text-defense-accent hover:text-white transition-colors"
                   aria-label="Go back"
                 >
-                  <ArrowLeft className="w-3 h-3" />
-                  <span>BACK</span>
+                  <ArrowUp className="w-3 h-3" />
+                  <span ref={textRef}>BACK</span>
                 </button>
               </div>
 
@@ -189,12 +141,12 @@ export default function AcademiaBlock() {
   return (
     <div className="glass-panel md:col-span-2 relative overflow-hidden group h-full min-h-[400px]">
       <div className={styles.academiaBg}></div>
-      <div className="p-8 flex flex-col h-full md:absolute md:inset-0">
+      <div className="p-8 flex flex-col h-full md:absolute md:inset-0" ref={contentRef}>
         <div className="relative z-10 flex-1 min-h-0 flex flex-col md:flex-row gap-8 overflow-hidden">
 
           {/* LEFT — school tabs */}
           <div className="flex-1 border-b md:border-b-0 md:border-r border-defense-border pb-4 md:pb-0 md:pr-8 flex flex-col gap-0">
-            <div className="text-xs font-mono text-defense-accent mb-4">ACADEMIA</div>
+            <div ref={textRef} className="text-xs font-mono text-defense-accent mb-4">ACADEMIA</div>
 
             {/* Tabs — side by side on mobile, stacked on md+ */}
             <div className="flex flex-row md:flex-col gap-0">
@@ -244,7 +196,7 @@ export default function AcademiaBlock() {
           </div>
 
           {/* RIGHT — swappable content panel */}
-          <div className="flex-1 flex flex-col justify-center gap-4">
+          <div className="flex-1 flex flex-col justify-center gap-4" ref={rightPanelRef}>
             {activeSchool === 'gatech' ? (
               <>
                 <div className="pt-2">
