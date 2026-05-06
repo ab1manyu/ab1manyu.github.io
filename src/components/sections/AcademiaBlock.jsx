@@ -99,12 +99,12 @@ export default function AcademiaBlock() {
                 </button>
               </div>
 
-              <div className="flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-y-auto custom-scrollbar">
+              <div className="flex flex-col gap-2 overflow-y-auto custom-scrollbar max-h-[160px] md:max-h-none">
                 {activeCourse?.topics?.map((topic) => (
                   <button
                     key={topic.id}
                     onClick={() => setSelectedTopicId(topic.id)}
-                    className={`px-4 py-2 text-left font-mono text-xs transition-all border whitespace-nowrap md:whitespace-normal
+                    className={`px-4 py-2 text-left font-mono text-xs transition-all border whitespace-normal
                     ${selectedTopicId === topic.id
                         ? 'bg-defense-accent/10 border-defense-accent text-defense-accent shadow-[0_0_10px_rgba(45,212,191,0.1)]'
                         : 'bg-transparent border-defense-border/50 text-gray-500 hover:border-defense-accent/30 hover:text-gray-300'
@@ -148,8 +148,8 @@ export default function AcademiaBlock() {
           <div className="flex-1 border-b md:border-b-0 md:border-r border-defense-border pb-4 md:pb-0 md:pr-8 flex flex-col gap-0">
             <div ref={textRef} className="text-xs font-mono text-defense-accent mb-4">ACADEMIA</div>
 
-            {/* Tabs — side by side on mobile, stacked on md+ */}
-            <div className="flex flex-row md:flex-col gap-0">
+            {/* Tabs */}
+            <div className="flex flex-col gap-0">
 
               {/* Georgia Tech tab */}
               <button
