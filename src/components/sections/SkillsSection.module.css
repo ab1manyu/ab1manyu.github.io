@@ -45,19 +45,25 @@
 .gatechInactive .schoolTitle {
   color: #6b7280;
 }
+
 .tab:hover.gatechInactive .schoolTitle {
-  color: #d1d5db; /* text-gray-300 */
+  color: #d1d5db;
+  /* text-gray-300 */
 }
 
 .gatechActive .schoolSubtitle {
-  color: #d1d5db; /* text-gray-300 */
+  color: #d1d5db;
+  /* text-gray-300 */
 }
 
 .gatechInactive .schoolSubtitle {
-  color: #4b5563; /* text-gray-600 */
+  color: #4b5563;
+  /* text-gray-600 */
 }
+
 .tab:hover.gatechInactive .schoolSubtitle {
-  color: #6b7280; /* text-gray-500 */
+  color: #6b7280;
+  /* text-gray-500 */
 }
 
 .rutgersActive .schoolTitle {
@@ -67,6 +73,7 @@
 .rutgersInactive .schoolTitle {
   color: #6b7280;
 }
+
 .tab:hover.rutgersInactive .schoolTitle {
   color: #d1d5db;
 }
@@ -78,20 +85,23 @@
 .rutgersInactive .schoolSubtitle {
   color: #4b5563;
 }
+
 .tab:hover.rutgersInactive .schoolSubtitle {
   color: #6b7280;
 }
 
 .researchCard {
   background-color: rgba(255, 255, 255, 0.05);
-  border: 1px solid #1a332a; /* border-defense-border */
-  border-radius: 0.25rem;
+  border: 1px solid #1a332a;
+  /* border-defense-border */
+  border-radius: 0.3rem;
   padding: 1rem;
   transition: border-color 0.2s;
 }
 
 .researchCard:hover {
-  border-color: #10b981; /* border-defense-accent */
+  border-color: #10b981;
+  /* border-defense-accent */
 }
 
 .researchTitle {
@@ -99,8 +109,4 @@
   font-weight: 700;
   color: white;
   transition: color 0.2s;
-}
-
-.researchCard:hover .researchTitle {
-  color: #10b981; /* text-defense-accent */
 }

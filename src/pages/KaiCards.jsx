@@ -24,7 +24,7 @@ const images = [
   '/kai/kai10.jpg',
 ];
 
-const totalCards = 20;
+const totalCards = 100;
 const LEGENDARY_CHANCE = 0.15; // 15%
 
 const moves = [
@@ -100,6 +100,10 @@ export default function KaiCards() {
     let isDragging = false;
     let dragStartY = 0;
     let dragStartProgress = 0;
+
+    // Optimization state
+    const hiddenState = new Array(totalCards).fill(false);
+
     // Velocity tracking
     let lastEventY = 0;
     let lastEventTime = 0;
@@ -109,11 +113,12 @@ export default function KaiCards() {
 
     const updateCards = () => {
       const p = progressRef.current;
+      const VISIBLE_CARDS = 8;
 
       cardsRef.current.forEach((el, idx) => {
         if (!el) return;
 
-        const v = ((idx - p) % N + N) % N;
+        const v = idx - p;
 
         let zIndex = 0;
         let scale = 1;
@@ -121,36 +126,45 @@ export default function KaiCards() {
         let transformY = 0;
         let rotate = 0;
 
-        if (v >= N - 1) {
-          const peel = N - v;
-          zIndex = 1000;
+        if (v < 0) {
+          const peel = -v;
+          zIndex = 1000 + idx;
           scale = 1 + (peel * 0.5);
           transformY = -(peel * 600);
           const angleDir = idx % 2 === 0 ? -1 : 1;
           rotate = peel * 12 * angleDir;
           opacity = 1 - peel;
-        } else {
-          zIndex = Math.floor(N - v);
-          scale = 1 - (v * 0.04);
-          transformY = -(v * 25);
+        } else if (v <= VISIBLE_CARDS) {
+          zIndex = 40 - idx;
+          scale = 1 - (v * 0.05);
+          transformY = -(v * 30);
           rotate = 0;
 
-          if (v > N - 2) {
-            opacity = N - 1 - v;
+          if (v > VISIBLE_CARDS - 1) {
+            opacity = VISIBLE_CARDS - v;
           } else {
             opacity = 1;
           }
+        } else {
+          opacity = 0;
         }
 
-        if (opacity < 0.01) {
-          el.style.visibility = 'hidden';
+        const isHidden = opacity <= 0.01;
+
+        if (isHidden && hiddenState[idx]) {
+          return;
+        }
+
+        if (isHidden) {
+          el.style.opacity = '0';
           el.style.pointerEvents = 'none';
+          hiddenState[idx] = true;
         } else {
-          el.style.visibility = 'visible';
           el.style.pointerEvents = 'auto';
-          el.style.transform = `translateY(${transformY}px) scale(${scale}) rotate(${rotate}deg)`;
+          el.style.transform = `translate3d(0, ${transformY}px, 0) scale(${scale}) rotate(${rotate}deg)`;
           el.style.opacity = opacity.toString();
           el.style.zIndex = zIndex.toString();
+          hiddenState[idx] = false;
         }
       });
 
@@ -177,7 +191,9 @@ export default function KaiCards() {
       const animate = (now) => {
         const elapsed = now - startTime;
         const progress = Math.min(elapsed / duration, 1);
-        progressRef.current = start + distance * easeOut(progress);
+        let p = start + distance * easeOut(progress);
+        p = Math.max(0, Math.min(N - 1, p));
+        progressRef.current = p;
         requestUpdate();
         if (progress < 1) {
           snapRAF = window.requestAnimationFrame(animate);
@@ -195,14 +211,17 @@ export default function KaiCards() {
       if (snapTimeout) clearTimeout(snapTimeout);
       snapTimeout = setTimeout(() => {
         // Use velocity to decide direction
-        const target = velocity > 0
+        let target = velocity > 0
           ? Math.ceil(progressRef.current)
           : Math.floor(progressRef.current);
+
+        target = Math.max(0, Math.min(N - 1, target));
+
         if (Math.abs(progressRef.current - target) > 0.01) {
           snapTo(target);
         }
         velocity = 0;
-      }, 120);
+      }, 150);
     };
 
     // ── Pointer events (mouse + touch via pointer API) ──────────────────────
@@ -220,8 +239,10 @@ export default function KaiCards() {
     const onPointerMove = (e) => {
       if (!isDragging) return;
       const dy = e.clientY - dragStartY;
-      // 200px drag = 1 card step; negative = scroll forward (next card)
-      progressRef.current = dragStartProgress - dy / 200;
+      // 250px drag = 1 card step; negative = scroll forward (next card)
+      let p = dragStartProgress - dy / 250;
+      p = Math.max(0, Math.min(N - 1, p));
+      progressRef.current = p;
       requestUpdate();
 
       const now = performance.now();
@@ -243,10 +264,25 @@ export default function KaiCards() {
     const onWheel = (e) => {
       e.preventDefault();
       if (snapRAF) { cancelAnimationFrame(snapRAF); snapRAF = null; }
-      progressRef.current += e.deltaY / 400;
+      let p = progressRef.current + e.deltaY / 600;
+      p = Math.max(0, Math.min(N - 1, p));
+      progressRef.current = p;
       velocity = e.deltaY > 0 ? 1 : -1;
       requestUpdate();
       scheduleSnap();
+    };
+
+    // ── Keyboard (arrows) ────────────────────────────────────────────────────
+    const onKeyDown = (e) => {
+      if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        const target = Math.max(0, Math.round(progressRef.current) + 1);
+        snapTo(target);
+      } else if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+        e.preventDefault();
+        const target = Math.min(N - 1, Math.round(progressRef.current) - 1);
+        snapTo(target);
+      }
     };
 
     const container = document.getElementById('kaicards-container');
@@ -257,11 +293,13 @@ export default function KaiCards() {
       container.addEventListener('pointercancel', onPointerUp);
       container.addEventListener('wheel', onWheel, { passive: false });
     }
+    window.addEventListener('keydown', onKeyDown);
 
     // Initial paint
     updateCards();
 
     return () => {
+      window.removeEventListener('keydown', onKeyDown);
       if (container) {
         container.removeEventListener('pointerdown', onPointerDown);
         container.removeEventListener('pointermove', onPointerMove);
@@ -302,7 +340,8 @@ export default function KaiCards() {
             className="absolute inset-0 rounded-xl flex flex-col overflow-hidden shadow-2xl pointer-events-auto font-mono"
             style={{
               willChange: 'transform, opacity',
-              visibility: 'hidden',
+              opacity: 0,
+              pointerEvents: 'none',
               border: card.isLegendary ? '1.5px solid #c8960c' : '1px solid var(--border-color)',
               color: card.isLegendary ? '#f0c040' : 'var(--accent-solid)',
               boxShadow: card.isLegendary ? '0 0 24px rgba(200,150,12,0.35), 0 4px 32px rgba(0,0,0,0.8)' : undefined,

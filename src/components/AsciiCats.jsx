@@ -1,7 +1,21 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const eyesList = ['-', 'o', '>', '<'];
+
+const generateGrid = (rows, cols) => {
+  let grid = [];
+  for (let r = 0; r < rows; r++) {
+    let row = [];
+    for (let c = 0; c < cols; c++) {
+      let n1 = eyesList[Math.floor(Math.random() * eyesList.length)];
+      let n2 = Math.random() < 0.75 ? n1 : eyesList[Math.floor(Math.random() * eyesList.length)];
+      row.push({ n1, n2, key: `${r}-${c}` });
+    }
+    grid.push(row);
+  }
+  return grid;
+};
 
 function Cat({ initialN1, initialN2, isLit, onClick, sweeping, sweepDelay }) {
   const [n1, setN1] = useState(initialN1);
@@ -65,7 +79,15 @@ export default function AsciiCats() {
   const [gridSize, setGridSize] = useState({ rows: 4, cols: 5 });
   const [litCats, setLitCats] = useState(new Set());
   const [sweeping, setSweeping] = useState(false);
+  const [initialGrid, setInitialGrid] = useState(() => generateGrid(4, 5));
+  const timeoutRefs = useRef([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    return () => {
+      timeoutRefs.current.forEach(clearTimeout);
+    };
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -80,18 +102,9 @@ export default function AsciiCats() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const initialGrid = useMemo(() => {
-    let grid = [];
-    for (let r = 0; r < gridSize.rows; r++) {
-      let row = [];
-      for (let c = 0; c < gridSize.cols; c++) {
-        let n1 = eyesList[Math.floor(Math.random() * eyesList.length)];
-        let n2 = Math.random() < 0.75 ? n1 : eyesList[Math.floor(Math.random() * eyesList.length)];
-        row.push({ n1, n2, key: `${r}-${c}` });
-      }
-      grid.push(row);
-    }
-    return grid;
+  useEffect(() => {
+    setInitialGrid(generateGrid(gridSize.rows, gridSize.cols));
+    setLitCats(new Set()); // Bonus fix: clear lit cats on resize to prevent bug #1
   }, [gridSize.rows, gridSize.cols]);
 
   const totalCats = gridSize.rows * gridSize.cols;
@@ -125,24 +138,28 @@ export default function AsciiCats() {
       // "corners being highlighted" usually means the 4 corners.
       // I'll trigger it if the 4 corners are lit, even if others are too.
       if (allCornersLit && next.size === 4) {
-         setTimeout(() => {
+        const t1 = setTimeout(() => {
           setSweeping(true);
-          setTimeout(() => navigate('/pokedex'), sweepDuration + 100);
+          const t2 = setTimeout(() => navigate('/pokedex'), sweepDuration + 100);
+          timeoutRefs.current.push(t2);
         }, 150);
+        timeoutRefs.current.push(t1);
       }
 
       if (next.size === totalCats) {
-        setTimeout(() => {
+        const t1 = setTimeout(() => {
           setSweeping(true);
-          setTimeout(() => navigate('/kai'), sweepDuration + 100);
+          const t2 = setTimeout(() => navigate('/kai'), sweepDuration + 100);
+          timeoutRefs.current.push(t2);
         }, 150);
+        timeoutRefs.current.push(t1);
       }
       return next;
     });
   };
 
   return (
-    <div className="glass-panel md:col-span-4 relative flex flex-col items-center justify-center py-6 px-1 sm:p-6 overflow-hidden min-h-[160px] group border border-defense-border hover:border-defense-accent transition-colors cursor-default">
+    <div className="glass-panel md:col-span-4 relative flex flex-col items-center justify-center py-6 px-1 sm:p-6 overflow-hidden min-h-[160px] group border border-defense-border hover:border-defense-accent transition-colors cursor-default select-none">
       <div className="absolute inset-0 bg-[#060f09] opacity-80 pointer-events-none"></div>
 
       <div className="relative z-10 flex flex-col items-center justify-center gap-3 sm:gap-2 font-mono text-[12px] sm:text-[10px]">
