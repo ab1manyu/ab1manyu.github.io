@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Camera, Image as ImageIcon, X, Aperture, Sliders } from 'lucide-react';
+import { Camera, X, Aperture, Sliders } from 'lucide-react';
 
 const galleryItems = [
   {
-    id: 4,
+    id: 0,
     location: "Mumbai, Maharashtra, India",
     title: "Chhatrapati Shivaji Terminus",
     date: "2026-01-02",
@@ -14,7 +14,7 @@ const galleryItems = [
     desc: "Chhatrapati Shivaji Maharaj Terminus (CSMT), formerly known as Victoria Terminus, is a historic railway station and UNESCO World Heritage Site in the heart of Mumbai. Regardless of the hour, the station is characterized by a restless energy; it is a place where one is truly never alone. The architecture is a magnificent example of the Victorian Gothic Revival style blended with Indian traditional motifs, often referred to as Indo-Saracenic or Gothic-Revival architecture. The structure is celebrated for its polychromatic stone, decorative tiles, and an immense level of ornamental detail that defines the Mumbai skyline."
   },
   {
-    id: 3,
+    id: 1,
     location: "Hampi, Karnataka, India",
     title: "Lakshmi the Elephant",
     date: "2026-01-04",
@@ -36,7 +36,7 @@ const galleryItems = [
     desc: "Hampi is located in the southern Indian state of Karnataka. At its peak, the city's population likely exceeded 500,000, a staggering figure compared to the 3,000 locals who reside there today. Hampi is considered a UNESCO World Heritage Site, and annually attracts hundreds of thousands of tourists. The region is truly otherworldly, characterized by mountains of gigantic boulders that stretch as far as the eye can see, and ancient temples featuring stone carvings so intricate they seem impossible to imagine. The Tungabhadra River flows through the heart of Hampi. Linked to many Hindu legends, most notably the Ramayana. The river represents Pampa Devi, the goddess from whom Hampi derives its name. While the Hampi we see today cannot fully reflect its former glory due to the invasions and destruction by the Deccan Sultanates some 500 years ago, extensive restoration and preservation efforts are currently underway to protect its remaining wonders."
   },
   {
-    id: 1,
+    id: 3,
     location: "Halebidu, Karnataka, India",
     title: "Hoysaleswara Temple",
     date: "2026-01-04",
@@ -45,7 +45,7 @@ const galleryItems = [
     settings: "f/7.1 1/200s ISO 100",
     image: "/gallery/halebidu.JPG",
     desc: "The Hoysaleswara Temple, also known as Halebidu Temple is a 12th century Shiva Temple. It was constructed during the mid 1100s. However it has been pillaged and plundered during the 14th century by the Moghul Empire, and the temple had been abandoned since late 19th century. Since then, recovered pieces have been marked and slowly started to be restored. The temple is made out of soapstone, giving it a faded and dark finish. The level of intricacy and detail that this temple shows is unexplainable. The outer walls are layered with friezes (or bands) of elephants, dancers, horses, lions, and scenes from the Mahabarata, Ramayana, and the Puranas. Taking a close look at the image, we can see Indra and Indrani on Airavata (Right), one of the most iconic panels in the temple. Indra, the king of the gods, sits with his wife Indrani atop the divine elephant Airavata. To the left of Indra, in the middle of the image, we see Garuda is carrying Vishnu and Lakshmi on his shoulders."
-  }
+  },
 ];
 
 export default function Gallery() {

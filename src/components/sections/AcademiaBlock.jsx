@@ -84,10 +84,10 @@ export default function AcademiaBlock() {
       <div className="glass-panel md:col-span-2 relative overflow-hidden group h-full min-h-[400px]">
         <div className={styles.academiaBg}></div>
         <div className="p-8 flex flex-col h-full md:absolute md:inset-0" ref={contentRef}>
-          <div className="relative z-10 flex-1 min-h-0 flex flex-col md:flex-row gap-8 overflow-hidden">
+          <div className="relative z-10 flex-1 min-h-0 flex flex-col md:flex-row gap-8">
 
             {/* LEFT SIDEBAR - Topics Navigation */}
-            <div className="flex-1 md:max-w-[200px] border-b md:border-b-0 md:border-r border-defense-border pb-4 md:pb-0 md:pr-6 flex flex-col gap-4">
+            <div className="flex-1 md:max-w-[200px] border-b md:border-b-0 md:border-r border-defense-border pb-4 md:pb-0 md:pr-6 flex flex-col gap-4 min-w-0">
               <div className="flex items-center gap-2 mb-2">
                 <button
                   onClick={handleBack}
@@ -117,7 +117,7 @@ export default function AcademiaBlock() {
             </div>
 
             {/* RIGHT CONTENT - Topic Details */}
-            <div className="flex-[2] flex flex-col min-h-0">
+            <div className="flex-[2] flex flex-col min-h-0 min-w-0">
               {activeTopic ? (
                 <>
                   <h3 className="text-xl font-bold text-white mb-6 border-b border-defense-border pb-4 shrink-0">
@@ -142,10 +142,10 @@ export default function AcademiaBlock() {
     <div className="glass-panel md:col-span-2 relative overflow-hidden group h-full min-h-[400px]">
       <div className={styles.academiaBg}></div>
       <div className="p-8 flex flex-col h-full md:absolute md:inset-0" ref={contentRef}>
-        <div className="relative z-10 flex-1 min-h-0 flex flex-col md:flex-row gap-8 overflow-hidden">
+        <div className="relative z-10 flex-1 min-h-0 flex flex-col md:flex-row gap-8">
 
           {/* LEFT — school tabs */}
-          <div className="flex-1 border-b md:border-b-0 md:border-r border-defense-border pb-4 md:pb-0 md:pr-8 flex flex-col gap-0">
+          <div className="flex-1 border-b md:border-b-0 md:border-r border-defense-border pb-4 md:pb-0 md:pr-8 flex flex-col gap-0 min-w-0">
             <div ref={textRef} className="text-xs font-mono text-defense-accent mb-4">ACADEMIA</div>
 
             {/* Tabs */}
@@ -196,7 +196,7 @@ export default function AcademiaBlock() {
           </div>
 
           {/* RIGHT — swappable content panel */}
-          <div className="flex-1 flex flex-col justify-center gap-4" ref={rightPanelRef}>
+          <div className="flex-1 flex flex-col justify-center gap-4 min-w-0" ref={rightPanelRef}>
             {activeSchool === 'gatech' ? (
               <>
                 <div className="pt-2">
@@ -219,7 +219,7 @@ export default function AcademiaBlock() {
                           className="w-full text-left bg-white/5 hover:bg-white/10 border border-defense-border hover:border-defense-accent/50 rounded p-4 transition-all group/course block"
                         >
                           <div className="flex justify-between items-center mb-2">
-                            <span className="text-xs font-bold text-white group-hover/course:text-defense-accent transition-colors">
+                            <span className="text-xs font-bold text-white">
                               {course.title} <span className="text-gray-500 pl-2 font-mono">{course.number}</span>
                             </span>
                             <Icon className="w-3 h-3 text-defense-muted group-hover/course:text-defense-accent transition-colors" />
