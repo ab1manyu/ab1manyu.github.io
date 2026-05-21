@@ -3,6 +3,43 @@ import { Camera, ArrowUpRight } from 'lucide-react';
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
 import styles from './ContactSection.module.css';
 
+const ContactCard = ({ link, icon, text, title, caption, className }) => {
+  const isExternal = link.startsWith('http');
+  const cardClasses = `glass-panel ${styles.card} ${className || ''}`.trim();
+
+  const content = (
+    <>
+      <div className={styles.cardIcon}>
+        {icon}
+      </div>
+      <div className="relative z-10 flex flex-col h-full justify-between min-h-[140px]">
+        <div className="flex justify-between items-start">
+          <div>
+            <div className="text-xs font-mono text-gray-500 mb-1">{text}</div>
+            <h3 className={styles.cardTitle}>{title}</h3>
+          </div>
+          <div className={styles.cardLinkWrap}>
+            <ArrowUpRight className="w-5 h-5" />
+          </div>
+        </div>
+        <div className="mt-4">
+          <p className="text-sm text-gray-400 font-mono">{caption}</p>
+        </div>
+      </div>
+    </>
+  );
+
+  return isExternal ? (
+    <a href={link} target="_blank" rel="noopener noreferrer" className={cardClasses}>
+      {content}
+    </a>
+  ) : (
+    <Link to={link} className={cardClasses}>
+      {content}
+    </Link>
+  );
+};
+
 export default function ContactSection() {
   return (
     <section id="contact" className="max-w-4xl mx-auto mb-24 scroll-mt-28">
@@ -14,66 +51,37 @@ export default function ContactSection() {
         </div>
       </div>
 
+
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Link to="/gallery" className={`glass-panel ${styles.card} ${styles.cardPhoto}`}>
-          <div className={styles.cardIcon}>
-            <Camera className="w-32 h-32" />
-          </div>
-          <div className="relative z-10 flex flex-col h-full justify-between min-h-[140px]">
-            <div className="flex justify-between items-start">
-              <div>
-                <div className="text-xs font-mono text-gray-500 mb-1">PORTFOLIO</div>
-                <h3 className={styles.cardTitle}>Photography</h3>
-              </div>
-              <div className={styles.cardLinkWrap}>
-                <ArrowUpRight className="w-5 h-5" />
-              </div>
-            </div>
-            <div className="mt-4">
-              <p className="text-sm text-gray-400 font-mono">Memories captured through my lens.</p>
-            </div>
-          </div>
-        </Link>
 
-        <a href="https://www.linkedin.com/in/abimanyuananthu/" target="_blank" rel="noopener noreferrer" className={`glass-panel ${styles.card} ${styles.cardLinkedIn}`}>
-          <div className={styles.cardIcon}>
-            <FaLinkedin className="w-32 h-32" />
-          </div>
-          <div className="relative z-10 flex flex-col h-full justify-between min-h-[140px]">
-            <div className="flex justify-between items-start">
-              <div>
-                <div className="text-xs font-mono text-gray-500 mb-1">NETWORK</div>
-                <h3 className={styles.cardTitle}>LinkedIn</h3>
-              </div>
-              <div className={styles.cardLinkWrap}>
-                <ArrowUpRight className="w-5 h-5" />
-              </div>
-            </div>
-            <div className="mt-4">
-              <p className="text-sm text-gray-400 font-mono">Connect via secure professional network.</p>
-            </div>
-          </div>
-        </a>
 
-        <a href="https://github.com/ab1manyu" target="_blank" rel="noopener noreferrer" className={`glass-panel ${styles.card} ${styles.cardGitHub}`}>
-          <div className={styles.cardIcon}>
-            <FaGithub className="w-32 h-32" />
-          </div>
-          <div className="relative z-10 flex flex-col h-full justify-between min-h-[140px]">
-            <div className="flex justify-between items-start">
-              <div>
-                <div className="text-xs font-mono text-gray-500 mb-1">REPOSITORY</div>
-                <h3 className={styles.cardTitle}>GitHub</h3>
-              </div>
-              <div className={styles.cardLinkWrap}>
-                <ArrowUpRight className="w-5 h-5" />
-              </div>
-            </div>
-            <div className="mt-4">
-              <p className="text-sm text-gray-400 font-mono">Access source code & projects.</p>
-            </div>
-          </div>
-        </a>
+        <ContactCard
+          link="/gallery"
+          icon={<Camera className="w-32 h-32" />}
+          text="PORTFOLIO"
+          title="Photography"
+          caption="Memories captured through my lens."
+          className={styles.cardPhoto}
+        />
+
+        <ContactCard
+          link="https://www.linkedin.com/in/abimanyuananthu/"
+          icon={<FaLinkedin className="w-32 h-32" />}
+          text="NETWORK"
+          title="LinkedIn"
+          caption="Connect via secure professional network."
+          className={styles.cardLinkedIn}
+        />
+
+        <ContactCard
+          link="https://github.com/ab1manyu"
+          icon={<FaGithub className="w-32 h-32" />}
+          text="REPOSITORY"
+          title="GitHub"
+          caption="Access source code & projects."
+          className={styles.cardGitHub}
+        />
       </div>
     </section>
   );

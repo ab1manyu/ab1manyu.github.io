@@ -14,7 +14,7 @@ export const COURSES = [
         content: (
           <div className="space-y-4">
             <p className="text-sm text-gray-300 leading-relaxed">
-              Game AI (CS7632) is a breath of fresh air for a back-to-school software engineer working that's currently working in the industy. This course requires you to setup and get used to working with Unity, which is honestly the most annoying part of the course. But once you get past that, it's a lot of fun writing scripts in C# to correctly control agents in the game engine and then focus your work on optimizing it to successfully handle different scenarios. Since this class was primarily project-based, I'll be documenting all the assignments I complete throughout this course.
+              Game AI (CS7632) is a breath of fresh air for a back-to-school software engineer working that's currently working in the industry. This course requires you to setup and get used to working with Unity, which is honestly the most annoying part of the course. But once you get past that, it's a lot of fun writing scripts in C# to correctly control agents in the game engine and then focus your work on optimizing it to successfully handle different scenarios. Since this class was primarily project-based, I'll be documenting all the assignments I complete throughout this course.
             </p>
 
           </div>
