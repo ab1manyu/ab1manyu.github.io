@@ -149,24 +149,26 @@ export default function AcademiaBlock() {
             <div ref={textRef} className="text-xs font-mono text-defense-accent mb-4">ACADEMIA</div>
 
             {/* Tabs */}
-            <div className="flex flex-col gap-0">
+            <div className="flex flex-row md:flex-col gap-2 md:gap-0">
 
               {/* Georgia Tech tab */}
               <button
                 onClick={() => setActiveSchool('gatech')}
                 className={`${styles.tab} ${activeSchool === 'gatech' ? styles.gatechActive : styles.gatechInactive}`}
               >
-                <div className="flex items-center gap-2 mb-1">
-                  <h3 className={styles.schoolTitle}>GEORGIA</h3>
+                <div className="flex items-center justify-center md:justify-start gap-2 md:mb-1">
+                  <h3 className={styles.schoolTitle}>GEORGIA <span className="md:hidden">TECH</span></h3>
                 </div>
-                <h4 className={styles.schoolSubtitle}>INSTITUTE OF TECHNOLOGY</h4>
-                <div className="flex items-center gap-2 text-xs text-gray-400 mb-1">
-                  <GraduationCap className="w-3 h-3 text-defense-accent shrink-0" />
-                  <span>M.S. Computer Science</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs text-gray-500 font-mono">
-                  <Calendar className="w-3 h-3 shrink-0" />
-                  <span>Class of 2028</span>
+                <h4 className={`hidden md:block ${styles.schoolSubtitle}`}>INSTITUTE OF TECHNOLOGY</h4>
+                <div className="flex flex-col items-center md:items-start mt-1 md:mt-0">
+                  <div className="flex items-center gap-1 md:gap-2 text-[9px] md:text-xs text-gray-400 mb-0.5 md:mb-1 text-center md:text-left leading-tight">
+                    <GraduationCap className="w-2.5 h-2.5 md:w-3 md:h-3 text-defense-accent shrink-0" />
+                    <span>M.S. Computer Science</span>
+                  </div>
+                  <div className="flex items-center gap-1 md:gap-2 text-[9px] md:text-xs text-gray-500 font-mono leading-tight">
+                    <Calendar className="w-2.5 h-2.5 md:w-3 md:h-3 shrink-0" />
+                    <span>Class of 2028</span>
+                  </div>
                 </div>
               </button>
 
@@ -178,17 +180,19 @@ export default function AcademiaBlock() {
                 onClick={() => setActiveSchool('rutgers')}
                 className={`${styles.tab} ${activeSchool === 'rutgers' ? styles.rutgersActive : styles.rutgersInactive}`}
               >
-                <div className="flex items-center gap-2 mb-1">
+                <div className="flex items-center justify-center md:justify-start gap-2 md:mb-1">
                   <h3 className={styles.schoolTitle}>RUTGERS</h3>
                 </div>
-                <h4 className={styles.schoolSubtitle}>UNIVERSITY</h4>
-                <div className="flex items-center gap-2 text-xs text-gray-400 mb-1">
-                  <GraduationCap className="w-3 h-3 text-defense-accent shrink-0" />
-                  <span>B.S. Computer Engineering</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs text-gray-500 font-mono">
-                  <Calendar className="w-3 h-3 shrink-0" />
-                  <span>Class of 2023</span>
+                <h4 className={`hidden md:block ${styles.schoolSubtitle}`}>UNIVERSITY</h4>
+                <div className="flex flex-col items-center md:items-start mt-1 md:mt-0">
+                  <div className="flex items-center gap-1 md:gap-2 text-[9px] md:text-xs text-gray-400 mb-0.5 md:mb-1 text-center md:text-left leading-tight">
+                    <GraduationCap className="w-2.5 h-2.5 md:w-3 md:h-3 text-defense-accent shrink-0" />
+                    <span>B.S. Computer Engineering</span>
+                  </div>
+                  <div className="flex items-center gap-1 md:gap-2 text-[9px] md:text-xs text-gray-500 font-mono leading-tight">
+                    <Calendar className="w-2.5 h-2.5 md:w-3 md:h-3 shrink-0" />
+                    <span>Class of 2023</span>
+                  </div>
                 </div>
               </button>
 

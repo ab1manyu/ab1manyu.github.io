@@ -102,7 +102,7 @@ export default function KaiCards() {
     let dragStartProgress = 0;
 
     // Optimization state
-    const hiddenState = new Array(totalCards).fill(false);
+    const hiddenState = new Array(totalCards).fill(true);
 
     // Velocity tracking
     let lastEventY = 0;
@@ -133,7 +133,7 @@ export default function KaiCards() {
           transformY = -(peel * 600);
           const angleDir = idx % 2 === 0 ? -1 : 1;
           rotate = peel * 12 * angleDir;
-          opacity = 1 - peel;
+          opacity = Math.max(0, 1 - peel);
         } else if (v <= VISIBLE_CARDS) {
           zIndex = 40 - idx;
           scale = 1 - (v * 0.05);
@@ -141,7 +141,7 @@ export default function KaiCards() {
           rotate = 0;
 
           if (v > VISIBLE_CARDS - 1) {
-            opacity = VISIBLE_CARDS - v;
+            opacity = Math.max(0, VISIBLE_CARDS - v);
           } else {
             opacity = 1;
           }
@@ -149,23 +149,29 @@ export default function KaiCards() {
           opacity = 0;
         }
 
-        const isHidden = opacity <= 0.01;
+        // Buffer: 2 cards behind (peeled), 4 cards ahead (stack)
+        const isWarm = v >= -2 && v <= VISIBLE_CARDS + 4;
 
-        if (isHidden && hiddenState[idx]) {
+        if (!isWarm) {
+          if (!hiddenState[idx]) {
+            el.style.visibility = 'hidden';
+            el.style.willChange = 'auto'; // free VRAM
+            el.style.pointerEvents = 'none';
+            hiddenState[idx] = true;
+          }
           return;
         }
 
-        if (isHidden) {
-          el.style.opacity = '0';
-          el.style.pointerEvents = 'none';
-          hiddenState[idx] = true;
-        } else {
-          el.style.pointerEvents = 'auto';
-          el.style.transform = `translate3d(0, ${transformY}px, 0) scale(${scale}) rotate(${rotate}deg)`;
-          el.style.opacity = opacity.toString();
-          el.style.zIndex = zIndex.toString();
+        if (hiddenState[idx]) {
+          el.style.visibility = 'visible';
+          el.style.willChange = 'transform, opacity'; // warm up GPU layer
           hiddenState[idx] = false;
         }
+
+        el.style.transform = `translate3d(0, ${transformY}px, 0) scale(${scale}) rotate(${rotate}deg)`;
+        el.style.opacity = opacity.toString();
+        el.style.zIndex = zIndex.toString();
+        el.style.pointerEvents = opacity <= 0.01 ? 'none' : 'auto';
       });
 
       ticking = false;
@@ -238,6 +244,7 @@ export default function KaiCards() {
 
     const onPointerMove = (e) => {
       if (!isDragging) return;
+      e.preventDefault();
       const dy = e.clientY - dragStartY;
       // 250px drag = 1 card step; negative = scroll forward (next card)
       let p = dragStartProgress - dy / 250;
@@ -288,7 +295,7 @@ export default function KaiCards() {
     const container = document.getElementById('kaicards-container');
     if (container) {
       container.addEventListener('pointerdown', onPointerDown);
-      container.addEventListener('pointermove', onPointerMove);
+      container.addEventListener('pointermove', onPointerMove, { passive: false });
       container.addEventListener('pointerup', onPointerUp);
       container.addEventListener('pointercancel', onPointerUp);
       container.addEventListener('wheel', onWheel, { passive: false });
@@ -339,7 +346,8 @@ export default function KaiCards() {
             ref={el => cardsRef.current[idx] = el}
             className="absolute inset-0 rounded-xl flex flex-col overflow-hidden shadow-2xl pointer-events-auto font-mono"
             style={{
-              willChange: 'transform, opacity',
+              willChange: 'auto',
+              visibility: 'hidden',
               opacity: 0,
               pointerEvents: 'none',
               border: card.isLegendary ? '1.5px solid #c8960c' : '1px solid var(--border-color)',
@@ -378,7 +386,7 @@ export default function KaiCards() {
                 className="w-full aspect-[4/3] rounded-[6px] bg-black overflow-hidden relative mb-1"
                 style={{ border: card.isLegendary ? '1px solid #c8960c' : '1px solid var(--border-color)' }}
               >
-                <img src={card.image} alt={card.name} className="w-full h-full object-cover" draggable={false} />
+                <img src={card.image} alt={card.name} loading="lazy" decoding="async" className="w-full h-full object-cover" draggable={false} />
                 {card.isLegendary && (
                   <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(180deg, rgba(200,150,12,0.08) 0%, transparent 40%)' }} />
                 )}
