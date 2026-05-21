@@ -85,6 +85,14 @@
   .nav-item:hover::after {
     width: 100%;
   }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
 
 ::-webkit-scrollbar {
@@ -236,6 +244,15 @@
     border-width: 0px;
     background-color: rgba(16, 185, 129, 0);
   }
+}
+
+.spin-once {
+  animation: spin-once-anim 0.75s ease-in-out;
+}
+
+@keyframes spin-once-anim {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 @keyframes fadeInOut {

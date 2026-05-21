@@ -11,7 +11,7 @@ export const GENERATIONS = ['kanto', 'johto', 'hoenn', 'sinnoh', 'unova', 'kalos
 
 export default function PokedexCore() {
   const [view, setView] = useState("battle"); // battle | pokedex
-  const [currentGeneration, setCurrentGeneration] = useState("unova");
+  const [currentGeneration, setCurrentGeneration] = useState("kanto");
   const [generationData, setGenerationData] = useState([]);
 
   const [caughtIds, setCaughtIds] = useState(new Set());

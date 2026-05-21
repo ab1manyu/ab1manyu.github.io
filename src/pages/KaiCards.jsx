@@ -213,21 +213,22 @@ export default function KaiCards() {
       snapRAF = window.requestAnimationFrame(animate);
     };
 
+    const doSnap = () => {
+      let target = velocity > 0
+        ? Math.ceil(progressRef.current)
+        : Math.floor(progressRef.current);
+
+      target = Math.max(0, Math.min(N - 1, target));
+
+      if (Math.abs(progressRef.current - target) > 0.01) {
+        snapTo(target);
+      }
+      velocity = 0;
+    };
+
     const scheduleSnap = () => {
       if (snapTimeout) clearTimeout(snapTimeout);
-      snapTimeout = setTimeout(() => {
-        // Use velocity to decide direction
-        let target = velocity > 0
-          ? Math.ceil(progressRef.current)
-          : Math.floor(progressRef.current);
-
-        target = Math.max(0, Math.min(N - 1, target));
-
-        if (Math.abs(progressRef.current - target) > 0.01) {
-          snapTo(target);
-        }
-        velocity = 0;
-      }, 150);
+      snapTimeout = setTimeout(doSnap, 150);
     };
 
     // ── Pointer events (mouse + touch via pointer API) ──────────────────────
@@ -264,7 +265,8 @@ export default function KaiCards() {
     const onPointerUp = () => {
       if (!isDragging) return;
       isDragging = false;
-      scheduleSnap();
+      if (snapTimeout) clearTimeout(snapTimeout);
+      doSnap();
     };
 
     // ── Wheel (desktop scroll) ───────────────────────────────────────────────

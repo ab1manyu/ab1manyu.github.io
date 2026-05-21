@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useLayoutEffect } from 'react';
-import { Microscope, Calendar, GraduationCap, ArrowLeft, ArrowUp } from 'lucide-react';
+import { Microscope, Calendar, GraduationCap, ArrowLeft, ArrowRight, ArrowUp, ChevronLeft, ChevronRight } from 'lucide-react';
 import gsap from 'gsap';
 import { TextScramble } from '../../utils/textScramble';
 import styles from './SkillsSection.module.css';
@@ -87,7 +87,7 @@ export default function AcademiaBlock() {
           <div className="relative z-10 flex-1 min-h-0 flex flex-col md:flex-row gap-8">
 
             {/* LEFT SIDEBAR - Topics Navigation */}
-            <div className="flex-1 md:max-w-[200px] border-b md:border-b-0 md:border-r border-defense-border pb-4 md:pb-0 md:pr-6 flex flex-col gap-4 min-w-0">
+            <div className="shrink-0 md:flex-1 md:max-w-[200px] border-b md:border-b-0 md:border-r border-defense-border pb-4 md:pb-0 md:pr-6 flex flex-col gap-4 min-w-0">
               <div className="flex items-center gap-2 mb-2">
                 <button
                   onClick={handleBack}
@@ -99,7 +99,7 @@ export default function AcademiaBlock() {
                 </button>
               </div>
 
-              <div className="flex flex-col gap-2 overflow-y-auto custom-scrollbar max-h-[160px] md:max-h-none">
+              <div className="hidden md:flex flex-col gap-2 overflow-y-auto no-scrollbar max-h-[160px] md:max-h-none">
                 {activeCourse?.topics?.map((topic) => (
                   <button
                     key={topic.id}
@@ -114,13 +114,44 @@ export default function AcademiaBlock() {
                   </button>
                 ))}
               </div>
+
+              {/* Mobile Topics Selector */}
+              {activeCourse?.topics?.length > 0 && (
+                <div className="md:hidden flex items-center justify-between gap-2 mt-1">
+                  <button
+                    onClick={() => {
+                      const idx = activeCourse.topics.findIndex(t => t.id === selectedTopicId);
+                      const prevIdx = idx > 0 ? idx - 1 : activeCourse.topics.length - 1;
+                      setSelectedTopicId(activeCourse.topics[prevIdx].id);
+                    }}
+                    className="p-2 flex items-center justify-center text-defense-accent hover:text-white transition-colors"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                  </button>
+
+                  <div className="flex-1 text-center font-mono text-sm font-bold text-defense-accent truncate px-2">
+                    {activeTopic?.title}
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      const idx = activeCourse.topics.findIndex(t => t.id === selectedTopicId);
+                      const nextIdx = idx < activeCourse.topics.length - 1 ? idx + 1 : 0;
+                      setSelectedTopicId(activeCourse.topics[nextIdx].id);
+                    }}
+                    className="p-2 flex items-center justify-center text-defense-accent hover:text-white transition-colors"
+                  >
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* RIGHT CONTENT - Topic Details */}
             <div className="flex-[2] flex flex-col min-h-0 min-w-0">
               {activeTopic ? (
                 <>
-                  <h3 className="text-xl font-bold text-white mb-6 border-b border-defense-border pb-4 shrink-0">
+                  <h3 className="hidden md:block text-xl font-bold text-white mb-6 border-b border-defense-border pb-4 shrink-0">
                     {activeTopic.title}
                   </h3>
                   <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar pr-2 pb-4">
@@ -149,26 +180,24 @@ export default function AcademiaBlock() {
             <div ref={textRef} className="text-xs font-mono text-defense-accent mb-4">ACADEMIA</div>
 
             {/* Tabs */}
-            <div className="flex flex-row md:flex-col gap-2 md:gap-0">
+            <div className="flex flex-col gap-0">
 
               {/* Georgia Tech tab */}
               <button
                 onClick={() => setActiveSchool('gatech')}
                 className={`${styles.tab} ${activeSchool === 'gatech' ? styles.gatechActive : styles.gatechInactive}`}
               >
-                <div className="flex items-center justify-center md:justify-start gap-2 md:mb-1">
-                  <h3 className={styles.schoolTitle}>GEORGIA <span className="md:hidden">TECH</span></h3>
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className={styles.schoolTitle}>GEORGIA</h3>
                 </div>
-                <h4 className={`hidden md:block ${styles.schoolSubtitle}`}>INSTITUTE OF TECHNOLOGY</h4>
-                <div className="flex flex-col items-center md:items-start mt-1 md:mt-0">
-                  <div className="flex items-center gap-1 md:gap-2 text-[9px] md:text-xs text-gray-400 mb-0.5 md:mb-1 text-center md:text-left leading-tight">
-                    <GraduationCap className="w-2.5 h-2.5 md:w-3 md:h-3 text-defense-accent shrink-0" />
-                    <span>M.S. Computer Science</span>
-                  </div>
-                  <div className="flex items-center gap-1 md:gap-2 text-[9px] md:text-xs text-gray-500 font-mono leading-tight">
-                    <Calendar className="w-2.5 h-2.5 md:w-3 md:h-3 shrink-0" />
-                    <span>Class of 2028</span>
-                  </div>
+                <h4 className={styles.schoolSubtitle}>INSTITUTE OF TECHNOLOGY</h4>
+                <div className="flex items-center gap-2 text-xs text-gray-400 mb-1">
+                  <GraduationCap className="w-3 h-3 text-defense-accent shrink-0" />
+                  <span>M.S. Computer Science</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-gray-500 font-mono">
+                  <Calendar className="w-3 h-3 shrink-0" />
+                  <span>Class of 2028</span>
                 </div>
               </button>
 
@@ -180,19 +209,17 @@ export default function AcademiaBlock() {
                 onClick={() => setActiveSchool('rutgers')}
                 className={`${styles.tab} ${activeSchool === 'rutgers' ? styles.rutgersActive : styles.rutgersInactive}`}
               >
-                <div className="flex items-center justify-center md:justify-start gap-2 md:mb-1">
+                <div className="flex items-center gap-2 mb-1">
                   <h3 className={styles.schoolTitle}>RUTGERS</h3>
                 </div>
-                <h4 className={`hidden md:block ${styles.schoolSubtitle}`}>UNIVERSITY</h4>
-                <div className="flex flex-col items-center md:items-start mt-1 md:mt-0">
-                  <div className="flex items-center gap-1 md:gap-2 text-[9px] md:text-xs text-gray-400 mb-0.5 md:mb-1 text-center md:text-left leading-tight">
-                    <GraduationCap className="w-2.5 h-2.5 md:w-3 md:h-3 text-defense-accent shrink-0" />
-                    <span>B.S. Computer Engineering</span>
-                  </div>
-                  <div className="flex items-center gap-1 md:gap-2 text-[9px] md:text-xs text-gray-500 font-mono leading-tight">
-                    <Calendar className="w-2.5 h-2.5 md:w-3 md:h-3 shrink-0" />
-                    <span>Class of 2023</span>
-                  </div>
+                <h4 className={styles.schoolSubtitle}>UNIVERSITY</h4>
+                <div className="flex items-center gap-2 text-xs text-gray-400 mb-1">
+                  <GraduationCap className="w-3 h-3 text-defense-accent shrink-0" />
+                  <span>B.S. Computer Engineering</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-gray-500 font-mono">
+                  <Calendar className="w-3 h-3 shrink-0" />
+                  <span>Class of 2023</span>
                 </div>
               </button>
 
@@ -209,7 +236,7 @@ export default function AcademiaBlock() {
                     <span className="px-2 py-1 bg-white/5 border border-defense-border rounded text-[10px] text-gray-300 font-mono">Artificial Intelligence</span>
                   </div>
                 </div>
-                <div className="pt-4 border-t border-defense-border mt-4 flex-1 min-h-0 overflow-y-auto pr-2 custom-scrollbar">
+                <div className="pt-4 border-t border-defense-border mt-4 flex-1 min-h-0 overflow-y-auto pr-2 no-scrollbar">
                   <div className="flex justify-between items-end mb-3">
                     <span className="text-xs font-mono text-gray-500 block">CURRENT_COURSES</span>
                   </div>

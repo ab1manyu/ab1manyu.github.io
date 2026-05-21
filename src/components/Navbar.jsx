@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { SatelliteDish, Camera, Sparkle, BookUser, RectangleEllipsis } from 'lucide-react';
+import { SatelliteDish, Camera, Sparkle, BookUser, RectangleEllipsis, Croissant } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import Clock from './Clock';
 
@@ -25,10 +25,12 @@ export default function Navbar() {
   const location = useLocation();
   const isGallery = location.pathname === '/gallery' || location.pathname === '/gallery.html';
   const isPokedex = location.pathname === '/pokedex';
+  const isKai = location.pathname === '/kai';
 
   const [radarStatus, setRadarStatus] = useState('SYS_ONLINE');
   const [shutterStatus, setShutterStatus] = useState('SYS_ONLINE');
   const [pokedexStatus, setPokedexStatus] = useState('SYS_ONLINE');
+  const [catStatus, setCatStatus] = useState('SYS_ONLINE');
   const [isShaking, setIsShaking] = useState(false);
 
   useEffect(() => {
@@ -81,6 +83,15 @@ export default function Navbar() {
     }, 750);
   };
 
+  const handleCatClick = () => {
+    setIsShaking(true);
+    setCatStatus("MIAU!");
+    setTimeout(() => {
+      setIsShaking(false);
+      setCatStatus('SYS_ONLINE');
+    }, 750);
+  };
+
   // Pokedex specific controls
   const pokedexAction = (action, value) => {
     window.dispatchEvent(new CustomEvent('pokedex-action', { detail: { action, value } }));
@@ -108,6 +119,13 @@ export default function Navbar() {
                 className={`relative z-10 text-defense-accent hover:text-white transition-colors outline-none cursor-pointer ${isShaking ? 'pokeball-shake' : ''}`}
               >
                 <PokeballIcon className="w-6 h-6" />
+              </button>
+            ) : isKai ? (
+              <button
+                onClick={handleCatClick}
+                className={`relative z-10 text-defense-accent hover:text-white transition-colors outline-none cursor-pointer ${isShaking ? 'spin-once' : ''}`}
+              >
+                <Croissant className="w-6 h-6" />
               </button>
             ) : (
               <button
@@ -138,6 +156,10 @@ export default function Navbar() {
             ) : isPokedex ? (
               <span className={`font-mono text-[10px] transition-colors duration-200 whitespace-nowrap ${pokedexStatus === 'SYS_ONLINE' ? 'text-gray-500' : 'text-defense-accent'}`}>
                 {pokedexStatus}
+              </span>
+            ) : isKai ? (
+              <span className={`font-mono text-[10px] transition-colors duration-200 whitespace-nowrap ${catStatus === 'SYS_ONLINE' ? 'text-gray-500' : 'text-defense-accent'}`}>
+                {catStatus}
               </span>
             ) : (
               <span id="radar-status" className={`font-mono text-[10px] whitespace-nowrap ${radarStatus === 'SYS_ONLINE' ? 'text-gray-500' : 'text-defense-accent'}`}>

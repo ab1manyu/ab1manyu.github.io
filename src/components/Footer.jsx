@@ -65,7 +65,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
         <div className="font-mono text-xs text-gray-600">
           ︽︾︽︾︽︾︽<br />
-          SYS_ID: 0.1.1
+          SYS_ID: 0.1.2
         </div>
 
         {/* 3 dots */}

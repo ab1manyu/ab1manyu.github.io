@@ -214,7 +214,6 @@ export default function BattleScreen({ caughtIds, onCatch, generation, generatio
         {/* Input area */}
         <form className={`${styles.guessForm} ${(phase === "caught" || phase === "ran_away") ? styles.hiddenForm : ""}`} onSubmit={handleSubmit} autoComplete="off">
           <div className={`${styles.inputWrapper} ${phase === "wrong" ? styles.inputShake : ""}`}>
-            <span className={styles.inputPrefix}>▶</span>
             <input
               ref={inputRef}
               id="pokemon-guess-input"

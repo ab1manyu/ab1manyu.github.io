@@ -26,7 +26,7 @@ export const COURSES = [
         content: (
           <div className="space-y-4">
             <span>Assignment 1 : Grid Lattice</span>
-            <div className="w-[50%] mx-auto border border-defense-border bg-black/50 rounded flex items-center justify-center overflow-hidden">
+            <div className="w-full md:w-[50%] mx-auto border border-defense-border bg-black/50 rounded flex items-center justify-center overflow-hidden">
               <span className="font-mono text-defense-muted text-xs w-full h-full">
                 <img src="/academia/gridlattice.gif" alt="" loading="lazy" decoding="async" className="w-full h-auto object-cover" />
               </span>
@@ -54,7 +54,7 @@ export const COURSES = [
         content: (
           <div className="space-y-4">
             <span>Assignment 2 : Path Network</span>
-            <div className="w-[50%] mx-auto border border-defense-border bg-black/50 rounded flex items-center justify-center overflow-hidden">
+            <div className="w-full md:w-[50%] mx-auto border border-defense-border bg-black/50 rounded flex items-center justify-center overflow-hidden">
               <span className="font-mono text-defense-muted text-xs w-full h-full">
                 <img src="/academia/pathnetwork.gif" alt="" loading="lazy" decoding="async" className="w-full h-auto object-cover" />
               </span>
@@ -77,7 +77,7 @@ export const COURSES = [
         content: (
           <div className="space-y-4">
             <span>Assignment 3 : A*</span>
-            <div className="w-[50%] mx-auto border border-defense-border bg-black/50 rounded flex items-center justify-center overflow-hidden">
+            <div className="w-full md:w-[50%] mx-auto border border-defense-border bg-black/50 rounded flex items-center justify-center overflow-hidden">
               <span className="font-mono text-defense-muted text-xs w-full h-full">
                 <img src="/academia/astar.gif" alt="" loading="lazy" decoding="async" className="w-full h-auto object-cover" />
               </span>
@@ -100,7 +100,7 @@ export const COURSES = [
         content: (
           <div className="space-y-4">
             <span>Assignment 4 : Navmesh</span>
-            <div className="w-[50%] mx-auto border border-defense-border bg-black/50 rounded flex items-center justify-center overflow-hidden">
+            <div className="w-full md:w-[50%] mx-auto border border-defense-border bg-black/50 rounded flex items-center justify-center overflow-hidden">
               <span className="font-mono text-defense-muted text-xs w-full h-full">
                 <img src="/academia/navmesh.gif" alt="" loading="lazy" decoding="async" className="w-full h-auto object-cover" />
               </span>
@@ -127,7 +127,7 @@ export const COURSES = [
         content: (
           <div className="space-y-4">
             <span>Assignment 5 : BALLISTIC</span>
-            <div className="w-[50%] mx-auto border border-defense-border bg-black/50 rounded flex items-center justify-center overflow-hidden">
+            <div className="w-full md:w-[50%] mx-auto border border-defense-border bg-black/50 rounded flex items-center justify-center overflow-hidden">
               <span className="font-mono text-defense-muted text-xs w-full h-full">
                 <img src="/academia/ballistic.gif" alt="" loading="lazy" decoding="async" className="w-full h-auto object-cover" />
               </span>
@@ -154,7 +154,7 @@ export const COURSES = [
         content: (
           <div className="space-y-4">
             <span>Assignment 6 : Dodgeball</span>
-            <div className="w-[50%] mx-auto border border-defense-border bg-black/50 rounded flex items-center justify-center overflow-hidden">
+            <div className="w-full md:w-[50%] mx-auto border border-defense-border bg-black/50 rounded flex items-center justify-center overflow-hidden">
               <span className="font-mono text-defense-muted text-xs w-full h-full">
                 <img src="/academia/dodgeball.gif" alt="" loading="lazy" decoding="async" className="w-full h-auto object-cover" />
               </span>
@@ -181,7 +181,7 @@ export const COURSES = [
         content: (
           <div className="space-y-4">
             <span>Assignment 7 : Racetrack</span>
-            <div className="w-[50%] mx-auto border border-defense-border bg-black/50 rounded flex items-center justify-center overflow-hidden">
+            <div className="w-full md:w-[50%] mx-auto border border-defense-border bg-black/50 rounded flex items-center justify-center overflow-hidden">
               <span className="font-mono text-defense-muted text-xs w-full h-full">
                 <img src="/academia/racetrack.gif" alt="" loading="lazy" decoding="async" className="w-full h-auto object-cover" />
               </span>
@@ -208,7 +208,7 @@ export const COURSES = [
         content: (
           <div className="space-y-4">
             <span>Assignment 8 : PCG</span>
-            <div className="w-[50%] mx-auto border border-defense-border bg-black/50 rounded flex items-center justify-center overflow-hidden">
+            <div className="w-full md:w-[50%] mx-auto border border-defense-border bg-black/50 rounded flex items-center justify-center overflow-hidden">
               <span className="font-mono text-defense-muted text-xs w-full h-full">
                 <img src="/academia/pcg.png" alt="" loading="lazy" decoding="async" className="w-full h-auto object-cover" />
               </span>
