@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { SatelliteDish, Camera, Sparkle, BookUser, RectangleEllipsis, Croissant } from 'lucide-react';
+import { SatelliteDish, Camera, Sparkle, BookUser, RectangleEllipsis, Croissant, Target } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import Clock from './Clock';
 
@@ -26,12 +26,22 @@ export default function Navbar() {
   const isGallery = location.pathname === '/gallery' || location.pathname === '/gallery.html';
   const isPokedex = location.pathname === '/pokedex';
   const isKai = location.pathname === '/kai';
+  const isScore = location.pathname === '/darts';
 
   const [radarStatus, setRadarStatus] = useState('SYS_ONLINE');
   const [shutterStatus, setShutterStatus] = useState('SYS_ONLINE');
   const [pokedexStatus, setPokedexStatus] = useState('SYS_ONLINE');
-  const [catStatus, setCatStatus] = useState('SYS_ONLINE');
-  const [isShaking, setIsShaking] = useState(false);
+  const [bullseyeActive, setBullseyeActive] = useState(false);
+
+  const handleDartsClick = () => {
+    if (isScore) {
+      setBullseyeActive(true);
+      window.dispatchEvent(new Event('darts-spiral'));
+      setTimeout(() => {
+        setBullseyeActive(false);
+      }, 1500);
+    }
+  };
 
   useEffect(() => {
     const handleScanning = () => setRadarStatus('SCANNING...');
@@ -127,6 +137,14 @@ export default function Navbar() {
               >
                 <Croissant className="w-6 h-6" />
               </button>
+            ) : isScore ? (
+              <button
+                onClick={handleDartsClick}
+                className="relative z-10 text-defense-accent hover:text-white transition-colors outline-none cursor-pointer active:scale-90"
+                title="Bullseye!"
+              >
+                <Target className={`w-6 h-6 transition-all duration-300 ${bullseyeActive ? 'text-emerald-400 scale-125 rotate-45' : 'text-defense-accent'}`} />
+              </button>
             ) : (
               <button
                 id="radar-trigger"
@@ -160,6 +178,10 @@ export default function Navbar() {
             ) : isKai ? (
               <span className={`font-mono text-[10px] transition-colors duration-200 whitespace-nowrap ${catStatus === 'SYS_ONLINE' ? 'text-gray-500' : 'text-defense-accent'}`}>
                 {catStatus}
+              </span>
+            ) : isScore ? (
+              <span className={`font-mono text-[10px] whitespace-nowrap transition-colors duration-200 ${bullseyeActive ? 'text-emerald-400 font-bold' : 'text-gray-500'}`}>
+                {bullseyeActive ? 'BULLSEYE!' : 'DARTS_COUNTER'}
               </span>
             ) : (
               <span id="radar-status" className={`font-mono text-[10px] whitespace-nowrap ${radarStatus === 'SYS_ONLINE' ? 'text-gray-500' : 'text-defense-accent'}`}>

@@ -1,5 +1,6 @@
 import { useRef, useEffect } from 'react';
 import { Flame, Droplet, Zap, Wind, Mountain, Skull, Leaf } from 'lucide-react';
+import styles from './KaiCards.module.css';
 
 const types = [
   { name: 'Fire', icon: Flame, color: '#ef4444' },
@@ -324,13 +325,9 @@ export default function KaiCards() {
   return (
     <div
       id="kaicards-container"
-      className="min-h-screen w-full flex items-center justify-center pt-16 pb-8 touch-none select-none"
+      className={`min-h-screen w-full flex items-center justify-center pt-16 pb-8 touch-none select-none ${styles.kaicardsContainer}`}
       style={{ userSelect: 'none', WebkitUserSelect: 'none' }}
     >
-      <style>{`
-        #kaicards-container { cursor: grab; }
-        #kaicards-container:active { cursor: grabbing; }
-      `}</style>
 
       {/* Bottom glow — only on /kai */}
       <div

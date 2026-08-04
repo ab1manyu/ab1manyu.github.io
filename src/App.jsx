@@ -11,6 +11,7 @@ import DotGrid from './components/DotGrid';
 const Gallery = lazy(() => import('./pages/Gallery'));
 const KaiCards = lazy(() => import('./pages/KaiCards'));
 const Pokedex = lazy(() => import('./pages/Pokedex'));
+const DartScore = lazy(() => import('./pages/DartScore'));
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/kai" element={<KaiCards />} />
           <Route path="/pokedex" element={<Pokedex />} />
+          <Route path="/darts" element={<DartScore />} />
         </Routes>
       </Suspense>
       <Footer />

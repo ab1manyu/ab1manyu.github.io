@@ -130,13 +130,20 @@ export default function AsciiCats() {
         `${rows - 1}-${cols - 1}`
       ];
 
+      const middleCats = [];
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          if (r > 0 && r < rows - 1 && c > 0 && c < cols - 1) {
+            middleCats.push(`${r}-${c}`);
+          }
+        }
+      }
+
       // Check if corners are lit
       const allCornersLit = corners.every(c => next.has(c));
-      
-      // If corners are lit and possibly some others, but let's make it more specific:
-      // Pattern: Only corners lit or Corners + something else?
-      // "corners being highlighted" usually means the 4 corners.
-      // I'll trigger it if the 4 corners are lit, even if others are too.
+      const allMiddleLit = middleCats.length > 0 && middleCats.every(c => next.has(c));
+
+      // 4 Corners lit -> Pokedex
       if (allCornersLit && next.size === 4) {
         const t1 = setTimeout(() => {
           setSweeping(true);
@@ -146,6 +153,17 @@ export default function AsciiCats() {
         timeoutRefs.current.push(t1);
       }
 
+      // Middle cats lit -> Game Score Darts Counter (/darts)
+      if (allMiddleLit && next.size === middleCats.length) {
+        const t1 = setTimeout(() => {
+          setSweeping(true);
+          const t2 = setTimeout(() => navigate('/darts'), sweepDuration + 100);
+          timeoutRefs.current.push(t2);
+        }, 150);
+        timeoutRefs.current.push(t1);
+      }
+
+      // All cats lit -> Kai
       if (next.size === totalCats) {
         const t1 = setTimeout(() => {
           setSweeping(true);

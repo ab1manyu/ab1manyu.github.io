@@ -175,6 +175,34 @@
   animation: wave-function 3s cubic-bezier(0.2, 0, 0, 1) forwards;
 }
 
+.dot-grid-concentric-pulse {
+  background-image: radial-gradient(var(--accent-solid) 1.5px, transparent 1.5px);
+  background-size: 20px 20px;
+  -webkit-mask-image: radial-gradient(circle at center, transparent 40%, black 50%, transparent 60%);
+  mask-image: radial-gradient(circle at center, transparent 40%, black 50%, transparent 60%);
+  -webkit-mask-position: center center;
+  mask-position: center center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  animation: concentric-wave 2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes concentric-wave {
+  0% {
+    -webkit-mask-size: 0vmax 0vmax;
+    mask-size: 0vmax 0vmax;
+    opacity: 1;
+  }
+  75% {
+    opacity: 0.9;
+  }
+  100% {
+    -webkit-mask-size: 260vmax 260vmax;
+    mask-size: 260vmax 260vmax;
+    opacity: 0;
+  }
+}
+
 @keyframes wave-function {
   0% {
     -webkit-mask-size: 0vmax 0vmax;
@@ -367,4 +395,16 @@
 }
 .markdown-content a:hover {
   text-decoration: underline;
+}
+
+/* Remove Chrome, Safari, Edge, Opera number input spinners */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Remove Firefox number input spinners */
+input[type=number] {
+  -moz-appearance: textfield;
 }

@@ -1,0 +1,7 @@
+.kaicardsContainer {
+  cursor: grab;
+}
+
+.kaicardsContainer:active {
+  cursor: grabbing;
+}
