@@ -31,7 +31,9 @@ export default function Navbar() {
   const [radarStatus, setRadarStatus] = useState('SYS_ONLINE');
   const [shutterStatus, setShutterStatus] = useState('SYS_ONLINE');
   const [pokedexStatus, setPokedexStatus] = useState('SYS_ONLINE');
+  const [catStatus, setCatStatus] = useState('SYS_ONLINE');
   const [bullseyeActive, setBullseyeActive] = useState(false);
+  const [isShaking, setIsShaking] = useState(false);
 
   const handleDartsClick = () => {
     if (isScore) {

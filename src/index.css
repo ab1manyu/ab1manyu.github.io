@@ -51,6 +51,8 @@
     pointer-events: none;
     z-index: 999;
     background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MDAiIGhlaWdodD0iNTAwIj48ZmlsdGVyIGlkPSJub2lzZSI+PGZlVHVyYnVsZW5jZSB0eXBlPSJmcmFjdGFsTm9pc2UiIGJhc2VGcmVxdWVuY3k9IjAuNjUiIG51bT1vY3RhdmVzPSIzIiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI25vaXNlKSIgb3BhY2l0eT0iMC41Ii8+PC9zdmc+");
+    transform: translateZ(0);
+    will-change: transform;
   }
 
   .glass-panel {
@@ -89,6 +91,7 @@
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
+
   .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -193,9 +196,11 @@
     mask-size: 0vmax 0vmax;
     opacity: 1;
   }
+
   75% {
     opacity: 0.9;
   }
+
   100% {
     -webkit-mask-size: 260vmax 260vmax;
     mask-size: 260vmax 260vmax;
@@ -279,8 +284,13 @@
 }
 
 @keyframes spin-once-anim {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes fadeInOut {
@@ -351,31 +361,52 @@
 }
 
 /* Markdown Blog Content Styles */
-.markdown-content h1, 
-.markdown-content h2, 
+.markdown-content h1,
+.markdown-content h2,
 .markdown-content h3 {
   color: white;
   font-weight: 700;
   margin-top: 2rem;
   margin-bottom: 1rem;
 }
-.markdown-content h2 { font-size: 1.5rem; }
-.markdown-content h3 { font-size: 1.25rem; }
+
+.markdown-content h2 {
+  font-size: 1.5rem;
+}
+
+.markdown-content h3 {
+  font-size: 1.25rem;
+}
+
 .markdown-content p {
   color: #9ca3af;
   line-height: 1.75;
   margin-bottom: 1.5rem;
 }
-.markdown-content ul, 
+
+.markdown-content ul,
 .markdown-content ol {
   color: #9ca3af;
   margin-bottom: 1.5rem;
   padding-left: 1.5rem;
 }
-.markdown-content ul { list-style-type: disc; }
-.markdown-content ol { list-style-type: decimal; }
-.markdown-content li { margin-bottom: 0.5rem; }
-.markdown-content li::marker { color: #e2ea06; }
+
+.markdown-content ul {
+  list-style-type: disc;
+}
+
+.markdown-content ol {
+  list-style-type: decimal;
+}
+
+.markdown-content li {
+  margin-bottom: 0.5rem;
+}
+
+.markdown-content li::marker {
+  color: #e2ea06;
+}
+
 .markdown-content blockquote {
   border-left: 4px solid #e2ea06;
   padding-left: 1rem;
@@ -386,13 +417,16 @@
   padding: 1rem;
   border-radius: 0 0.5rem 0.5rem 0;
 }
+
 .markdown-content strong {
   color: white;
 }
+
 .markdown-content a {
   color: #e2ea06;
   text-decoration: none;
 }
+
 .markdown-content a:hover {
   text-decoration: underline;
 }

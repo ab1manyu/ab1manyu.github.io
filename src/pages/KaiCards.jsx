@@ -25,7 +25,7 @@ const images = [
   '/kai/kai10.jpg',
 ];
 
-const totalCards = 100;
+const totalCards = 20;
 const LEGENDARY_CHANCE = 0.15; // 15%
 
 const moves = [
