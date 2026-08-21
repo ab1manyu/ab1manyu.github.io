@@ -74,74 +74,111 @@ function formatTime(seconds) {
   return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
 }
 
-function DartboardSliceIcon({
+function DartboardIcon({
   type = "single",
   active = false,
-  className = "h-full w-auto",
+  className = "w-16 h-16 sm:w-20 sm:h-20",
 }) {
   const isSingle = type === "single" || type === 1;
   const isDouble = type === "double" || type === 2;
   const isTriple = type === "triple" || type === 3;
 
-  const defaultFill = active
-    ? "rgba(0, 0, 0, 0.08)"
-    : "rgba(255, 255, 255, 0.04)";
-  const activeFill = "#ffffff";
-  const defaultStroke = active
-    ? "rgba(0, 0, 0, 0.4)"
-    : "rgba(255, 255, 255, 0.35)";
-  const activeStroke = active ? "rgba(0, 0, 0, 0.75)" : "#ffffff";
+  const singleColor = active ? "#064e3b" : "#10b981";
+  const doubleColor = active ? "#78350f" : "#eab308";
+  const tripleColor = active ? "#7f1d1d" : "#ef4444";
+
+  const ringDefaultStroke = active
+    ? "rgba(0, 0, 0, 0.2)"
+    : "rgba(255, 255, 255, 0.12)";
+  const wireStroke = active
+    ? "rgba(0, 0, 0, 0.35)"
+    : "rgba(255, 255, 255, 0.2)";
+  const spokeStroke = active
+    ? "rgba(0, 0, 0, 0.18)"
+    : "rgba(255, 255, 255, 0.12)";
 
   return (
     <svg
-      viewBox="0 0 50 48"
+      viewBox="0 0 64 64"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={`${className} pointer-events-none select-none transition-all scale-x-[-1]`}
+      className={`${className} pointer-events-none select-none transition-all`}
     >
-      {/* Bull / Apex */}
-      <path
-        d="M 8.18 20.71 A 7 7 0 0 1 8.18 27.29 L 2 24 Z"
-        fill={defaultFill}
-        stroke={defaultStroke}
-        strokeWidth="1"
-        strokeLinejoin="round"
+      {/* 20 Spoke radial wire lines */}
+      <g stroke={spokeStroke} strokeWidth="0.5">
+        {[0, 18, 36, 54, 72, 90, 108, 126, 144, 162].map((deg) => {
+          const rad = (deg * Math.PI) / 180;
+          return (
+            <line
+              key={deg}
+              x1={(32 - 30 * Math.cos(rad)).toFixed(2)}
+              y1={(32 - 30 * Math.sin(rad)).toFixed(2)}
+              x2={(32 + 30 * Math.cos(rad)).toFixed(2)}
+              y2={(32 + 30 * Math.sin(rad)).toFixed(2)}
+            />
+          );
+        })}
+      </g>
+
+      {/* Outer Double Ring (width 4) - Highlighted Yellow for Double */}
+      <circle
+        cx="32"
+        cy="32"
+        r="28"
+        fill="none"
+        stroke={isDouble ? doubleColor : ringDefaultStroke}
+        strokeWidth="4"
       />
 
-      {/* Inner Circle (Single Bed - filled for Single) */}
-      <path
-        d="M 17.89 15.55 A 18 18 0 0 1 17.89 32.45 L 8.18 27.29 A 7 7 0 0 0 8.18 20.71 Z"
-        fill={isSingle ? activeFill : defaultFill}
-        stroke={isSingle ? activeStroke : defaultStroke}
-        strokeWidth={isSingle ? "1.4" : "1"}
-        strokeLinejoin="round"
+      {/* Outer Single Bed (width 8, between double and triple) - Highlighted Green for Single */}
+      <circle
+        cx="32"
+        cy="32"
+        r="22"
+        fill="none"
+        stroke={isSingle ? singleColor : ringDefaultStroke}
+        strokeWidth="8"
       />
 
-      {/* Middle Circle (Triple Ring - filled for Triple) */}
-      <path
-        d="M 24.96 11.79 A 26 26 0 0 1 24.96 36.21 L 17.89 32.45 A 18 18 0 0 0 17.89 15.55 Z"
-        fill={isTriple ? activeFill : defaultFill}
-        stroke={isTriple ? activeStroke : defaultStroke}
-        strokeWidth={isTriple ? "1.4" : "1"}
-        strokeLinejoin="round"
+      {/* Middle Triple Ring (width 4) - Highlighted Red for Triple */}
+      <circle
+        cx="32"
+        cy="32"
+        r="16"
+        fill="none"
+        stroke={isTriple ? tripleColor : ringDefaultStroke}
+        strokeWidth="4"
       />
 
-      {/* Outer Single Bed */}
-      <path
-        d="M 36.44 5.69 A 39 39 0 0 1 36.44 42.31 L 24.96 36.21 A 26 26 0 0 0 24.96 11.79 Z"
-        fill={defaultFill}
-        stroke={defaultStroke}
-        strokeWidth="1"
-        strokeLinejoin="round"
+      {/* Inner Single Bed (width 8, between triple and bull) - Highlighted Green for Single */}
+      <circle
+        cx="32"
+        cy="32"
+        r="10"
+        fill="none"
+        stroke={isSingle ? singleColor : ringDefaultStroke}
+        strokeWidth="8"
       />
 
-      {/* Outer Circle (Double Ring - filled for Double) */}
-      <path
-        d="M 44.38 1.47 A 48 48 0 0 1 44.38 46.53 L 36.44 42.31 A 39 39 0 0 0 36.44 5.69 Z"
-        fill={isDouble ? activeFill : defaultFill}
-        stroke={isDouble ? activeStroke : defaultStroke}
-        strokeWidth={isDouble ? "1.4" : "1"}
-        strokeLinejoin="round"
+      {/* Concentric Wire Boundary Circles */}
+      <circle cx="32" cy="32" r="30" stroke={wireStroke} strokeWidth="0.75" />
+      <circle cx="32" cy="32" r="26" stroke={wireStroke} strokeWidth="0.5" />
+      <circle cx="32" cy="32" r="18" stroke={wireStroke} strokeWidth="0.5" />
+      <circle cx="32" cy="32" r="14" stroke={wireStroke} strokeWidth="0.5" />
+      <circle cx="32" cy="32" r="6" stroke={wireStroke} strokeWidth="0.75" />
+
+      {/* Bullseye Center */}
+      <circle
+        cx="32"
+        cy="32"
+        r="6"
+        fill={active ? "rgba(0, 0, 0, 0.12)" : "rgba(255, 255, 255, 0.08)"}
+      />
+      <circle
+        cx="32"
+        cy="32"
+        r="2.5"
+        fill={active ? "rgba(0, 0, 0, 0.35)" : "rgba(255, 255, 255, 0.25)"}
       />
     </svg>
   );
@@ -261,6 +298,22 @@ export default function DartScoreCore() {
   // Current turn input
   const [currentDarts, setCurrentDarts] = useState([]);
   const [multiplier, setMultiplier] = useState(1);
+
+  // Per-move state undo stack
+  const [undoStack, setUndoStack] = useState([]);
+
+  const pushUndoState = () => {
+    setUndoStack((prev) => [
+      ...prev,
+      {
+        players: JSON.parse(JSON.stringify(players)),
+        activePlayerIndex,
+        currentDarts: [...currentDarts],
+        multiplier,
+        winner,
+      },
+    ]);
+  };
   const [bustAlert, setBustAlert] = useState(false);
   const [winner, setWinner] = useState(null);
   const [isProcessingTurn, setIsProcessingTurn] = useState(false);
@@ -308,6 +361,7 @@ export default function DartScoreCore() {
     setTypeInValue("");
     setIsProcessingTurn(false);
     setIsTimerRunning(true);
+    setUndoStack([]);
   };
 
   const handleStartScoreChange = (score) => {
@@ -333,10 +387,7 @@ export default function DartScoreCore() {
   const activePlayer = players[activePlayerIndex];
   const activeTheme = PLAYER_THEMES[activePlayer?.themeIndex ?? 0];
   const turnTotal = currentDarts.reduce((a, b) => a + b.value, 0);
-  const prevPlayerIndex =
-    (activePlayerIndex - 1 + players.length) % players.length;
-  const canUndo =
-    Boolean(players[prevPlayerIndex]?.history?.length > 0) && !isProcessingTurn;
+  const canUndo = undoStack.length > 0 && !isProcessingTurn;
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -381,6 +432,9 @@ export default function DartScoreCore() {
           setCustomStartInput("");
           setShowCustomScoreModal(false);
         }
+      } else if (e.key === "Backspace" && canUndo) {
+        e.preventDefault();
+        handleUndo();
       }
     };
 
@@ -392,10 +446,15 @@ export default function DartScoreCore() {
     typeInValue,
     customStartInput,
     numPlayers,
+    canUndo,
+    undoStack,
+    isProcessingTurn,
   ]);
 
   const handleAddDart = (num) => {
     if (!activePlayer || currentDarts.length >= 3 || isProcessingTurn) return;
+
+    pushUndoState();
 
     let value = num * multiplier;
     let isDouble = multiplier === 2;
@@ -436,6 +495,7 @@ export default function DartScoreCore() {
 
   const handleSubtractScore = (scoreToSubtract = null, dartsCount = 3) => {
     if (isProcessingTurn) return;
+    pushUndoState();
     let pts = scoreToSubtract;
     let dartArray = currentDarts;
 
@@ -562,31 +622,23 @@ export default function DartScoreCore() {
   };
 
   const handleUndo = () => {
-    if (!canUndo) return;
-    const targetPlayer = players[prevPlayerIndex];
+    if (!canUndo || undoStack.length === 0) return;
 
-    if (!targetPlayer || targetPlayer.history.length === 0) return;
-    const lastEntry = targetPlayer.history[targetPlayer.history.length - 1];
+    const lastState = undoStack[undoStack.length - 1];
+    setUndoStack((prev) => prev.slice(0, -1));
 
-    setPlayers((prev) =>
-      prev.map((p, idx) => {
-        if (idx === prevPlayerIndex) {
-          return {
-            ...p,
-            score: lastEntry.prevScore,
-            totalScored: Math.max(0, p.totalScored - lastEntry.score),
-            dartsThrown: Math.max(0, p.dartsThrown - 3),
-            lastTurn:
-              p.history.length > 1 ? p.history[p.history.length - 2].score : 0,
-            history: p.history.slice(0, -1),
-          };
-        }
-        return p;
-      }),
+    setPlayers(
+      lastState.players.map((p, idx) => ({
+        ...p,
+        timeSeconds: players[idx]?.timeSeconds ?? p.timeSeconds,
+      })),
     );
-
-    setActivePlayerIndex(prevPlayerIndex);
-    setCurrentDarts([]);
+    setActivePlayerIndex(lastState.activePlayerIndex);
+    setCurrentDarts(lastState.currentDarts);
+    setMultiplier(lastState.multiplier ?? 1);
+    setWinner(lastState.winner ?? null);
+    setBustAlert(false);
+    setIsProcessingTurn(false);
   };
 
   const isCustomStart = ![101, 301, 501, 701].includes(startScore);
@@ -842,11 +894,11 @@ export default function DartScoreCore() {
             >
               <span className="relative z-10">SINGLE (1x)</span>
               <div
-                className={`absolute inset-y-0 -right-1 sm:right-0flex items-center pointer-events-none transition-opacity ${
-                  multiplier === 1 ? "opacity-90" : "opacity-45"
+                className={`absolute -top-4 -right-[50px] sm:-top-3 sm:-right-[50px] pointer-events-none transition-opacity ${
+                  multiplier === 1 ? "opacity-40" : "opacity-25"
                 }`}
               >
-                <DartboardSliceIcon type="single" active={multiplier === 1} />
+                <DartboardIcon type="single" active={multiplier === 1} className="w-20 h-20 sm:w-24 sm:h-24" />
               </div>
             </button>
             <button
@@ -859,11 +911,11 @@ export default function DartScoreCore() {
             >
               <span className="relative z-10">DOUBLE (2x)</span>
               <div
-                className={`absolute inset-y-0 -right-1 sm:right-0 flex items-center pointer-events-none transition-opacity ${
-                  multiplier === 2 ? "opacity-90" : "opacity-45"
+                className={`absolute -top-4 -right-[50px] sm:-top-3 sm:-right-[50px] pointer-events-none transition-opacity ${
+                  multiplier === 2 ? "opacity-40" : "opacity-25"
                 }`}
               >
-                <DartboardSliceIcon type="double" active={multiplier === 2} />
+                <DartboardIcon type="double" active={multiplier === 2} className="w-20 h-20 sm:w-24 sm:h-24" />
               </div>
             </button>
             <button
@@ -876,11 +928,11 @@ export default function DartScoreCore() {
             >
               <span className="relative z-10">TRIPLE (3x)</span>
               <div
-                className={`absolute inset-y-0 -right-1 sm:right-0 flex items-center pointer-events-none transition-opacity ${
-                  multiplier === 3 ? "opacity-90" : "opacity-45"
+                className={`absolute -top-4 -right-[50px] sm:-top-3 sm:-right-[50px] pointer-events-none transition-opacity ${
+                  multiplier === 3 ? "opacity-40" : "opacity-25"
                 }`}
               >
-                <DartboardSliceIcon type="triple" active={multiplier === 3} />
+                <DartboardIcon type="triple" active={multiplier === 3} className="w-20 h-20 sm:w-24 sm:h-24" />
               </div>
             </button>
           </div>

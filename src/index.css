@@ -192,18 +192,22 @@
 
 @keyframes concentric-wave {
   0% {
-    -webkit-mask-size: 0vmax 0vmax;
-    mask-size: 0vmax 0vmax;
+    -webkit-mask-size: 260vmax 260vmax;
+    mask-size: 260vmax 260vmax;
+    opacity: 0;
+  }
+
+  8% {
     opacity: 1;
   }
 
-  75% {
+  85% {
     opacity: 0.9;
   }
 
   100% {
-    -webkit-mask-size: 260vmax 260vmax;
-    mask-size: 260vmax 260vmax;
+    -webkit-mask-size: 0vmax 0vmax;
+    mask-size: 0vmax 0vmax;
     opacity: 0;
   }
 }
