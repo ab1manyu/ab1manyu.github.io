@@ -575,6 +575,8 @@ export default function DartScoreCore() {
           return p;
         }),
       );
+    } else if (remaining === 0) {
+      const newLegs = activePlayer.legs + 1;
       setWinner({
         name: activePlayer.name,
         legs: newLegs,
