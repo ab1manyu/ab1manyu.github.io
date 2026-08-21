@@ -10,6 +10,11 @@ import {
   Check,
   Play,
   Pause,
+  Wand,
+  Cake,
+  Flame,
+  Droplet,
+  Leaf,
 } from "lucide-react";
 import styles from "./DartScoreCore.module.css";
 
@@ -17,6 +22,8 @@ const PLAYER_THEMES = [
   {
     id: 0,
     name: "GREEN",
+    element: "leaf",
+    icon: Leaf,
     colorHex: "#10b981",
     border: styles.themeGreenBorder,
     borderActive: styles.themeGreenBorderActive,
@@ -30,6 +37,8 @@ const PLAYER_THEMES = [
   {
     id: 1,
     name: "RED",
+    element: "fire",
+    icon: Flame,
     colorHex: "#ef4444",
     border: styles.themeRedBorder,
     borderActive: styles.themeRedBorderActive,
@@ -43,6 +52,8 @@ const PLAYER_THEMES = [
   {
     id: 2,
     name: "YELLOW",
+    element: "electric",
+    icon: Zap,
     colorHex: "#eab308",
     border: styles.themeYellowBorder,
     borderActive: styles.themeYellowBorderActive,
@@ -56,6 +67,8 @@ const PLAYER_THEMES = [
   {
     id: 3,
     name: "BLUE",
+    element: "water",
+    icon: Droplet,
     colorHex: "#3b82f6",
     border: styles.themeBlueBorder,
     borderActive: styles.themeBlueBorderActive,
@@ -562,9 +575,12 @@ export default function DartScoreCore() {
           return p;
         }),
       );
-    } else if (remaining === 0) {
-      const newLegs = activePlayer.legs + 1;
-      setWinner({ name: activePlayer.name, legs: newLegs, theme: activeTheme });
+      setWinner({
+        name: activePlayer.name,
+        legs: newLegs,
+        theme: activeTheme,
+        icon: activeTheme.icon,
+      });
 
       setPlayers((prev) =>
         prev.map((p, idx) => {
@@ -701,7 +717,7 @@ export default function DartScoreCore() {
         <div className="flex items-center gap-1.5 sm:gap-2 ml-auto">
           <button
             onClick={() => setIsTimerRunning((prev) => !prev)}
-            className={`p-2 sm:w-[84px] sm:py-1.5 shrink-0 flex items-center justify-center gap-1 rounded-xl border text-xs font-bold transition-all ${
+            className={`group p-2 sm:w-[84px] sm:py-1.5 shrink-0 flex items-center justify-center gap-1 rounded-xl border text-xs font-bold transition-all ${
               isTimerRunning
                 ? "bg-gray-900/90 text-gray-300 border-gray-800 hover:bg-gray-800 hover:text-white"
                 : "bg-emerald-950/60 text-emerald-300 border-emerald-800/80 hover:bg-emerald-900"
@@ -709,9 +725,9 @@ export default function DartScoreCore() {
             title={isTimerRunning ? "Pause Timer" : "Resume Timer"}
           >
             {isTimerRunning ? (
-              <Pause className="w-3.5 h-3.5 text-gray-400" />
+              <Pause className="w-3.5 h-3.5 text-gray-400 group-hover:text-white group-hover:fill-current transition-all" />
             ) : (
-              <Play className="w-3.5 h-3.5 text-emerald-400" />
+              <Play className="w-3.5 h-3.5 text-emerald-400 group-hover:fill-current transition-all" />
             )}
             <span className="hidden sm:inline">
               {isTimerRunning ? "PAUSE" : "RESUME"}
@@ -751,9 +767,19 @@ export default function DartScoreCore() {
               }`}
             >
               <div className="flex items-center justify-center gap-1 sm:gap-1.5 w-full mb-1">
-                <span
-                  className={`hidden sm:inline-block w-2.5 h-2.5 rounded-full flex-shrink-0 ${isActive ? theme.dot : "bg-gray-600"}`}
-                />
+                {(() => {
+                  const PlayerIcon = theme?.icon;
+                  return PlayerIcon ? (
+                    <PlayerIcon
+                      className={`w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0 transition-all ${
+                        isActive
+                          ? `${theme.text} fill-current`
+                          : "text-gray-500"
+                      }`}
+                      fill={isActive ? "currentColor" : "none"}
+                    />
+                  ) : null;
+                })()}
                 <span
                   className={`hidden sm:inline text-xs font-bold truncate ${isActive ? "text-white" : "text-gray-400"}`}
                 >
@@ -810,9 +836,18 @@ export default function DartScoreCore() {
               THROWING
             </span>
             <h2
-              className={`text-xs sm:text-base font-extrabold whitespace-nowrap ${activeTheme.text}`}
+              className={`text-xs sm:text-base font-extrabold whitespace-nowrap flex items-center gap-1.5 ${activeTheme.text}`}
             >
-              {activePlayer?.name}
+              {(() => {
+                const ActiveIcon = activeTheme?.icon;
+                return ActiveIcon ? (
+                  <ActiveIcon
+                    className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 fill-current"
+                    fill="currentColor"
+                  />
+                ) : null;
+              })()}
+              <span>{activePlayer?.name}</span>
             </h2>
           </div>
 
@@ -898,7 +933,11 @@ export default function DartScoreCore() {
                   multiplier === 1 ? "opacity-40" : "opacity-25"
                 }`}
               >
-                <DartboardIcon type="single" active={multiplier === 1} className="w-20 h-20 sm:w-24 sm:h-24" />
+                <DartboardIcon
+                  type="single"
+                  active={multiplier === 1}
+                  className="w-20 h-20 sm:w-24 sm:h-24"
+                />
               </div>
             </button>
             <button
@@ -915,7 +954,11 @@ export default function DartScoreCore() {
                   multiplier === 2 ? "opacity-40" : "opacity-25"
                 }`}
               >
-                <DartboardIcon type="double" active={multiplier === 2} className="w-20 h-20 sm:w-24 sm:h-24" />
+                <DartboardIcon
+                  type="double"
+                  active={multiplier === 2}
+                  className="w-20 h-20 sm:w-24 sm:h-24"
+                />
               </div>
             </button>
             <button
@@ -932,7 +975,11 @@ export default function DartScoreCore() {
                   multiplier === 3 ? "opacity-40" : "opacity-25"
                 }`}
               >
-                <DartboardIcon type="triple" active={multiplier === 3} className="w-20 h-20 sm:w-24 sm:h-24" />
+                <DartboardIcon
+                  type="triple"
+                  active={multiplier === 3}
+                  className="w-20 h-20 sm:w-24 sm:h-24"
+                />
               </div>
             </button>
           </div>
@@ -1205,16 +1252,26 @@ export default function DartScoreCore() {
         <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
           <div className="bg-black border border-gray-800 rounded-3xl p-8 max-w-md w-full text-center space-y-6">
             <div
-              className={`w-16 h-16 rounded-full border flex items-center justify-center mx-auto ${winner.theme.badge}`}
+              className={`w-16 h-16 rounded-full border flex items-center justify-center mx-auto ${winner.theme?.badge}`}
             >
-              <Zap className="w-8 h-8" />
+              {(() => {
+                const WinnerIcon = winner.icon || winner.theme?.icon;
+                return WinnerIcon ? (
+                  <WinnerIcon className="w-8 h-8" fill="currentColor" />
+                ) : null;
+              })()}
             </div>
             <div>
               <h3 className="text-2xl font-black text-white tracking-wider">
-                LEG WINNER!
+                CONGRATULATIONS!
               </h3>
-              <p className={`text-xl font-extrabold ${winner.theme.text} mt-1`}>
+              <p className={`text-xl font-extrabold ${winner.theme.text} mt-2`}>
                 {winner.name}
+              </p>
+              <p
+                className={`text-sm font-extrabold ${winner.theme.text} opacity-40`}
+              >
+                TOTAL GAMES WON: {winner.legs}
               </p>
             </div>
             <button
