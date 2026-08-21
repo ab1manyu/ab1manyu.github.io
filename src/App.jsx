@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import Home from './pages/Home';
@@ -30,6 +30,7 @@ function App() {
           <Route path="/kai" element={<KaiCards />} />
           <Route path="/pokedex" element={<Pokedex />} />
           <Route path="/darts" element={<DartScore />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>
       <Footer />
