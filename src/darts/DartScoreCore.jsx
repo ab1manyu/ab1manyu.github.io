@@ -1,66 +1,154 @@
-import { useState, useEffect, useRef } from 'react';
-import { RotateCcw, Undo2, Zap, AlertTriangle, Calculator, X, Delete, Check, Play, Pause } from 'lucide-react';
-import styles from './DartScoreCore.module.css';
+import { useState, useEffect, useRef } from "react";
+import {
+  RotateCcw,
+  Undo2,
+  Zap,
+  AlertTriangle,
+  Calculator,
+  X,
+  Delete,
+  Check,
+  Play,
+  Pause,
+} from "lucide-react";
+import styles from "./DartScoreCore.module.css";
 
 const PLAYER_THEMES = [
   {
     id: 0,
-    name: 'GREEN',
-    colorHex: '#10b981',
-    border: 'border-emerald-500',
-    borderActive: 'border-emerald-500 shadow-emerald-950/60 ring-emerald-500/60',
-    bgActive: 'bg-emerald-950/40',
-    bgSubtle: 'bg-emerald-950/15',
-    bgBtn: 'bg-emerald-500 text-black hover:bg-emerald-400',
-    text: 'text-emerald-400',
-    dot: 'bg-emerald-500',
+    name: "GREEN",
+    colorHex: "#10b981",
+    border: styles.themeGreenBorder,
+    borderActive: styles.themeGreenBorderActive,
+    bgActive: styles.themeGreenBgActive,
+    bgSubtle: styles.themeGreenBgSubtle,
+    bgBtn: styles.themeGreenBgBtn,
+    text: styles.themeGreenText,
+    dot: styles.themeGreenDot,
+    badge: styles.themeGreenBadge,
   },
   {
     id: 1,
-    name: 'RED',
-    colorHex: '#ef4444',
-    border: 'border-red-500',
-    borderActive: 'border-red-500 shadow-red-950/60 ring-red-500/60',
-    bgActive: 'bg-red-950/40',
-    bgSubtle: 'bg-red-950/15',
-    bgBtn: 'bg-red-500 text-black hover:bg-red-400',
-    text: 'text-red-400',
-    dot: 'bg-red-500',
+    name: "RED",
+    colorHex: "#ef4444",
+    border: styles.themeRedBorder,
+    borderActive: styles.themeRedBorderActive,
+    bgActive: styles.themeRedBgActive,
+    bgSubtle: styles.themeRedBgSubtle,
+    bgBtn: styles.themeRedBgBtn,
+    text: styles.themeRedText,
+    dot: styles.themeRedDot,
+    badge: styles.themeRedBadge,
   },
   {
     id: 2,
-    name: 'YELLOW',
-    colorHex: '#eab308',
-    border: 'border-yellow-500',
-    borderActive: 'border-yellow-500 shadow-yellow-950/60 ring-yellow-500/60',
-    bgActive: 'bg-yellow-950/40',
-    bgSubtle: 'bg-yellow-950/15',
-    bgBtn: 'bg-yellow-500 text-black hover:bg-yellow-400',
-    text: 'text-yellow-400',
-    dot: 'bg-yellow-500',
+    name: "YELLOW",
+    colorHex: "#eab308",
+    border: styles.themeYellowBorder,
+    borderActive: styles.themeYellowBorderActive,
+    bgActive: styles.themeYellowBgActive,
+    bgSubtle: styles.themeYellowBgSubtle,
+    bgBtn: styles.themeYellowBgBtn,
+    text: styles.themeYellowText,
+    dot: styles.themeYellowDot,
+    badge: styles.themeYellowBadge,
   },
   {
     id: 3,
-    name: 'BLUE',
-    colorHex: '#3b82f6',
-    border: 'border-blue-500',
-    borderActive: 'border-blue-500 shadow-blue-950/60 ring-blue-500/60',
-    bgActive: 'bg-blue-950/40',
-    bgSubtle: 'bg-blue-950/15',
-    bgBtn: 'bg-blue-500 text-black hover:bg-blue-400',
-    text: 'text-blue-400',
-    dot: 'bg-blue-500',
+    name: "BLUE",
+    colorHex: "#3b82f6",
+    border: styles.themeBlueBorder,
+    borderActive: styles.themeBlueBorderActive,
+    bgActive: styles.themeBlueBgActive,
+    bgSubtle: styles.themeBlueBgSubtle,
+    bgBtn: styles.themeBlueBgBtn,
+    text: styles.themeBlueText,
+    dot: styles.themeBlueDot,
+    badge: styles.themeBlueBadge,
   },
 ];
 
 function formatTime(seconds) {
   const mins = Math.floor(seconds / 60);
   const secs = seconds % 60;
-  return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
 }
 
-function MatrixScoreDisplay({ score, colorClass = 'text-emerald-400' }) {
-  const [displayDigits, setDisplayDigits] = useState(String(score).split(''));
+function DartboardSliceIcon({
+  type = "single",
+  active = false,
+  className = "h-full w-auto",
+}) {
+  const isSingle = type === "single" || type === 1;
+  const isDouble = type === "double" || type === 2;
+  const isTriple = type === "triple" || type === 3;
+
+  const defaultFill = active
+    ? "rgba(0, 0, 0, 0.08)"
+    : "rgba(255, 255, 255, 0.04)";
+  const activeFill = "#ffffff";
+  const defaultStroke = active
+    ? "rgba(0, 0, 0, 0.4)"
+    : "rgba(255, 255, 255, 0.35)";
+  const activeStroke = active ? "rgba(0, 0, 0, 0.75)" : "#ffffff";
+
+  return (
+    <svg
+      viewBox="0 0 50 48"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={`${className} pointer-events-none select-none transition-all scale-x-[-1]`}
+    >
+      {/* Bull / Apex */}
+      <path
+        d="M 8.18 20.71 A 7 7 0 0 1 8.18 27.29 L 2 24 Z"
+        fill={defaultFill}
+        stroke={defaultStroke}
+        strokeWidth="1"
+        strokeLinejoin="round"
+      />
+
+      {/* Inner Circle (Single Bed - filled for Single) */}
+      <path
+        d="M 17.89 15.55 A 18 18 0 0 1 17.89 32.45 L 8.18 27.29 A 7 7 0 0 0 8.18 20.71 Z"
+        fill={isSingle ? activeFill : defaultFill}
+        stroke={isSingle ? activeStroke : defaultStroke}
+        strokeWidth={isSingle ? "1.4" : "1"}
+        strokeLinejoin="round"
+      />
+
+      {/* Middle Circle (Triple Ring - filled for Triple) */}
+      <path
+        d="M 24.96 11.79 A 26 26 0 0 1 24.96 36.21 L 17.89 32.45 A 18 18 0 0 0 17.89 15.55 Z"
+        fill={isTriple ? activeFill : defaultFill}
+        stroke={isTriple ? activeStroke : defaultStroke}
+        strokeWidth={isTriple ? "1.4" : "1"}
+        strokeLinejoin="round"
+      />
+
+      {/* Outer Single Bed */}
+      <path
+        d="M 36.44 5.69 A 39 39 0 0 1 36.44 42.31 L 24.96 36.21 A 26 26 0 0 0 24.96 11.79 Z"
+        fill={defaultFill}
+        stroke={defaultStroke}
+        strokeWidth="1"
+        strokeLinejoin="round"
+      />
+
+      {/* Outer Circle (Double Ring - filled for Double) */}
+      <path
+        d="M 44.38 1.47 A 48 48 0 0 1 44.38 46.53 L 36.44 42.31 A 39 39 0 0 0 36.44 5.69 Z"
+        fill={isDouble ? activeFill : defaultFill}
+        stroke={isDouble ? activeStroke : defaultStroke}
+        strokeWidth={isDouble ? "1.4" : "1"}
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function MatrixScoreDisplay({ score, colorClass = "text-emerald-400" }) {
+  const [displayDigits, setDisplayDigits] = useState(String(score).split(""));
   const [scramblingIndices, setScramblingIndices] = useState([]);
   const prevScoreRef = useRef(score);
 
@@ -71,7 +159,7 @@ function MatrixScoreDisplay({ score, colorClass = 'text-emerald-400' }) {
     const newStr = String(score);
     prevScoreRef.current = score;
 
-    const targetDigits = newStr.split('');
+    const targetDigits = newStr.split("");
     const changedIndices = [];
 
     for (let i = 0; i < targetDigits.length; i++) {
@@ -96,12 +184,14 @@ function MatrixScoreDisplay({ score, colorClass = 'text-emerald-400' }) {
         setDisplayDigits(targetDigits);
         setScramblingIndices([]);
       } else {
-        setDisplayDigits(targetDigits.map((d, i) => {
-          if (changedIndices.includes(i)) {
-            return String(Math.floor(Math.random() * 10));
-          }
-          return d;
-        }));
+        setDisplayDigits(
+          targetDigits.map((d, i) => {
+            if (changedIndices.includes(i)) {
+              return String(Math.floor(Math.random() * 10));
+            }
+            return d;
+          }),
+        );
       }
     }, 40);
 
@@ -113,7 +203,11 @@ function MatrixScoreDisplay({ score, colorClass = 'text-emerald-400' }) {
       {displayDigits.map((char, i) => (
         <span
           key={i}
-          className={scramblingIndices.includes(i) ? `${colorClass} animate-pulse inline-block` : 'inline-block'}
+          className={
+            scramblingIndices.includes(i)
+              ? `${colorClass} animate-pulse inline-block`
+              : "inline-block"
+          }
         >
           {char}
         </span>
@@ -123,7 +217,7 @@ function MatrixScoreDisplay({ score, colorClass = 'text-emerald-400' }) {
 }
 
 export default function DartScoreCore() {
-  const [startScore, setStartScore] = useState(501);
+  const [startScore, setStartScore] = useState(301);
   const [numPlayers, setNumPlayers] = useState(2);
   const [doubleOut, setDoubleOut] = useState(true);
 
@@ -132,12 +226,34 @@ export default function DartScoreCore() {
 
   // Custom score modal state
   const [showCustomScoreModal, setShowCustomScoreModal] = useState(false);
-  const [customStartInput, setCustomStartInput] = useState('');
+  const [customStartInput, setCustomStartInput] = useState("");
 
   // Player state
   const [players, setPlayers] = useState([
-    { id: 1, name: 'PLAYER 1', themeIndex: 0, score: 501, legs: 0, totalScored: 0, dartsThrown: 0, lastTurn: 0, history: [], timeSeconds: 0 },
-    { id: 2, name: 'PLAYER 2', themeIndex: 1, score: 501, legs: 0, totalScored: 0, dartsThrown: 0, lastTurn: 0, history: [], timeSeconds: 0 },
+    {
+      id: 1,
+      name: "PLAYER 1",
+      themeIndex: 0,
+      score: 301,
+      legs: 0,
+      totalScored: 0,
+      dartsThrown: 0,
+      lastTurn: 0,
+      history: [],
+      timeSeconds: 0,
+    },
+    {
+      id: 2,
+      name: "PLAYER 2",
+      themeIndex: 1,
+      score: 301,
+      legs: 0,
+      totalScored: 0,
+      dartsThrown: 0,
+      lastTurn: 0,
+      history: [],
+      timeSeconds: 0,
+    },
   ]);
 
   const [activePlayerIndex, setActivePlayerIndex] = useState(0);
@@ -151,18 +267,20 @@ export default function DartScoreCore() {
 
   // Keypad Modal state
   const [showTypeInModal, setShowTypeInModal] = useState(false);
-  const [typeInValue, setTypeInValue] = useState('');
+  const [typeInValue, setTypeInValue] = useState("");
 
   useEffect(() => {
     if (!isTimerRunning || winner) return;
 
     const interval = setInterval(() => {
-      setPlayers(prev => prev.map((p, idx) => {
-        if (idx === activePlayerIndex) {
-          return { ...p, timeSeconds: p.timeSeconds + 1 };
-        }
-        return p;
-      }));
+      setPlayers((prev) =>
+        prev.map((p, idx) => {
+          if (idx === activePlayerIndex) {
+            return { ...p, timeSeconds: p.timeSeconds + 1 };
+          }
+          return p;
+        }),
+      );
     }, 1000);
 
     return () => clearInterval(interval);
@@ -179,7 +297,7 @@ export default function DartScoreCore() {
       dartsThrown: 0,
       lastTurn: 0,
       history: [],
-      timeSeconds: 0
+      timeSeconds: 0,
     }));
     setPlayers(newPlayers);
     setActivePlayerIndex(0);
@@ -187,7 +305,7 @@ export default function DartScoreCore() {
     setMultiplier(1);
     setBustAlert(false);
     setWinner(null);
-    setTypeInValue('');
+    setTypeInValue("");
     setIsProcessingTurn(false);
     setIsTimerRunning(true);
   };
@@ -203,7 +321,7 @@ export default function DartScoreCore() {
       setStartScore(parsed);
       resetMatch(parsed, numPlayers);
       setShowCustomScoreModal(false);
-      setCustomStartInput('');
+      setCustomStartInput("");
     }
   };
 
@@ -215,40 +333,66 @@ export default function DartScoreCore() {
   const activePlayer = players[activePlayerIndex];
   const activeTheme = PLAYER_THEMES[activePlayer?.themeIndex ?? 0];
   const turnTotal = currentDarts.reduce((a, b) => a + b.value, 0);
+  const prevPlayerIndex =
+    (activePlayerIndex - 1 + players.length) % players.length;
+  const canUndo =
+    Boolean(players[prevPlayerIndex]?.history?.length > 0) && !isProcessingTurn;
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
+      if (["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName))
+        return;
 
-      if (e.key >= '0' && e.key <= '9') {
+      if (e.key >= "0" && e.key <= "9") {
         if (!showTypeInModal && !showCustomScoreModal) {
           setShowTypeInModal(true);
           setTypeInValue(e.key);
         } else if (showTypeInModal) {
-          setTypeInValue(prev => (prev.length < 3 ? prev + e.key : prev));
+          setTypeInValue((prev) => (prev.length < 3 ? prev + e.key : prev));
+        } else if (showCustomScoreModal) {
+          setCustomStartInput((prev) =>
+            prev.length < 4 ? prev + e.key : prev,
+          );
         }
       } else if (showTypeInModal) {
-        if (e.key === 'Backspace') {
-          setTypeInValue(prev => prev.slice(0, -1));
-        } else if (e.key === 'Enter') {
+        if (e.key === "Backspace") {
+          setTypeInValue((prev) => prev.slice(0, -1));
+        } else if (e.key === "Enter") {
           e.preventDefault();
           const parsed = parseInt(typeInValue, 10);
           if (!isNaN(parsed) && parsed >= 0 && parsed <= 180) {
             handleSubtractScore(parsed, 3);
-            setTypeInValue('');
+            setTypeInValue("");
             setShowTypeInModal(false);
           }
-        } else if (e.key === 'Escape') {
+        } else if (e.key === "Escape") {
           e.preventDefault();
-          setTypeInValue('');
+          setTypeInValue("");
           setShowTypeInModal(false);
+        }
+      } else if (showCustomScoreModal) {
+        if (e.key === "Backspace") {
+          setCustomStartInput((prev) => prev.slice(0, -1));
+        } else if (e.key === "Enter") {
+          e.preventDefault();
+          handleCustomScoreSubmit();
+        } else if (e.key === "Escape") {
+          e.preventDefault();
+          setCustomStartInput("");
+          setShowCustomScoreModal(false);
         }
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [showTypeInModal, showCustomScoreModal, typeInValue]);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [
+    showTypeInModal,
+    showCustomScoreModal,
+    typeInValue,
+    customStartInput,
+    numPlayers,
+  ]);
 
   const handleAddDart = (num) => {
     if (!activePlayer || currentDarts.length >= 3 || isProcessingTurn) return;
@@ -303,7 +447,15 @@ export default function DartScoreCore() {
         return;
       }
     } else {
-      dartArray = [{ label: `${pts}`, value: pts, multiplier: 1, isDouble: false, isTriple: false }];
+      dartArray = [
+        {
+          label: `${pts}`,
+          value: pts,
+          multiplier: 1,
+          isDouble: false,
+          isTriple: false,
+        },
+      ];
     }
 
     applyTurnScore(pts, dartsCount, dartArray);
@@ -313,7 +465,7 @@ export default function DartScoreCore() {
     const parsed = parseInt(typeInValue, 10);
     if (!isNaN(parsed) && parsed >= 0 && parsed <= 180) {
       handleSubtractScore(parsed, 3);
-      setTypeInValue('');
+      setTypeInValue("");
       setShowTypeInModal(false);
     }
   };
@@ -334,49 +486,74 @@ export default function DartScoreCore() {
       setBustAlert(true);
       setTimeout(() => setBustAlert(false), 2200);
 
-      setPlayers(prev => prev.map((p, idx) => {
-        if (idx === activePlayerIndex) {
-          return {
-            ...p,
-            dartsThrown: p.dartsThrown + dartsCount,
-            lastTurn: 0,
-            history: [...p.history, { score: 0, bust: true, prevScore: p.score, darts: dartArray }]
-          };
-        }
-        return p;
-      }));
+      setPlayers((prev) =>
+        prev.map((p, idx) => {
+          if (idx === activePlayerIndex) {
+            return {
+              ...p,
+              dartsThrown: p.dartsThrown + dartsCount,
+              lastTurn: 0,
+              history: [
+                ...p.history,
+                { score: 0, bust: true, prevScore: p.score, darts: dartArray },
+              ],
+            };
+          }
+          return p;
+        }),
+      );
     } else if (remaining === 0) {
       const newLegs = activePlayer.legs + 1;
       setWinner({ name: activePlayer.name, legs: newLegs, theme: activeTheme });
 
-      setPlayers(prev => prev.map((p, idx) => {
-        if (idx === activePlayerIndex) {
-          return {
-            ...p,
-            score: startScore,
-            legs: newLegs,
-            totalScored: p.totalScored + pts,
-            dartsThrown: p.dartsThrown + dartsCount,
-            lastTurn: pts,
-            history: [...p.history, { score: pts, bust: false, prevScore: p.score, darts: dartArray }]
-          };
-        }
-        return { ...p, score: startScore };
-      }));
+      setPlayers((prev) =>
+        prev.map((p, idx) => {
+          if (idx === activePlayerIndex) {
+            return {
+              ...p,
+              score: startScore,
+              legs: newLegs,
+              totalScored: p.totalScored + pts,
+              dartsThrown: p.dartsThrown + dartsCount,
+              lastTurn: pts,
+              history: [
+                ...p.history,
+                {
+                  score: pts,
+                  bust: false,
+                  prevScore: p.score,
+                  darts: dartArray,
+                },
+              ],
+            };
+          }
+          return { ...p, score: startScore };
+        }),
+      );
     } else {
-      setPlayers(prev => prev.map((p, idx) => {
-        if (idx === activePlayerIndex) {
-          return {
-            ...p,
-            score: remaining,
-            totalScored: p.totalScored + pts,
-            dartsThrown: p.dartsThrown + dartsCount,
-            lastTurn: pts,
-            history: [...p.history, { score: pts, bust: false, prevScore: p.score, darts: dartArray }]
-          };
-        }
-        return p;
-      }));
+      setPlayers((prev) =>
+        prev.map((p, idx) => {
+          if (idx === activePlayerIndex) {
+            return {
+              ...p,
+              score: remaining,
+              totalScored: p.totalScored + pts,
+              dartsThrown: p.dartsThrown + dartsCount,
+              lastTurn: pts,
+              history: [
+                ...p.history,
+                {
+                  score: pts,
+                  bust: false,
+                  prevScore: p.score,
+                  darts: dartArray,
+                },
+              ],
+            };
+          }
+          return p;
+        }),
+      );
     }
 
     setCurrentDarts([]);
@@ -385,26 +562,28 @@ export default function DartScoreCore() {
   };
 
   const handleUndo = () => {
-    if (isProcessingTurn) return;
-    const prevPlayerIndex = (activePlayerIndex - 1 + players.length) % players.length;
+    if (!canUndo) return;
     const targetPlayer = players[prevPlayerIndex];
 
     if (!targetPlayer || targetPlayer.history.length === 0) return;
     const lastEntry = targetPlayer.history[targetPlayer.history.length - 1];
 
-    setPlayers(prev => prev.map((p, idx) => {
-      if (idx === prevPlayerIndex) {
-        return {
-          ...p,
-          score: lastEntry.prevScore,
-          totalScored: Math.max(0, p.totalScored - lastEntry.score),
-          dartsThrown: Math.max(0, p.dartsThrown - 3),
-          lastTurn: p.history.length > 1 ? p.history[p.history.length - 2].score : 0,
-          history: p.history.slice(0, -1)
-        };
-      }
-      return p;
-    }));
+    setPlayers((prev) =>
+      prev.map((p, idx) => {
+        if (idx === prevPlayerIndex) {
+          return {
+            ...p,
+            score: lastEntry.prevScore,
+            totalScored: Math.max(0, p.totalScored - lastEntry.score),
+            dartsThrown: Math.max(0, p.dartsThrown - 3),
+            lastTurn:
+              p.history.length > 1 ? p.history[p.history.length - 2].score : 0,
+            history: p.history.slice(0, -1),
+          };
+        }
+        return p;
+      }),
+    );
 
     setActivePlayerIndex(prevPlayerIndex);
     setCurrentDarts([]);
@@ -419,18 +598,18 @@ export default function DartScoreCore() {
         {/* Left Group: Start Score Options & Players Count */}
         <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 max-w-full">
           <div className="flex bg-black/60 border border-gray-800 rounded-xl p-1 text-xs shrink-0">
-            {[101, 301, 501, 701].map(sc => {
+            {[101, 301, 501, 701].map((sc) => {
               const isHiddenOnMobile = sc === 501 || sc === 701;
               return (
                 <button
                   key={sc}
                   onClick={() => handleStartScoreChange(sc)}
                   className={`px-2 sm:px-3 py-1.5 rounded-lg font-bold transition-all whitespace-nowrap ${
-                    isHiddenOnMobile ? 'hidden sm:inline-block' : ''
+                    isHiddenOnMobile ? "hidden sm:inline-block" : ""
                   } ${
                     startScore === sc
-                      ? 'bg-white text-black'
-                      : 'text-gray-400 hover:text-white'
+                      ? "bg-white text-black"
+                      : "text-gray-400 hover:text-white"
                   }`}
                 >
                   {sc}
@@ -441,23 +620,23 @@ export default function DartScoreCore() {
               onClick={() => setShowCustomScoreModal(true)}
               className={`px-2 sm:px-3 py-1.5 rounded-lg font-bold transition-all whitespace-nowrap ${
                 isCustomStart
-                  ? 'bg-emerald-500 text-black'
-                  : 'text-gray-400 hover:text-white'
+                  ? "bg-emerald-500 text-black"
+                  : "text-gray-400 hover:text-white"
               }`}
             >
-              {isCustomStart ? startScore : 'CUSTOM'}
+              {isCustomStart ? startScore : "CUSTOM"}
             </button>
           </div>
 
           <div className="flex bg-black/60 border border-gray-800 rounded-xl p-1 text-xs shrink-0">
-            {[1, 2, 3, 4].map(count => (
+            {[1, 2, 3, 4].map((count) => (
               <button
                 key={count}
                 onClick={() => handlePlayerCountChange(count)}
                 className={`px-2.5 py-1.5 rounded-lg font-bold transition-all ${
                   numPlayers === count
-                    ? 'bg-white text-black'
-                    : 'text-gray-400 hover:text-white'
+                    ? "bg-white text-black"
+                    : "text-gray-400 hover:text-white"
                 }`}
               >
                 {count}P
@@ -469,16 +648,22 @@ export default function DartScoreCore() {
         {/* Right Group: Pause & Reset Buttons */}
         <div className="flex items-center gap-1.5 sm:gap-2 ml-auto">
           <button
-            onClick={() => setIsTimerRunning(prev => !prev)}
+            onClick={() => setIsTimerRunning((prev) => !prev)}
             className={`p-2 sm:w-[84px] sm:py-1.5 shrink-0 flex items-center justify-center gap-1 rounded-xl border text-xs font-bold transition-all ${
               isTimerRunning
-                ? 'bg-gray-900/90 text-gray-300 border-gray-800 hover:bg-gray-800 hover:text-white'
-                : 'bg-emerald-950/60 text-emerald-300 border-emerald-800/80 hover:bg-emerald-900'
+                ? "bg-gray-900/90 text-gray-300 border-gray-800 hover:bg-gray-800 hover:text-white"
+                : "bg-emerald-950/60 text-emerald-300 border-emerald-800/80 hover:bg-emerald-900"
             }`}
-            title={isTimerRunning ? 'Pause Timer' : 'Resume Timer'}
+            title={isTimerRunning ? "Pause Timer" : "Resume Timer"}
           >
-            {isTimerRunning ? <Pause className="w-3.5 h-3.5 text-gray-400" /> : <Play className="w-3.5 h-3.5 text-emerald-400" />}
-            <span className="hidden sm:inline">{isTimerRunning ? 'PAUSE' : 'RESUME'}</span>
+            {isTimerRunning ? (
+              <Pause className="w-3.5 h-3.5 text-gray-400" />
+            ) : (
+              <Play className="w-3.5 h-3.5 text-emerald-400" />
+            )}
+            <span className="hidden sm:inline">
+              {isTimerRunning ? "PAUSE" : "RESUME"}
+            </span>
           </button>
 
           <button
@@ -497,7 +682,10 @@ export default function DartScoreCore() {
         {players.map((p, idx) => {
           const isActive = idx === activePlayerIndex;
           const theme = PLAYER_THEMES[p.themeIndex];
-          const ppd = p.dartsThrown > 0 ? ((p.totalScored / p.dartsThrown) * 3).toFixed(1) : '0.0';
+          const ppd =
+            p.dartsThrown > 0
+              ? ((p.totalScored / p.dartsThrown) * 3).toFixed(1)
+              : "0.0";
 
           return (
             <div
@@ -511,22 +699,42 @@ export default function DartScoreCore() {
               }`}
             >
               <div className="flex items-center justify-center gap-1 sm:gap-1.5 w-full mb-1">
-                <span className={`hidden sm:inline-block w-2.5 h-2.5 rounded-full flex-shrink-0 ${isActive ? theme.dot : 'bg-gray-600'}`} />
-                <span className={`hidden sm:inline text-xs font-bold truncate ${isActive ? 'text-white' : 'text-gray-400'}`}>{p.name}</span>
-                <span className={`text-[9px] sm:text-xs font-bold flex-shrink-0 ${isActive ? 'text-amber-400' : 'text-gray-500'}`}>
+                <span
+                  className={`hidden sm:inline-block w-2.5 h-2.5 rounded-full flex-shrink-0 ${isActive ? theme.dot : "bg-gray-600"}`}
+                />
+                <span
+                  className={`hidden sm:inline text-xs font-bold truncate ${isActive ? "text-white" : "text-gray-400"}`}
+                >
+                  {p.name}
+                </span>
+                <span
+                  className={`text-[9px] sm:text-xs font-bold flex-shrink-0 ${isActive ? "text-amber-400" : "text-gray-500"}`}
+                >
                   {formatTime(p.timeSeconds)}
                 </span>
               </div>
 
               {/* Big Score Display */}
-              <div className={`text-xl sm:text-5xl font-extrabold tracking-tight my-0.5 sm:my-2 text-center w-full ${isActive ? 'text-white' : 'text-gray-300'}`}>
+              <div
+                className={`text-xl sm:text-5xl font-extrabold tracking-tight my-0.5 sm:my-2 text-center w-full ${isActive ? "text-white" : "text-gray-300"}`}
+              >
                 <MatrixScoreDisplay score={p.score} colorClass={theme.text} />
               </div>
 
               {/* Stats Footer */}
               <div className="flex items-center justify-center gap-1 sm:gap-3 w-full pt-1 text-[8px] sm:text-[10px] text-gray-400 whitespace-nowrap">
-                <span>AVG: <strong className={isActive ? theme.text : 'text-gray-400'}>{ppd}</strong></span>
-                <span>LAST: <strong className={isActive ? 'text-white' : 'text-gray-400'}>{p.lastTurn}</strong></span>
+                <span>
+                  AVG:{" "}
+                  <strong className={isActive ? theme.text : "text-gray-400"}>
+                    {ppd}
+                  </strong>
+                </span>
+                <span>
+                  LAST:{" "}
+                  <strong className={isActive ? "text-white" : "text-gray-400"}>
+                    {p.lastTurn}
+                  </strong>
+                </span>
               </div>
             </div>
           );
@@ -546,16 +754,22 @@ export default function DartScoreCore() {
         {/* Active Player Header Banner */}
         <div className="flex flex-row items-center justify-between gap-2 sm:gap-3 pb-3 sm:pb-4 mb-4 border-b border-gray-800">
           <div className="flex flex-col justify-center">
-            <span className="text-[9px] sm:text-[10px] text-gray-500 tracking-wider font-bold">THROWING</span>
-            <h2 className={`text-xs sm:text-base font-extrabold whitespace-nowrap ${activeTheme.text}`}>
+            <span className="text-[9px] sm:text-[10px] text-gray-500 tracking-wider font-bold">
+              THROWING
+            </span>
+            <h2
+              className={`text-xs sm:text-base font-extrabold whitespace-nowrap ${activeTheme.text}`}
+            >
               {activePlayer?.name}
             </h2>
           </div>
 
           {/* Darts Throw Slots */}
           <div className="flex items-center gap-1.5 sm:gap-2">
-            <span className="hidden sm:inline text-xs text-gray-500 mr-1">DARTS:</span>
-            {[0, 1, 2].map(i => {
+            <span className="hidden sm:inline text-xs text-gray-500 mr-1">
+              DARTS:
+            </span>
+            {[0, 1, 2].map((i) => {
               const d = currentDarts[i];
               const isMiss = d && d.value === 0;
               const isBull = d && d.num === 25;
@@ -566,30 +780,40 @@ export default function DartScoreCore() {
                   className={`w-14 sm:w-20 h-10 sm:h-11 rounded-xl border flex flex-col items-center justify-center transition-all ${
                     d
                       ? isMiss
-                        ? 'bg-gray-900/50 border-gray-800 text-gray-500'
+                        ? "bg-gray-900/50 border-gray-800 text-gray-500"
                         : isBull
-                        ? 'bg-red-950/80 border-red-500 text-red-300 font-bold'
-                        : d.isDouble
-                        ? 'bg-amber-950/80 border-amber-500 text-amber-300 font-bold'
-                        : d.isTriple
-                        ? 'bg-red-950/80 border-red-500 text-red-300 font-bold'
-                        : 'bg-emerald-950/80 border-emerald-500 text-white font-bold'
-                      : 'bg-black/60 border-gray-800 text-gray-600'
+                          ? "bg-red-950/80 border-red-500 text-red-300 font-bold"
+                          : d.isDouble
+                            ? "bg-amber-950/80 border-amber-500 text-amber-300 font-bold"
+                            : d.isTriple
+                              ? "bg-red-950/80 border-red-500 text-red-300 font-bold"
+                              : "bg-emerald-950/80 border-emerald-500 text-white font-bold"
+                      : "bg-black/60 border-gray-800 text-gray-600"
                   }`}
                 >
                   {d ? (
                     <div className="flex items-center justify-center gap-1 font-mono">
-                      <span className={`text-[10px] sm:text-xs font-medium ${isMiss ? 'text-gray-600' : isBull ? 'text-red-300' : 'text-gray-400'}`}>
+                      <span
+                        className={`text-[10px] sm:text-xs font-medium ${isMiss ? "text-gray-600" : isBull ? "text-red-300" : "text-gray-400"}`}
+                      >
                         {d.num !== undefined ? d.num : d.value}
                       </span>
-                      <span className="text-[10px] sm:text-xs text-gray-600">|</span>
-                      <span className={`text-xs sm:text-base font-black tracking-tight ${
-                        isMiss
-                          ? 'text-gray-500'
-                          : isBull
-                          ? 'text-red-400'
-                          : d.multiplier === 1 ? 'text-emerald-400' : d.multiplier === 2 ? 'text-amber-400' : 'text-red-400'
-                      }`}>
+                      <span className="text-[10px] sm:text-xs text-gray-600">
+                        |
+                      </span>
+                      <span
+                        className={`text-xs sm:text-base font-black tracking-tight ${
+                          isMiss
+                            ? "text-gray-500"
+                            : isBull
+                              ? "text-red-400"
+                              : d.multiplier === 1
+                                ? "text-emerald-400"
+                                : d.multiplier === 2
+                                  ? "text-amber-400"
+                                  : "text-red-400"
+                        }`}
+                      >
                         {d.value}
                       </span>
                     </div>
@@ -610,33 +834,54 @@ export default function DartScoreCore() {
           <div className="grid grid-cols-3 gap-2">
             <button
               onClick={() => setMultiplier(1)}
-              className={`h-12 rounded-xl text-xs font-extrabold border transition-all ${
+              className={`relative overflow-hidden h-12 rounded-xl text-xs font-extrabold border transition-all flex items-center justify-center ${
                 multiplier === 1
-                  ? 'bg-emerald-500 text-black border-emerald-400 shadow-md hover:bg-emerald-400'
-                  : 'bg-black/60 text-gray-300 border-gray-800 hover:border-gray-700'
+                  ? "bg-emerald-500 text-black border-emerald-400 shadow-md hover:bg-emerald-400"
+                  : "bg-black/60 text-gray-300 border-gray-800 hover:border-gray-700"
               }`}
             >
-              SINGLE (1x)
+              <span className="relative z-10">SINGLE (1x)</span>
+              <div
+                className={`absolute inset-y-0 -right-1 sm:right-0flex items-center pointer-events-none transition-opacity ${
+                  multiplier === 1 ? "opacity-90" : "opacity-45"
+                }`}
+              >
+                <DartboardSliceIcon type="single" active={multiplier === 1} />
+              </div>
             </button>
             <button
               onClick={() => setMultiplier(2)}
-              className={`h-12 rounded-xl text-xs font-extrabold border transition-all ${
+              className={`relative overflow-hidden h-12 rounded-xl text-xs font-extrabold border transition-all flex items-center justify-center ${
                 multiplier === 2
-                  ? 'bg-amber-500 text-black border-amber-400 shadow-md'
-                  : 'bg-black/60 text-amber-400 border-amber-900/60 hover:border-amber-700'
+                  ? "bg-amber-500 text-black border-amber-400 shadow-md"
+                  : "bg-black/60 text-amber-400 border-amber-900/60 hover:border-amber-700"
               }`}
             >
-              DOUBLE (2x)
+              <span className="relative z-10">DOUBLE (2x)</span>
+              <div
+                className={`absolute inset-y-0 -right-1 sm:right-0 flex items-center pointer-events-none transition-opacity ${
+                  multiplier === 2 ? "opacity-90" : "opacity-45"
+                }`}
+              >
+                <DartboardSliceIcon type="double" active={multiplier === 2} />
+              </div>
             </button>
             <button
               onClick={() => setMultiplier(3)}
-              className={`h-12 rounded-xl text-xs font-extrabold border transition-all ${
+              className={`relative overflow-hidden h-12 rounded-xl text-xs font-extrabold border transition-all flex items-center justify-center ${
                 multiplier === 3
-                  ? 'bg-red-500 text-black border-red-400 shadow-md'
-                  : 'bg-black/60 text-red-400 border-red-900/60 hover:border-red-700'
+                  ? "bg-red-500 text-black border-red-400 shadow-md"
+                  : "bg-black/60 text-red-400 border-red-900/60 hover:border-red-700"
               }`}
             >
-              TRIPLE (3x)
+              <span className="relative z-10">TRIPLE (3x)</span>
+              <div
+                className={`absolute inset-y-0 -right-1 sm:right-0 flex items-center pointer-events-none transition-opacity ${
+                  multiplier === 3 ? "opacity-90" : "opacity-45"
+                }`}
+              >
+                <DartboardSliceIcon type="triple" active={multiplier === 3} />
+              </div>
             </button>
           </div>
         </div>
@@ -646,14 +891,18 @@ export default function DartScoreCore() {
           <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 flex items-center justify-between">
             <span>2. Tap Target Score</span>
             {multiplier === 2 && (
-              <span className="text-amber-400 font-bold text-[10px]">DOUBLED SCORES ACTIVE</span>
+              <span className="text-amber-400 font-bold text-[10px]">
+                DOUBLED SCORES ACTIVE
+              </span>
             )}
             {multiplier === 3 && (
-              <span className="text-red-400 font-bold text-[10px]">TRIPLED SCORES ACTIVE</span>
+              <span className="text-red-400 font-bold text-[10px]">
+                TRIPLED SCORES ACTIVE
+              </span>
             )}
           </div>
           <div className="grid grid-cols-5 sm:grid-cols-7 gap-2">
-            {Array.from({ length: 20 }, (_, i) => i + 1).map(num => {
+            {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => {
               const isDbl = multiplier === 2;
               const isTrp = multiplier === 3;
               const scoreVal = num * multiplier;
@@ -665,10 +914,10 @@ export default function DartScoreCore() {
                   disabled={isProcessingTurn}
                   className={`h-12 rounded-xl font-bold text-sm sm:text-base border transition-all active:scale-95 ${
                     isDbl
-                      ? 'bg-amber-950/60 text-amber-300 border-amber-500/80 hover:bg-amber-900/80 shadow-sm shadow-amber-950'
+                      ? "bg-amber-950/60 text-amber-300 border-amber-500/80 hover:bg-amber-900/80 shadow-sm shadow-amber-950"
                       : isTrp
-                      ? 'bg-red-950/50 text-red-300 border-red-500/80 hover:bg-red-900/80'
-                      : 'bg-black/70 text-white border-gray-800 hover:border-gray-600 hover:bg-gray-900'
+                        ? "bg-red-950/50 text-red-300 border-red-500/80 hover:bg-red-900/80"
+                        : "bg-black/70 text-white border-gray-800 hover:border-gray-600 hover:bg-gray-900"
                   }`}
                 >
                   {scoreVal}
@@ -682,7 +931,7 @@ export default function DartScoreCore() {
                 disabled={isProcessingTurn}
                 className="col-span-1 h-12 rounded-xl text-xs sm:text-sm font-extrabold border transition-all bg-red-950/80 text-red-300 border-red-800/80 hover:bg-red-900"
               >
-                {multiplier === 2 ? '50' : '25'}
+                {multiplier === 2 ? "50" : "25"}
               </button>
             )}
 
@@ -690,7 +939,9 @@ export default function DartScoreCore() {
               onClick={() => handleAddDart(0)}
               disabled={isProcessingTurn}
               className={`h-12 rounded-xl text-xs sm:text-sm font-bold bg-black/60 text-gray-400 border border-gray-800 hover:bg-gray-800 transition-colors ${
-                multiplier === 3 ? 'col-span-5 sm:col-span-7' : 'col-span-4 sm:col-span-7'
+                multiplier === 3
+                  ? "col-span-5 sm:col-span-7"
+                  : "col-span-4 sm:col-span-7"
               }`}
             >
               MISS (0)
@@ -710,7 +961,7 @@ export default function DartScoreCore() {
 
           <button
             onClick={handleUndo}
-            disabled={isProcessingTurn}
+            disabled={!canUndo}
             className="flex-[0.5] sm:flex-[0.6] h-12 bg-gray-900 hover:bg-gray-800 border border-gray-700 text-gray-300 rounded-xl text-xs font-bold flex items-center justify-center gap-1 transition-colors disabled:opacity-40"
           >
             <Undo2 className="w-4 h-4" />
@@ -722,7 +973,7 @@ export default function DartScoreCore() {
             disabled={currentDarts.length === 0 || isProcessingTurn}
             className={`flex-1 h-12 ${activeTheme.bgBtn} font-extrabold text-xs sm:text-sm rounded-xl shadow-lg flex items-center justify-center transition-all tracking-wider disabled:opacity-40`}
           >
-            SUBTRACT {turnTotal > 0 ? `(${turnTotal})` : ''}
+            SUBTRACT {turnTotal > 0 ? `(${turnTotal})` : ""}
           </button>
         </div>
       </div>
@@ -731,7 +982,7 @@ export default function DartScoreCore() {
       {showCustomScoreModal && (
         <div
           onClick={() => {
-            setCustomStartInput('');
+            setCustomStartInput("");
             setShowCustomScoreModal(false);
           }}
           className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4"
@@ -746,7 +997,7 @@ export default function DartScoreCore() {
               </span>
               <button
                 onClick={() => {
-                  setCustomStartInput('');
+                  setCustomStartInput("");
                   setShowCustomScoreModal(false);
                 }}
                 className="text-gray-500 hover:text-white p-1"
@@ -756,39 +1007,18 @@ export default function DartScoreCore() {
             </div>
 
             {/* Display Readout */}
-            <div className="h-14 bg-black border border-gray-800 rounded-2xl flex items-center justify-end px-4 text-3xl font-extrabold text-white tracking-widest relative overflow-hidden">
-              <input
-                type="text"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                placeholder="0"
-                value={customStartInput}
-                onChange={(e) => {
-                  const val = e.target.value.replace(/[^0-9]/g, '');
-                  if (val.length <= 4) setCustomStartInput(val);
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Escape') {
-                    e.preventDefault();
-                    setCustomStartInput('');
-                    setShowCustomScoreModal(false);
-                  } else if (e.key === 'Enter') {
-                    e.preventDefault();
-                    handleCustomScoreSubmit();
-                  }
-                }}
-                className="w-full h-full bg-transparent text-right font-extrabold text-3xl text-white outline-none focus:ring-0"
-                autoFocus
-              />
+            <div className="h-14 bg-black border border-gray-800 rounded-2xl flex items-center justify-end px-4 text-3xl font-extrabold text-white tracking-widest">
+              {customStartInput || "0"}
             </div>
 
             {/* On-Screen Keypad */}
             <div className="grid grid-cols-3 gap-2">
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => (
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
                 <button
                   key={n}
                   onClick={() => {
-                    if (customStartInput.length < 4) setCustomStartInput(prev => prev + n);
+                    if (customStartInput.length < 4)
+                      setCustomStartInput((prev) => prev + n);
                   }}
                   className="h-14 bg-gray-900 hover:bg-gray-800 border border-gray-800 rounded-xl text-xl font-bold text-white transition-colors"
                 >
@@ -797,7 +1027,7 @@ export default function DartScoreCore() {
               ))}
 
               <button
-                onClick={() => setCustomStartInput('')}
+                onClick={() => setCustomStartInput("")}
                 className="h-14 bg-red-950/60 border border-red-800 text-red-400 rounded-xl text-xs font-bold"
               >
                 CLEAR
@@ -805,7 +1035,8 @@ export default function DartScoreCore() {
 
               <button
                 onClick={() => {
-                  if (customStartInput.length < 4) setCustomStartInput(prev => prev + '0');
+                  if (customStartInput.length < 4)
+                    setCustomStartInput((prev) => prev + "0");
                 }}
                 className="h-14 bg-gray-900 hover:bg-gray-800 border border-gray-800 rounded-xl text-xl font-bold text-white transition-colors"
               >
@@ -813,7 +1044,7 @@ export default function DartScoreCore() {
               </button>
 
               <button
-                onClick={() => setCustomStartInput(prev => prev.slice(0, -1))}
+                onClick={() => setCustomStartInput((prev) => prev.slice(0, -1))}
                 className="h-14 bg-gray-900 border border-gray-800 text-gray-400 rounded-xl flex items-center justify-center"
               >
                 <Delete className="w-5 h-5" />
@@ -836,7 +1067,7 @@ export default function DartScoreCore() {
       {showTypeInModal && (
         <div
           onClick={() => {
-            setTypeInValue('');
+            setTypeInValue("");
             setShowTypeInModal(false);
           }}
           className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4"
@@ -847,11 +1078,11 @@ export default function DartScoreCore() {
           >
             <div className="flex items-center justify-between border-b border-gray-800 pb-3">
               <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
-                ENTER TURN SCORE (0 - 180)
+                ENTER ROUND SCORE
               </span>
               <button
                 onClick={() => {
-                  setTypeInValue('');
+                  setTypeInValue("");
                   setShowTypeInModal(false);
                 }}
                 className="text-gray-500 hover:text-white p-1"
@@ -862,16 +1093,17 @@ export default function DartScoreCore() {
 
             {/* Display Readout */}
             <div className="h-14 bg-black border border-gray-800 rounded-2xl flex items-center justify-end px-4 text-3xl font-extrabold text-white tracking-widest">
-              {typeInValue || '0'}
+              {typeInValue || "0"}
             </div>
 
             {/* Numbers-only Keypad */}
             <div className="grid grid-cols-3 gap-2">
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => (
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
                 <button
                   key={n}
                   onClick={() => {
-                    if (typeInValue.length < 3) setTypeInValue(prev => prev + n);
+                    if (typeInValue.length < 3)
+                      setTypeInValue((prev) => prev + n);
                   }}
                   className="h-14 bg-gray-900 hover:bg-gray-800 border border-gray-800 rounded-xl text-xl font-bold text-white transition-colors"
                 >
@@ -880,7 +1112,7 @@ export default function DartScoreCore() {
               ))}
 
               <button
-                onClick={() => setTypeInValue('')}
+                onClick={() => setTypeInValue("")}
                 className="h-14 bg-red-950/60 border border-red-800 text-red-400 rounded-xl text-xs font-bold"
               >
                 CLEAR
@@ -888,7 +1120,8 @@ export default function DartScoreCore() {
 
               <button
                 onClick={() => {
-                  if (typeInValue.length < 3) setTypeInValue(prev => prev + '0');
+                  if (typeInValue.length < 3)
+                    setTypeInValue((prev) => prev + "0");
                 }}
                 className="h-14 bg-gray-900 hover:bg-gray-800 border border-gray-800 rounded-xl text-xl font-bold text-white transition-colors"
               >
@@ -896,7 +1129,7 @@ export default function DartScoreCore() {
               </button>
 
               <button
-                onClick={() => setTypeInValue(prev => prev.slice(0, -1))}
+                onClick={() => setTypeInValue((prev) => prev.slice(0, -1))}
                 className="h-14 bg-gray-900 border border-gray-800 text-gray-400 rounded-xl flex items-center justify-center"
               >
                 <Delete className="w-5 h-5" />
@@ -906,7 +1139,7 @@ export default function DartScoreCore() {
             {/* Submit Button */}
             <button
               onClick={handleTypeInSubmit}
-              disabled={typeInValue === ''}
+              disabled={typeInValue === ""}
               className={`w-full h-12 ${activeTheme.bgBtn} font-extrabold text-sm rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-40`}
             >
               <Check className="w-5 h-5" /> SUBTRACT SCORE
@@ -919,7 +1152,9 @@ export default function DartScoreCore() {
       {winner && (
         <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
           <div className="bg-black border border-gray-800 rounded-3xl p-8 max-w-md w-full text-center space-y-6">
-            <div className={`w-16 h-16 rounded-full border flex items-center justify-center mx-auto ${winner.theme.badge}`}>
+            <div
+              className={`w-16 h-16 rounded-full border flex items-center justify-center mx-auto ${winner.theme.badge}`}
+            >
               <Zap className="w-8 h-8" />
             </div>
             <div>

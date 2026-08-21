@@ -12,3 +12,111 @@
 .cardGrow {
   animation: cardGrow 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
+
+/* ==========================================================================
+   Player Themes
+   ========================================================================== */
+
+/* Green Theme */
+.themeGreenBorder {
+  @apply border-emerald-500;
+}
+.themeGreenBorderActive {
+  @apply border-emerald-500 shadow-emerald-950/60 ring-emerald-500/60;
+}
+.themeGreenBgActive {
+  @apply bg-emerald-950/40;
+}
+.themeGreenBgSubtle {
+  @apply bg-emerald-950/15;
+}
+.themeGreenBgBtn {
+  @apply bg-emerald-500 text-black hover:bg-emerald-400;
+}
+.themeGreenText {
+  @apply text-emerald-400;
+}
+.themeGreenDot {
+  @apply bg-emerald-500;
+}
+.themeGreenBadge {
+  @apply border-emerald-500 bg-emerald-950/60 text-emerald-400;
+}
+
+/* Red Theme */
+.themeRedBorder {
+  @apply border-red-500;
+}
+.themeRedBorderActive {
+  @apply border-red-500 shadow-red-950/60 ring-red-500/60;
+}
+.themeRedBgActive {
+  @apply bg-red-950/40;
+}
+.themeRedBgSubtle {
+  @apply bg-red-950/15;
+}
+.themeRedBgBtn {
+  @apply bg-red-500 text-black hover:bg-red-400;
+}
+.themeRedText {
+  @apply text-red-400;
+}
+.themeRedDot {
+  @apply bg-red-500;
+}
+.themeRedBadge {
+  @apply border-red-500 bg-red-950/60 text-red-400;
+}
+
+/* Yellow Theme */
+.themeYellowBorder {
+  @apply border-yellow-500;
+}
+.themeYellowBorderActive {
+  @apply border-yellow-500 shadow-yellow-950/60 ring-yellow-500/60;
+}
+.themeYellowBgActive {
+  @apply bg-yellow-950/40;
+}
+.themeYellowBgSubtle {
+  @apply bg-yellow-950/15;
+}
+.themeYellowBgBtn {
+  @apply bg-yellow-500 text-black hover:bg-yellow-400;
+}
+.themeYellowText {
+  @apply text-yellow-400;
+}
+.themeYellowDot {
+  @apply bg-yellow-500;
+}
+.themeYellowBadge {
+  @apply border-yellow-500 bg-yellow-950/60 text-yellow-400;
+}
+
+/* Blue Theme */
+.themeBlueBorder {
+  @apply border-blue-500;
+}
+.themeBlueBorderActive {
+  @apply border-blue-500 shadow-blue-950/60 ring-blue-500/60;
+}
+.themeBlueBgActive {
+  @apply bg-blue-950/40;
+}
+.themeBlueBgSubtle {
+  @apply bg-blue-950/15;
+}
+.themeBlueBgBtn {
+  @apply bg-blue-500 text-black hover:bg-blue-400;
+}
+.themeBlueText {
+  @apply text-blue-400;
+}
+.themeBlueDot {
+  @apply bg-blue-500;
+}
+.themeBlueBadge {
+  @apply border-blue-500 bg-blue-950/60 text-blue-400;
+}
