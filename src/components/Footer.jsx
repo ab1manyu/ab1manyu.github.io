@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import gsap from "gsap";
 
 const ACCENT = "#10b981";
-const INACTIVE_GRAY = "#4b5563"; // rgb(75 85 99)
+const INACTIVE_GRAY = "#333333"; // rgb(75 85 99)
 const WHITE = "#ffffff";
 
 export default function Footer() {
@@ -50,7 +50,7 @@ export default function Footer() {
         })
         // settle back
         .to(dot, {
-          backgroundColor: i === 2 ? "#333333" : ACCENT,
+          backgroundColor: i === 2 ? INACTIVE_GRAY : ACCENT,
           scale: 1,
           x: 0,
           duration: 0.18,
