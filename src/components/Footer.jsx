@@ -67,16 +67,14 @@ export default function Footer() {
         <div className="font-mono text-xs text-gray-600">
           ︽︾︽︾︽︾︽
           <br />
-          SYS_ID: 1.3.0
+          VERSION {import.meta.env.PACKAGE_VERSION}
         </div>
 
-        {/* 3 dots */}
         <div
           ref={dotsRef}
           onClick={triggerGlitch}
           className="flex gap-1 cursor-select select-none"
         >
-          {/* <div className="glitch-dot w-2 h-2 bg-defense-accent rounded-full" /> */}
           <div className="glitch-dot w-2 h-2 bg-gray-600 rounded-full" />
           <div className="glitch-dot w-2 h-2 bg-gray-600 rounded-full" />
         </div>
