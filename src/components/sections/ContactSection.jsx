@@ -1,17 +1,15 @@
-import { Link } from 'react-router-dom';
-import { Camera, ArrowUpRight } from 'lucide-react';
-import { FaGithub, FaLinkedin } from 'react-icons/fa';
-import styles from './ContactSection.module.css';
+import { Link } from "react-router-dom";
+import { Camera, ArrowUpRight } from "lucide-react";
+import { FaGithub, FaLinkedin } from "react-icons/fa";
+import styles from "./ContactSection.module.css";
 
 const ContactCard = ({ link, icon, text, title, caption, className }) => {
-  const isExternal = link.startsWith('http');
-  const cardClasses = `glass-panel ${styles.card} ${className || ''}`.trim();
+  const isExternal = link.startsWith("http");
+  const cardClasses = `glass-panel ${styles.card} ${className || ""}`.trim();
 
   const content = (
     <>
-      <div className={styles.cardIcon}>
-        {icon}
-      </div>
+      <div className={styles.cardIcon}>{icon}</div>
       <div className="relative z-10 flex flex-col h-full justify-between min-h-[140px]">
         <div className="flex justify-between items-start">
           <div>
@@ -30,7 +28,12 @@ const ContactCard = ({ link, icon, text, title, caption, className }) => {
   );
 
   return isExternal ? (
-    <a href={link} target="_blank" rel="noopener noreferrer" className={cardClasses}>
+    <a
+      href={link}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={cardClasses}
+    >
       {content}
     </a>
   ) : (
@@ -47,15 +50,13 @@ export default function ContactSection() {
         <h2 className="text-3xl font-bold text-white">Links</h2>
         <div className="flex gap-2 items-center">
           <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-          <span className="font-mono text-xs text-red-500">AWAITING CONNECTION</span>
+          <span className="font-mono text-xs text-red-500">
+            AWAITING CONNECTION
+          </span>
         </div>
       </div>
 
-
-
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-
         <ContactCard
           link="/gallery"
           icon={<Camera className="w-32 h-32" />}

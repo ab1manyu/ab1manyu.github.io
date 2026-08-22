@@ -11,16 +11,16 @@
 
 .domainPython:hover {
   transform: translateY(-4px);
-  background: #3776AB;
-  border-color: #3776AB;
+  background: #3776ab;
+  border-color: #3776ab;
   color: white;
   box-shadow: 0 0 15px rgba(55, 118, 171, 0.5);
 }
 
 .domainReact:hover {
   transform: translateY(-4px);
-  background: #61DAFB;
-  border-color: #61DAFB;
+  background: #61dafb;
+  border-color: #61dafb;
   color: black;
   box-shadow: 0 0 15px rgba(97, 218, 251, 0.5);
 }

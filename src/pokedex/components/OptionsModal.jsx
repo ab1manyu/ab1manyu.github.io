@@ -1,8 +1,17 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
-import { resetRun, exportData, importData, getLastCaughtTime } from "../db/pokemonDB";
-import { getEarnedBadges, TYPE_COLORS, getTypeTotals } from "../data/pokemonData";
+import {
+  resetRun,
+  exportData,
+  importData,
+  getLastCaughtTime,
+} from "../db/pokemonDB";
+import {
+  getEarnedBadges,
+  TYPE_COLORS,
+  getTypeTotals,
+  GENERATIONS,
+} from "../data/pokemonData";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { GENERATIONS } from "../PokedexCore";
 import styles from "./OptionsModal.module.css";
 
 function formatDuration(ms) {
@@ -20,24 +29,51 @@ function formatDate(ms) {
   const d = new Date(ms);
   return (
     <>
-      <div>{d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }).toUpperCase()}</div>
-      <div>{d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }).toUpperCase()}</div>
+      <div>
+        {d
+          .toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })
+          .toUpperCase()}
+      </div>
+      <div>
+        {d
+          .toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })
+          .toUpperCase()}
+      </div>
     </>
   );
 }
 
-export default function OptionsModal({ caughtIds, runStart, onClose, onReset, generation, generationData, setGeneration }) {
+export default function OptionsModal({
+  caughtIds,
+  runStart,
+  onClose,
+  onReset,
+  generation,
+  generationData,
+  setGeneration,
+}) {
   const caughtCount = caughtIds.size;
   const total = generationData.length;
-  const targetProgress = total > 0 ? Math.round((caughtCount / total) * 100) : 0;
+  const targetProgress =
+    total > 0 ? Math.round((caughtCount / total) * 100) : 0;
   const [displayProgress, setDisplayProgress] = useState(0);
   const [mounted, setMounted] = useState(false);
 
-  const earnedBadges = useMemo(() => getEarnedBadges(generationData, caughtIds), [generationData, caughtIds]);
-  const typeTotals = useMemo(() => getTypeTotals(generationData), [generationData]);
-  const isFairyGen = ['kalos', 'alola', 'galar', 'paldea'].includes(generation);
-  const typesWithBadges = Object.keys(TYPE_COLORS).filter(t => {
-    if (t === 'fairy' && !isFairyGen) return false;
+  const earnedBadges = useMemo(
+    () => getEarnedBadges(generationData, caughtIds),
+    [generationData, caughtIds]
+  );
+  const typeTotals = useMemo(
+    () => getTypeTotals(generationData),
+    [generationData]
+  );
+  const isFairyGen = ["kalos", "alola", "galar", "paldea"].includes(generation);
+  const typesWithBadges = Object.keys(TYPE_COLORS).filter((t) => {
+    if (t === "fairy" && !isFairyGen) return false;
     return typeTotals[t];
   });
 
@@ -58,7 +94,6 @@ export default function OptionsModal({ caughtIds, runStart, onClose, onReset, ge
     requestAnimationFrame(animate);
   }, [targetProgress]);
 
-
   const [elapsed, setElapsed] = useState(Date.now() - runStart);
   const [isClosing, setIsClosing] = useState(false);
   const [completeTime, setCompleteTime] = useState(null);
@@ -77,7 +112,7 @@ export default function OptionsModal({ caughtIds, runStart, onClose, onReset, ge
   useEffect(() => {
     let id;
     if (total > 0 && caughtCount >= total) {
-      getLastCaughtTime(generation).then(lastTime => {
+      getLastCaughtTime(generation).then((lastTime) => {
         if (lastTime) {
           setCompleteTime(lastTime - runStart);
           setElapsed(lastTime - runStart);
@@ -87,7 +122,9 @@ export default function OptionsModal({ caughtIds, runStart, onClose, onReset, ge
       setCompleteTime(null);
       id = setInterval(() => setElapsed(Date.now() - runStart), 1000);
     }
-    return () => { if (id) clearInterval(id); };
+    return () => {
+      if (id) clearInterval(id);
+    };
   }, [runStart, caughtCount, total, generation]);
 
   // close on overlay click
@@ -97,14 +134,17 @@ export default function OptionsModal({ caughtIds, runStart, onClose, onReset, ge
 
   // close on Escape
   useEffect(() => {
-    const handler = (e) => { if (e.key === "Escape") triggerClose(); };
+    const handler = (e) => {
+      if (e.key === "Escape") triggerClose();
+    };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [triggerClose]);
 
   const switchGeneration = (dir) => {
     const currentIndex = GENERATIONS.indexOf(generation);
-    const nextIndex = (currentIndex + dir + GENERATIONS.length) % GENERATIONS.length;
+    const nextIndex =
+      (currentIndex + dir + GENERATIONS.length) % GENERATIONS.length;
     setGeneration(GENERATIONS[nextIndex]);
   };
 
@@ -128,9 +168,16 @@ export default function OptionsModal({ caughtIds, runStart, onClose, onReset, ge
   };
 
   return (
-    <div className={`${styles.overlay} ${isClosing ? styles.closing : ''}`} ref={overlayRef} onClick={handleOverlayClick}>
-      <div className={`${styles.modal} ${isClosing ? styles.closing : ''}`} role="dialog" aria-label="Run Statistics">
-
+    <div
+      className={`${styles.overlay} ${isClosing ? styles.closing : ""}`}
+      ref={overlayRef}
+      onClick={handleOverlayClick}
+    >
+      <div
+        className={`${styles.modal} ${isClosing ? styles.closing : ""}`}
+        role="dialog"
+        aria-label="Run Statistics"
+      >
         {/* Header */}
         <div className={styles.header}>
           <span className={styles.headerLabel}>OPTIONS</span>
@@ -138,19 +185,40 @@ export default function OptionsModal({ caughtIds, runStart, onClose, onReset, ge
 
         {/* Generation Switcher */}
         <div className={styles.genSwitcher}>
-          <button className={styles.genBtn} onClick={() => switchGeneration(-1)}><ChevronDown /></button>
-          <span className={styles.genLabel}>{generation.toUpperCase()} POKÉDEX</span>
-          <button className={styles.genBtn} onClick={() => switchGeneration(1)}><ChevronUp /></button>
+          <button
+            className={styles.genBtn}
+            onClick={() => switchGeneration(-1)}
+          >
+            <ChevronDown />
+          </button>
+          <span className={styles.genLabel}>
+            {generation.toUpperCase()} POKÉDEX
+          </span>
+          <button className={styles.genBtn} onClick={() => switchGeneration(1)}>
+            <ChevronUp />
+          </button>
         </div>
 
         {/* % Slider */}
         <div className={styles.section}>
           <div className={styles.sliderRow}>
             <span className={styles.sliderValue}>{displayProgress}%</span>
-            <div className={styles.sliderTrack} role="progressbar" aria-valuenow={displayProgress} aria-valuemin={0} aria-valuemax={100}>
-              <div className={styles.sliderFill} style={{ width: `${mounted ? targetProgress : 0}%` }} />
+            <div
+              className={styles.sliderTrack}
+              role="progressbar"
+              aria-valuenow={displayProgress}
+              aria-valuemin={0}
+              aria-valuemax={100}
+            >
+              <div
+                className={styles.sliderFill}
+                style={{ width: `${mounted ? targetProgress : 0}%` }}
+              />
               {targetProgress < 100 && (
-                <div className={styles.sliderGlow} style={{ left: `${mounted ? targetProgress : 0}%` }} />
+                <div
+                  className={styles.sliderGlow}
+                  style={{ left: `${mounted ? targetProgress : 0}%` }}
+                />
               )}
             </div>
           </div>
@@ -162,12 +230,15 @@ export default function OptionsModal({ caughtIds, runStart, onClose, onReset, ge
           <div className={styles.statCard}>
             <span className={styles.statLabel}>CAUGHT</span>
             <span className={styles.statValue}>
-              {caughtCount}<span className={styles.statOf}>/{total}</span>
+              {caughtCount}
+              <span className={styles.statOf}>/{total}</span>
             </span>
           </div>
           <div className={styles.statCard}>
             <span className={styles.statLabel}>REMAINING</span>
-            <span className={styles.statValue}>{Math.max(0, total - caughtCount)}</span>
+            <span className={styles.statValue}>
+              {Math.max(0, total - caughtCount)}
+            </span>
           </div>
           <div className={styles.statCard}>
             <span className={styles.statLabel}>STARTED</span>
@@ -175,7 +246,17 @@ export default function OptionsModal({ caughtIds, runStart, onClose, onReset, ge
           </div>
           <div className={styles.statCard}>
             <span className={styles.statLabel}>RUN TIME</span>
-            <span className={styles.statValue} style={completeTime !== null ? { color: 'var(--yellow)', textShadow: '0 0 10px rgba(249, 199, 79, 0.4)' } : {}}>
+            <span
+              className={styles.statValue}
+              style={
+                completeTime !== null
+                  ? {
+                      color: "var(--yellow)",
+                      textShadow: "0 0 10px rgba(249, 199, 79, 0.4)",
+                    }
+                  : {}
+              }
+            >
               {formatDuration(elapsed)}
             </span>
           </div>
@@ -185,34 +266,49 @@ export default function OptionsModal({ caughtIds, runStart, onClose, onReset, ge
         <div className={styles.badgesSection}>
           <p className={styles.badgeSectionTitle}>TYPE BADGES</p>
           <div className={styles.badgesGrid}>
-            {typesWithBadges.map(type => {
+            {typesWithBadges.map((type) => {
               const isEarned = earnedBadges.includes(type);
               const color = TYPE_COLORS[type];
               return (
                 <div
                   key={type}
-                  className={`${styles.badgeSlot} ${isEarned ? styles.badgeEarned : ''}`}
+                  className={`${styles.badgeSlot} ${isEarned ? styles.badgeEarned : ""}`}
                   title={`${type.toUpperCase()} TYPE`}
-                  style={isEarned ? { '--badge-color': color, boxShadow: `0 0 12px ${color}80` } : {}}
+                  style={
+                    isEarned
+                      ? {
+                          "--badge-color": color,
+                          boxShadow: `0 0 12px ${color}80`,
+                        }
+                      : {}
+                  }
                 >
                   <span
                     className={styles.badgeText}
-                    style={isEarned ? { color: '#fff' } : {}}
+                    style={isEarned ? { color: "#fff" } : {}}
                   >
                     {type.substring(0, 3).toUpperCase()}
                   </span>
                 </div>
-              )
+              );
             })}
           </div>
         </div>
 
         {/* Actions */}
         <div className={styles.actions}>
-          <button id="stats-export-btn" className={styles.actionBtn} onClick={() => exportData(generation)}>
+          <button
+            id="stats-export-btn"
+            className={styles.actionBtn}
+            onClick={() => exportData(generation)}
+          >
             EXPORT
           </button>
-          <button id="stats-import-btn" className={styles.actionBtn} onClick={() => fileInputRef.current?.click()}>
+          <button
+            id="stats-import-btn"
+            className={styles.actionBtn}
+            onClick={() => fileInputRef.current?.click()}
+          >
             IMPORT
           </button>
           <input
@@ -224,18 +320,31 @@ export default function OptionsModal({ caughtIds, runStart, onClose, onReset, ge
           />
 
           {!confirmReset ? (
-            <button id="stats-reset-btn" className={`${styles.actionBtn} ${styles.resetBtn}`} onClick={() => setConfirmReset(true)}>
+            <button
+              id="stats-reset-btn"
+              className={`${styles.actionBtn} ${styles.resetBtn}`}
+              onClick={() => setConfirmReset(true)}
+            >
               RESET
             </button>
           ) : (
             <div className={styles.confirmRow}>
               <span className={styles.confirmLabel}>CONFIRM RESET?</span>
-              <button className={`${styles.actionBtn} ${styles.confirmYes}`} onClick={handleReset}>YES</button>
-              <button className={styles.actionBtn} onClick={() => setConfirmReset(false)}>NO</button>
+              <button
+                className={`${styles.actionBtn} ${styles.confirmYes}`}
+                onClick={handleReset}
+              >
+                YES
+              </button>
+              <button
+                className={styles.actionBtn}
+                onClick={() => setConfirmReset(false)}
+              >
+                NO
+              </button>
             </div>
           )}
         </div>
-
       </div>
     </div>
   );

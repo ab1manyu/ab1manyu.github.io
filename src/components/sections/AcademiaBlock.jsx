@@ -1,13 +1,20 @@
-import { useState, useRef, useEffect, useLayoutEffect } from 'react';
-import { Microscope, Calendar, GraduationCap, ArrowLeft, ArrowRight, ArrowUp, ChevronLeft, ChevronRight } from 'lucide-react';
-import gsap from 'gsap';
-import { TextScramble } from '../../utils/textScramble';
-import styles from './SkillsSection.module.css';
-import { COURSES } from './coursesData';
+import { useState, useRef, useLayoutEffect } from "react";
+import {
+  Microscope,
+  Calendar,
+  GraduationCap,
+  ArrowLeft,
+  ArrowRight,
+  ArrowUp,
+} from "lucide-react";
+import gsap from "gsap";
+import { TextScramble } from "../../utils/textScramble";
+import styles from "./SkillsSection.module.css";
+import { COURSES } from "./coursesData";
 
 export default function AcademiaBlock() {
-  const [activeSchool, setActiveSchool] = useState('gatech');
-  const [currentView, setCurrentView] = useState('main'); // 'main' | 'notes'
+  const [activeSchool, setActiveSchool] = useState("gatech");
+  const [currentView, setCurrentView] = useState("main"); // 'main' | 'notes'
   const [selectedCourseId, setSelectedCourseId] = useState(null);
   const [selectedTopicId, setSelectedTopicId] = useState(null);
   const contentRef = useRef(null);
@@ -25,13 +32,13 @@ export default function AcademiaBlock() {
 
     if (textRef.current) {
       const fx = new TextScramble(textRef.current);
-      fx.setText(currentView === 'notes' ? 'BACK' : 'ACADEMIA');
+      fx.setText(currentView === "notes" ? "BACK" : "ACADEMIA");
     }
   }, [currentView]);
 
   useLayoutEffect(() => {
     let ctx;
-    if (currentView === 'main' && rightPanelRef.current) {
+    if (currentView === "main" && rightPanelRef.current) {
       ctx = gsap.context(() => {
         gsap.fromTo(
           rightPanelRef.current,
@@ -52,12 +59,12 @@ export default function AcademiaBlock() {
       ease: "power2.in",
       onComplete: () => {
         setSelectedCourseId(courseId);
-        const course = COURSES.find(c => c.id === courseId);
+        const course = COURSES.find((c) => c.id === courseId);
         if (course && course.topics && course.topics.length > 0) {
           setSelectedTopicId(course.topics[0].id);
         }
-        setCurrentView('notes');
-      }
+        setCurrentView("notes");
+      },
     });
   };
 
@@ -69,23 +76,27 @@ export default function AcademiaBlock() {
       duration: 0.3,
       ease: "power2.in",
       onComplete: () => {
-        setCurrentView('main');
+        setCurrentView("main");
         setSelectedCourseId(null);
         setSelectedTopicId(null);
-      }
+      },
     });
   };
 
-  if (currentView === 'notes') {
-    const activeCourse = COURSES.find(c => c.id === selectedCourseId);
-    const activeTopic = activeCourse?.topics?.find(t => t.id === selectedTopicId) || activeCourse?.topics?.[0];
+  if (currentView === "notes") {
+    const activeCourse = COURSES.find((c) => c.id === selectedCourseId);
+    const activeTopic =
+      activeCourse?.topics?.find((t) => t.id === selectedTopicId) ||
+      activeCourse?.topics?.[0];
 
     return (
       <div className="glass-panel md:col-span-2 relative overflow-hidden group h-full min-h-[400px]">
         <div className={styles.academiaBg}></div>
-        <div className="p-8 flex flex-col h-full md:absolute md:inset-0" ref={contentRef}>
+        <div
+          className="p-8 flex flex-col h-full md:absolute md:inset-0"
+          ref={contentRef}
+        >
           <div className="relative z-10 flex-1 min-h-0 flex flex-col md:flex-row gap-8">
-
             {/* LEFT SIDEBAR - Topics Navigation */}
             <div className="shrink-0 md:flex-1 md:max-w-[200px] border-b md:border-b-0 md:border-r border-defense-border pb-4 md:pb-0 md:pr-6 flex flex-col gap-4 min-w-0">
               <div className="flex items-center gap-2 mb-2">
@@ -105,10 +116,11 @@ export default function AcademiaBlock() {
                     key={topic.id}
                     onClick={() => setSelectedTopicId(topic.id)}
                     className={`px-4 py-2 text-left font-mono text-xs transition-all border whitespace-normal
-                    ${selectedTopicId === topic.id
-                        ? 'bg-defense-accent/10 border-defense-accent text-defense-accent shadow-[0_0_10px_rgba(45,212,191,0.1)]'
-                        : 'bg-transparent border-defense-border/50 text-gray-500 hover:border-defense-accent/30 hover:text-gray-300'
-                      }`}
+                    ${
+                      selectedTopicId === topic.id
+                        ? "bg-defense-accent/10 border-defense-accent text-defense-accent shadow-[0_0_10px_rgba(45,212,191,0.1)]"
+                        : "bg-transparent border-defense-border/50 text-gray-500 hover:border-defense-accent/30 hover:text-gray-300"
+                    }`}
                   >
                     {topic.title}
                   </button>
@@ -120,8 +132,11 @@ export default function AcademiaBlock() {
                 <div className="md:hidden flex items-center justify-between gap-2 mt-1">
                   <button
                     onClick={() => {
-                      const idx = activeCourse.topics.findIndex(t => t.id === selectedTopicId);
-                      const prevIdx = idx > 0 ? idx - 1 : activeCourse.topics.length - 1;
+                      const idx = activeCourse.topics.findIndex(
+                        (t) => t.id === selectedTopicId
+                      );
+                      const prevIdx =
+                        idx > 0 ? idx - 1 : activeCourse.topics.length - 1;
                       setSelectedTopicId(activeCourse.topics[prevIdx].id);
                     }}
                     className="p-2 flex items-center justify-center text-defense-accent hover:text-white transition-colors"
@@ -135,8 +150,11 @@ export default function AcademiaBlock() {
 
                   <button
                     onClick={() => {
-                      const idx = activeCourse.topics.findIndex(t => t.id === selectedTopicId);
-                      const nextIdx = idx < activeCourse.topics.length - 1 ? idx + 1 : 0;
+                      const idx = activeCourse.topics.findIndex(
+                        (t) => t.id === selectedTopicId
+                      );
+                      const nextIdx =
+                        idx < activeCourse.topics.length - 1 ? idx + 1 : 0;
                       setSelectedTopicId(activeCourse.topics[nextIdx].id);
                     }}
                     className="p-2 flex items-center justify-center text-defense-accent hover:text-white transition-colors"
@@ -159,10 +177,11 @@ export default function AcademiaBlock() {
                   </div>
                 </>
               ) : (
-                <div className="text-sm text-gray-500 font-mono">No topics available.</div>
+                <div className="text-sm text-gray-500 font-mono">
+                  No topics available.
+                </div>
               )}
             </div>
-
           </div>
         </div>
       </div>
@@ -172,25 +191,33 @@ export default function AcademiaBlock() {
   return (
     <div className="glass-panel md:col-span-2 relative overflow-hidden group h-full min-h-[400px]">
       <div className={styles.academiaBg}></div>
-      <div className="p-8 flex flex-col h-full md:absolute md:inset-0" ref={contentRef}>
+      <div
+        className="p-8 flex flex-col h-full md:absolute md:inset-0"
+        ref={contentRef}
+      >
         <div className="relative z-10 flex-1 min-h-0 flex flex-col md:flex-row gap-8">
-
           {/* LEFT — school tabs */}
           <div className="flex-1 border-b md:border-b-0 md:border-r border-defense-border pb-4 md:pb-0 md:pr-8 flex flex-col gap-0 min-w-0">
-            <div ref={textRef} className="text-xs font-mono text-defense-accent mb-4">ACADEMIA</div>
+            <div
+              ref={textRef}
+              className="text-xs font-mono text-defense-accent mb-4"
+            >
+              ACADEMIA
+            </div>
 
             {/* Tabs */}
             <div className="flex flex-col gap-0">
-
               {/* Georgia Tech tab */}
               <button
-                onClick={() => setActiveSchool('gatech')}
-                className={`${styles.tab} ${activeSchool === 'gatech' ? styles.gatechActive : styles.gatechInactive}`}
+                onClick={() => setActiveSchool("gatech")}
+                className={`${styles.tab} ${activeSchool === "gatech" ? styles.gatechActive : styles.gatechInactive}`}
               >
                 <div className="flex items-center gap-2 mb-1">
                   <h3 className={styles.schoolTitle}>GEORGIA</h3>
                 </div>
-                <h4 className={styles.schoolSubtitle}>INSTITUTE OF TECHNOLOGY</h4>
+                <h4 className={styles.schoolSubtitle}>
+                  INSTITUTE OF TECHNOLOGY
+                </h4>
                 <div className="flex items-center gap-2 text-xs text-gray-400 mb-1">
                   <GraduationCap className="w-3 h-3 text-defense-accent shrink-0" />
                   <span>M.S. Computer Science</span>
@@ -206,8 +233,8 @@ export default function AcademiaBlock() {
 
               {/* Rutgers tab */}
               <button
-                onClick={() => setActiveSchool('rutgers')}
-                className={`${styles.tab} ${activeSchool === 'rutgers' ? styles.rutgersActive : styles.rutgersInactive}`}
+                onClick={() => setActiveSchool("rutgers")}
+                className={`${styles.tab} ${activeSchool === "rutgers" ? styles.rutgersActive : styles.rutgersInactive}`}
               >
                 <div className="flex items-center gap-2 mb-1">
                   <h3 className={styles.schoolTitle}>RUTGERS</h3>
@@ -222,23 +249,31 @@ export default function AcademiaBlock() {
                   <span>Class of 2023</span>
                 </div>
               </button>
-
             </div>
           </div>
 
           {/* RIGHT — swappable content panel */}
-          <div className="flex-1 flex flex-col justify-center gap-4 min-w-0" ref={rightPanelRef}>
-            {activeSchool === 'gatech' ? (
+          <div
+            className="flex-1 flex flex-col justify-center gap-4 min-w-0"
+            ref={rightPanelRef}
+          >
+            {activeSchool === "gatech" ? (
               <>
                 <div className="pt-2">
-                  <span className="text-xs font-mono text-gray-500 block mb-2">SPECIALIZATION</span>
+                  <span className="text-xs font-mono text-gray-500 block mb-2">
+                    SPECIALIZATION
+                  </span>
                   <div className="flex flex-wrap gap-2">
-                    <span className="px-2 py-1 bg-white/5 border border-defense-border rounded text-[10px] text-gray-300 font-mono">Artificial Intelligence</span>
+                    <span className="px-2 py-1 bg-white/5 border border-defense-border rounded text-[10px] text-gray-300 font-mono">
+                      Artificial Intelligence
+                    </span>
                   </div>
                 </div>
                 <div className="pt-4 border-t border-defense-border mt-4 flex-1 min-h-0 overflow-y-auto pr-2 no-scrollbar">
                   <div className="flex justify-between items-end mb-3">
-                    <span className="text-xs font-mono text-gray-500 block">CURRENT_COURSES</span>
+                    <span className="text-xs font-mono text-gray-500 block">
+                      CURRENT_COURSES
+                    </span>
                   </div>
                   <div className="space-y-3">
                     {COURSES.map((course) => {
@@ -251,7 +286,10 @@ export default function AcademiaBlock() {
                         >
                           <div className="flex justify-between items-center mb-2">
                             <span className="text-xs font-bold text-white">
-                              {course.title} <span className="text-gray-500 pl-2 font-mono">{course.number}</span>
+                              {course.title}{" "}
+                              <span className="text-gray-500 pl-2 font-mono">
+                                {course.number}
+                              </span>
                             </span>
                             <Icon className="w-3 h-3 text-defense-muted group-hover/course:text-defense-accent transition-colors" />
                           </div>
@@ -267,29 +305,50 @@ export default function AcademiaBlock() {
             ) : (
               <>
                 <div className="pt-2">
-                  <span className="text-xs font-mono text-gray-500 block mb-2">REL_COURSES</span>
+                  <span className="text-xs font-mono text-gray-500 block mb-2">
+                    REL_COURSES
+                  </span>
                   <div className="flex flex-wrap gap-2">
-                    <span className="px-2 py-1 bg-white/5 border border-defense-border rounded text-[10px] text-gray-300 font-mono">Data Science</span>
-                    <span className="px-2 py-1 bg-white/5 border border-defense-border rounded text-[10px] text-gray-300 font-mono">Machine Learning</span>
-                    <span className="px-2 py-1 bg-white/5 border border-defense-border rounded text-[10px] text-gray-300 font-mono">Agile Development</span>
-                    <span className="px-2 py-1 bg-white/5 border border-defense-border rounded text-[10px] text-gray-300 font-mono">Comp Arch</span>
+                    <span className="px-2 py-1 bg-white/5 border border-defense-border rounded text-[10px] text-gray-300 font-mono">
+                      Data Science
+                    </span>
+                    <span className="px-2 py-1 bg-white/5 border border-defense-border rounded text-[10px] text-gray-300 font-mono">
+                      Machine Learning
+                    </span>
+                    <span className="px-2 py-1 bg-white/5 border border-defense-border rounded text-[10px] text-gray-300 font-mono">
+                      Agile Development
+                    </span>
+                    <span className="px-2 py-1 bg-white/5 border border-defense-border rounded text-[10px] text-gray-300 font-mono">
+                      Comp Arch
+                    </span>
                   </div>
                 </div>
 
                 <div className="pt-4 border-t border-defense-border mt-4">
                   <div className="flex justify-between items-end mb-3">
-                    <span className="text-xs font-mono text-gray-500 block">RESEARCH_LAB</span>
+                    <span className="text-xs font-mono text-gray-500 block">
+                      RESEARCH_LAB
+                    </span>
                     <Microscope className="w-3 h-3 text-defense-muted" />
                   </div>
-                  <a href="https://rutgers.alma.exlibrisgroup.com/discovery/delivery/01RUT_INST:01RUT/12676941630004646?lang=en&viewerServiceCode=AlmaViewer" className="block outline-none" target="_blank" rel="noreferrer">
+                  <a
+                    href="https://rutgers.alma.exlibrisgroup.com/discovery/delivery/01RUT_INST:01RUT/12676941630004646?lang=en&viewerServiceCode=AlmaViewer"
+                    className="block outline-none"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
                     <div className={styles.researchCard}>
                       <div className="flex flex-col gap-2 mb-3">
                         <span className={styles.researchTitle}>
-                          An Approach To Disposing of Unwanted Pet Hairs From Homes Using Electrostatic Attraction
+                          An Approach To Disposing of Unwanted Pet Hairs From
+                          Homes Using Electrostatic Attraction
                         </span>
                       </div>
                       <p className="text-[11px] text-gray-400 leading-relaxed">
-                        Developed an electronic device to efficiently collect and dispose of fallen pet hairs, addressing health risks associated with the million tons of hair shed annually by pets worldwide.
+                        Developed an electronic device to efficiently collect
+                        and dispose of fallen pet hairs, addressing health risks
+                        associated with the million tons of hair shed annually
+                        by pets worldwide.
                       </p>
                     </div>
                   </a>

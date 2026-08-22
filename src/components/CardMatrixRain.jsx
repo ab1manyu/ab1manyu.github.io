@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 export default function CardMatrixRain() {
   const canvasRef = useRef(null);
@@ -25,10 +25,12 @@ export default function CardMatrixRain() {
 
     const fontSize = 8;
     let drops = [];
-    
+
     const initDrops = () => {
       const columns = Math.ceil(canvas.width / fontSize);
-      drops = Array(columns).fill(1).map(() => Math.random() * -100);
+      drops = Array(columns)
+        .fill(1)
+        .map(() => Math.random() * -100);
     };
     initDrops();
 
@@ -40,8 +42,10 @@ export default function CardMatrixRain() {
     const draw = () => {
       const currentColumns = Math.ceil(canvas.width / fontSize);
       if (currentColumns > drops.length) {
-         const newDrops = Array(currentColumns - drops.length).fill(1).map(() => Math.random() * -100);
-         drops = [...drops, ...newDrops];
+        const newDrops = Array(currentColumns - drops.length)
+          .fill(1)
+          .map(() => Math.random() * -100);
+        drops = [...drops, ...newDrops];
       }
 
       ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
@@ -52,9 +56,9 @@ export default function CardMatrixRain() {
 
       for (let i = 0; i < drops.length; i++) {
         const text = Math.random() > 0.5 ? "abi" : "abi";
-        
+
         if (drops[i] * fontSize >= -fontSize) {
-            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
         }
 
         if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {

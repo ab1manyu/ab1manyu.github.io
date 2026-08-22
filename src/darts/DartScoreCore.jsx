@@ -240,7 +240,7 @@ function MatrixScoreDisplay({ score, colorClass = "text-emerald-400" }) {
               return String(Math.floor(Math.random() * 10));
             }
             return d;
-          }),
+          })
         );
       }
     }, 40);
@@ -269,7 +269,7 @@ function MatrixScoreDisplay({ score, colorClass = "text-emerald-400" }) {
 export default function DartScoreCore() {
   const [startScore, setStartScore] = useState(301);
   const [numPlayers, setNumPlayers] = useState(2);
-  const [doubleOut, setDoubleOut] = useState(true);
+  const [doubleOut] = useState(true);
 
   // Timer running state
   const [isTimerRunning, setIsTimerRunning] = useState(true);
@@ -345,7 +345,7 @@ export default function DartScoreCore() {
             return { ...p, timeSeconds: p.timeSeconds + 1 };
           }
           return p;
-        }),
+        })
       );
     }, 1000);
 
@@ -402,67 +402,57 @@ export default function DartScoreCore() {
   const turnTotal = currentDarts.reduce((a, b) => a + b.value, 0);
   const canUndo = undoStack.length > 0 && !isProcessingTurn;
 
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName))
-        return;
+  const handleKeyDownRef = useRef();
+  handleKeyDownRef.current = (e) => {
+    if (["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName)) return;
 
-      if (e.key >= "0" && e.key <= "9") {
-        if (!showTypeInModal && !showCustomScoreModal) {
-          setShowTypeInModal(true);
-          setTypeInValue(e.key);
-        } else if (showTypeInModal) {
-          setTypeInValue((prev) => (prev.length < 3 ? prev + e.key : prev));
-        } else if (showCustomScoreModal) {
-          setCustomStartInput((prev) =>
-            prev.length < 4 ? prev + e.key : prev,
-          );
-        }
+    if (e.key >= "0" && e.key <= "9") {
+      if (!showTypeInModal && !showCustomScoreModal) {
+        setShowTypeInModal(true);
+        setTypeInValue(e.key);
       } else if (showTypeInModal) {
-        if (e.key === "Backspace") {
-          setTypeInValue((prev) => prev.slice(0, -1));
-        } else if (e.key === "Enter") {
-          e.preventDefault();
-          const parsed = parseInt(typeInValue, 10);
-          if (!isNaN(parsed) && parsed >= 0 && parsed <= 180) {
-            handleSubtractScore(parsed, 3);
-            setTypeInValue("");
-            setShowTypeInModal(false);
-          }
-        } else if (e.key === "Escape") {
-          e.preventDefault();
+        setTypeInValue((prev) => (prev.length < 3 ? prev + e.key : prev));
+      } else if (showCustomScoreModal) {
+        setCustomStartInput((prev) => (prev.length < 4 ? prev + e.key : prev));
+      }
+    } else if (showTypeInModal) {
+      if (e.key === "Backspace") {
+        setTypeInValue((prev) => prev.slice(0, -1));
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        const parsed = parseInt(typeInValue, 10);
+        if (!isNaN(parsed) && parsed >= 0 && parsed <= 180) {
+          handleSubtractScore(parsed, 3);
           setTypeInValue("");
           setShowTypeInModal(false);
         }
-      } else if (showCustomScoreModal) {
-        if (e.key === "Backspace") {
-          setCustomStartInput((prev) => prev.slice(0, -1));
-        } else if (e.key === "Enter") {
-          e.preventDefault();
-          handleCustomScoreSubmit();
-        } else if (e.key === "Escape") {
-          e.preventDefault();
-          setCustomStartInput("");
-          setShowCustomScoreModal(false);
-        }
-      } else if (e.key === "Backspace" && canUndo) {
+      } else if (e.key === "Escape") {
         e.preventDefault();
-        handleUndo();
+        setTypeInValue("");
+        setShowTypeInModal(false);
       }
-    };
+    } else if (showCustomScoreModal) {
+      if (e.key === "Backspace") {
+        setCustomStartInput((prev) => prev.slice(0, -1));
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        handleCustomScoreSubmit();
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        setCustomStartInput("");
+        setShowCustomScoreModal(false);
+      }
+    } else if (e.key === "Backspace" && canUndo) {
+      e.preventDefault();
+      handleUndo();
+    }
+  };
 
+  useEffect(() => {
+    const handleKeyDown = (e) => handleKeyDownRef.current?.(e);
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [
-    showTypeInModal,
-    showCustomScoreModal,
-    typeInValue,
-    customStartInput,
-    numPlayers,
-    canUndo,
-    undoStack,
-    isProcessingTurn,
-  ]);
+  }, []);
 
   const handleAddDart = (num) => {
     if (!activePlayer || currentDarts.length >= 3 || isProcessingTurn) return;
@@ -573,7 +563,7 @@ export default function DartScoreCore() {
             };
           }
           return p;
-        }),
+        })
       );
     } else if (remaining === 0) {
       const newLegs = activePlayer.legs + 1;
@@ -606,7 +596,7 @@ export default function DartScoreCore() {
             };
           }
           return { ...p, score: startScore };
-        }),
+        })
       );
     } else {
       setPlayers((prev) =>
@@ -630,7 +620,7 @@ export default function DartScoreCore() {
             };
           }
           return p;
-        }),
+        })
       );
     }
 
@@ -649,7 +639,7 @@ export default function DartScoreCore() {
       lastState.players.map((p, idx) => ({
         ...p,
         timeSeconds: players[idx]?.timeSeconds ?? p.timeSeconds,
-      })),
+      }))
     );
     setActivePlayerIndex(lastState.activePlayerIndex);
     setCurrentDarts(lastState.currentDarts);

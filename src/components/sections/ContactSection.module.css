@@ -35,9 +35,8 @@
   color: white;
 }
 
-
 .cardPhoto:hover {
-  border-color: #EA5506;
+  border-color: #ea5506;
 }
 
 .cardPhoto:hover .cardIcon {
@@ -45,7 +44,7 @@
 }
 
 .cardPhoto:hover .cardTitle {
-  color: #EA5506;
+  color: #ea5506;
 }
 
 .cardPhoto:hover .cardLinkWrap {

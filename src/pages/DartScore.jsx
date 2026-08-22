@@ -1,5 +1,5 @@
-import { useLayoutEffect } from 'react';
-import DartScoreCore from '../darts/DartScoreCore';
+import { useLayoutEffect } from "react";
+import DartScoreCore from "../darts/DartScoreCore";
 
 export default function DartScore() {
   useLayoutEffect(() => {

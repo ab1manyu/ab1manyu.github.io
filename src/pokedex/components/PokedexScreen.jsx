@@ -9,14 +9,16 @@ export default function PokedexScreen({ caughtIds, generationData }) {
   const [viewMode, setViewMode] = useState("card");
 
   useEffect(() => {
-    document.documentElement.style.setProperty('--theme-color', "#8b51f7ff");
-    document.documentElement.style.setProperty('--theme-color-rgb', "6, 15, 9");
+    document.documentElement.style.setProperty("--theme-color", "#8b51f7ff");
+    document.documentElement.style.setProperty("--theme-color-rgb", "6, 15, 9");
   }, []);
 
   const filtered = useMemo(() => {
     if (!generationData) return [];
-    if (filter === "caught") return generationData.filter((p) => caughtIds.has(p.id));
-    if (filter === "uncaught") return generationData.filter((p) => !caughtIds.has(p.id));
+    if (filter === "caught")
+      return generationData.filter((p) => caughtIds.has(p.id));
+    if (filter === "uncaught")
+      return generationData.filter((p) => !caughtIds.has(p.id));
     return generationData;
   }, [filter, caughtIds, generationData]);
 
@@ -54,12 +56,20 @@ export default function PokedexScreen({ caughtIds, generationData }) {
         </div>
         <button
           className={styles.filterBtn}
-          onClick={() => setViewMode(prev => prev === "card" ? "list" : "card")}
+          onClick={() =>
+            setViewMode((prev) => (prev === "card" ? "list" : "card"))
+          }
         >
           {viewMode === "card" ? (
-            <><span className={styles.viewIcon}>≡</span> <span className={styles.viewText}>LIST</span></>
+            <>
+              <span className={styles.viewIcon}>≡</span>{" "}
+              <span className={styles.viewText}>LIST</span>
+            </>
           ) : (
-            <><span className={styles.viewIcon}>☷</span> <span className={styles.viewText}>GRID</span></>
+            <>
+              <span className={styles.viewIcon}>☷</span>{" "}
+              <span className={styles.viewText}>GRID</span>
+            </>
           )}
         </button>
       </div>
@@ -74,7 +84,11 @@ export default function PokedexScreen({ caughtIds, generationData }) {
 
       {/* Grid */}
       {filtered.length > 0 && (
-        <div className={`${styles.grid} ${viewMode === "list" ? styles.listView : ""}`} role="list" aria-label="Pokédex entries">
+        <div
+          className={`${styles.grid} ${viewMode === "list" ? styles.listView : ""}`}
+          role="list"
+          aria-label="Pokédex entries"
+        >
           {filtered.map((pokemon) => (
             <div role="listitem" key={pokemon.id}>
               <PokemonCard

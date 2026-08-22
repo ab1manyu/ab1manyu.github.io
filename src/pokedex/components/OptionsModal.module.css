@@ -21,9 +21,17 @@
   width: min(420px, 92vw);
   background: #0a0a12;
   border: none;
-  filter:
-    drop-shadow(0 0 1px var(--border-bright)) drop-shadow(0 24px 48px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 40px rgba(var(--theme-color-rgb), 0.15));
-  clip-path: polygon(16px 0, calc(100% - 16px) 0, 100% 50%, calc(100% - 16px) 100%, 16px 100%, 0 50%);
+  filter: drop-shadow(0 0 1px var(--border-bright))
+    drop-shadow(0 24px 48px rgba(0, 0, 0, 0.8))
+    drop-shadow(0 0 40px rgba(var(--theme-color-rgb), 0.15));
+  clip-path: polygon(
+    16px 0,
+    calc(100% - 16px) 0,
+    100% 50%,
+    calc(100% - 16px) 100%,
+    16px 100%,
+    0 50%
+  );
   animation: slideUp 0.2s ease-out;
 }
 
@@ -116,7 +124,10 @@
   padding: 6px 12px;
   cursor: pointer;
   border-radius: 4px;
-  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    color 0.2s;
 }
 
 .genBtn:hover {
@@ -161,9 +172,16 @@
   flex: 1;
   height: 10px;
   background: var(--border);
-  clip-path: polygon(3px 0, calc(100% - 3px) 0, 100% 3px,
-      100% calc(100% - 3px), calc(100% - 3px) 100%,
-      3px 100%, 0 calc(100% - 3px), 0 3px);
+  clip-path: polygon(
+    3px 0,
+    calc(100% - 3px) 0,
+    100% 3px,
+    100% calc(100% - 3px),
+    calc(100% - 3px) 100%,
+    3px 100%,
+    0 calc(100% - 3px),
+    0 3px
+  );
 }
 
 .sliderFill {
@@ -171,9 +189,16 @@
   inset: 0;
   background: linear-gradient(90deg, var(--theme-dark), var(--theme-color));
   transition: width 0.6s ease-out;
-  clip-path: polygon(3px 0, calc(100% - 3px) 0, 100% 3px,
-      100% calc(100% - 3px), calc(100% - 3px) 100%,
-      3px 100%, 0 calc(100% - 3px), 0 3px);
+  clip-path: polygon(
+    3px 0,
+    calc(100% - 3px) 0,
+    100% 3px,
+    100% calc(100% - 3px),
+    calc(100% - 3px) 100%,
+    3px 100%,
+    0 calc(100% - 3px),
+    0 3px
+  );
 }
 
 .sliderGlow {
@@ -261,7 +286,10 @@
   padding: 8px 14px;
   cursor: pointer;
   border-radius: 6px;
-  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  transition:
+    color 0.2s,
+    border-color 0.2s,
+    background 0.2s;
 }
 
 .actionBtn:hover {
@@ -333,7 +361,14 @@
 .badgeSlot {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 6px 100%, 0 50%);
+  clip-path: polygon(
+    6px 0,
+    calc(100% - 6px) 0,
+    100% 50%,
+    calc(100% - 6px) 100%,
+    6px 100%,
+    0 50%
+  );
   padding: 4px 10px;
   display: flex;
   align-items: center;
@@ -343,7 +378,9 @@
 
 .badgeEarned {
   border-color: transparent;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent), var(--badge-color);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent),
+    var(--badge-color);
   animation: unlock-bounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 

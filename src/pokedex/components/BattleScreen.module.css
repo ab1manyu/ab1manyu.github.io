@@ -24,8 +24,7 @@
   position: relative;
 }
 
-@media (max-width: 600px),
-(max-height: 700px) {
+@media (max-width: 600px), (max-height: 700px) {
   .arena {
     padding-bottom: clamp(60px, 20vh, 200px);
   }
@@ -47,20 +46,38 @@
 }
 
 .wildBanner::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: var(--border);
-  clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0 calc(100% - 6px), 0 6px);
+  clip-path: polygon(
+    6px 0,
+    calc(100% - 6px) 0,
+    100% 6px,
+    100% calc(100% - 6px),
+    calc(100% - 6px) 100%,
+    6px 100%,
+    0 calc(100% - 6px),
+    0 6px
+  );
   z-index: -2;
 }
 
 .wildBanner::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 1px;
   background: var(--bg-secondary);
-  clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0 calc(100% - 6px), 0 6px);
+  clip-path: polygon(
+    6px 0,
+    calc(100% - 6px) 0,
+    100% 6px,
+    100% calc(100% - 6px),
+    calc(100% - 6px) 100%,
+    6px 100%,
+    0 calc(100% - 6px),
+    0 6px
+  );
   z-index: -1;
 }
 
@@ -109,7 +126,7 @@
 }
 
 .spriteArea::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 50px;
   width: 140px;
@@ -157,7 +174,8 @@
   user-select: none;
   z-index: 1;
   position: relative;
-  animation: slide-in-pokemon 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  animation: slide-in-pokemon 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)
+    forwards;
 }
 
 @keyframes slide-in-pokemon {
@@ -173,7 +191,6 @@
 }
 
 @keyframes pulse-shadow {
-
   0%,
   100% {
     filter: brightness(0) drop-shadow(0 0 5px var(--theme-color));
@@ -189,12 +206,17 @@
 }
 
 .spriteSilhouette {
-  animation: pulse-shadow 2s infinite, float 3s ease-in-out infinite, slide-in-pokemon 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  animation:
+    pulse-shadow 2s infinite,
+    float 3s ease-in-out infinite,
+    slide-in-pokemon 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
 .spriteRevealed {
   filter: brightness(1) saturate(1);
-  animation: reveal 0.8s ease forwards, float 3s ease-in-out 0.8s infinite;
+  animation:
+    reveal 0.8s ease forwards,
+    float 3s ease-in-out 0.8s infinite;
 }
 
 @keyframes slide-out-pokemon {
@@ -210,7 +232,8 @@
 }
 
 .spriteRanAway {
-  animation: slide-out-pokemon 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards !important;
+  animation: slide-out-pokemon 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)
+    forwards !important;
   filter: brightness(0) !important;
 }
 
@@ -249,21 +272,39 @@
 }
 
 .messageBox::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: var(--border);
-  clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
+  clip-path: polygon(
+    8px 0,
+    calc(100% - 8px) 0,
+    100% 8px,
+    100% calc(100% - 8px),
+    calc(100% - 8px) 100%,
+    8px 100%,
+    0 calc(100% - 8px),
+    0 8px
+  );
   z-index: -2;
   transition: background 0.2s;
 }
 
 .messageBox::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 2px;
   background: var(--bg-card);
-  clip-path: polygon(7px 0, calc(100% - 7px) 0, 100% 7px, 100% calc(100% - 7px), calc(100% - 7px) 100%, 7px 100%, 0 calc(100% - 7px), 0 7px);
+  clip-path: polygon(
+    7px 0,
+    calc(100% - 7px) 0,
+    100% 7px,
+    100% calc(100% - 7px),
+    calc(100% - 7px) 100%,
+    7px 100%,
+    0 calc(100% - 7px),
+    0 7px
+  );
   z-index: -1;
   transition: background 0.2s;
 }
@@ -326,21 +367,39 @@
 }
 
 .inputWrapper::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: var(--border-bright);
-  clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
+  clip-path: polygon(
+    8px 0,
+    calc(100% - 8px) 0,
+    100% 8px,
+    100% calc(100% - 8px),
+    calc(100% - 8px) 100%,
+    8px 100%,
+    0 calc(100% - 8px),
+    0 8px
+  );
   z-index: -2;
   transition: all 0.4s ease-out;
 }
 
 .inputWrapper::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 2px;
   background: var(--bg-card);
-  clip-path: polygon(7px 0, calc(100% - 7px) 0, 100% 7px, 100% calc(100% - 7px), calc(100% - 7px) 100%, 7px 100%, 0 calc(100% - 7px), 0 7px);
+  clip-path: polygon(
+    7px 0,
+    calc(100% - 7px) 0,
+    100% 7px,
+    100% calc(100% - 7px),
+    calc(100% - 7px) 100%,
+    7px 100%,
+    0 calc(100% - 7px),
+    0 7px
+  );
   z-index: -1;
 }
 
@@ -410,20 +469,34 @@
 }
 
 .catchButton::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: var(--theme-color);
-  clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0 50%);
+  clip-path: polygon(
+    10px 0,
+    calc(100% - 10px) 0,
+    100% 50%,
+    calc(100% - 10px) 100%,
+    10px 100%,
+    0 50%
+  );
   z-index: -2;
 }
 
 .catchButton::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 1px;
   background: var(--theme-color);
-  clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0 50%);
+  clip-path: polygon(
+    10px 0,
+    calc(100% - 10px) 0,
+    100% 50%,
+    calc(100% - 10px) 100%,
+    10px 100%,
+    0 50%
+  );
   z-index: -1;
   transition: background 0.2s;
 }
@@ -443,7 +516,6 @@
 }
 
 @keyframes button-pulse {
-
   0%,
   100% {
     filter: drop-shadow(0 0 5px rgba(var(--theme-color-rgb), 0.5));
@@ -486,21 +558,35 @@
 }
 
 .runButton::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: var(--border-bright);
-  clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0 50%);
+  clip-path: polygon(
+    10px 0,
+    calc(100% - 10px) 0,
+    100% 50%,
+    calc(100% - 10px) 100%,
+    10px 100%,
+    0 50%
+  );
   z-index: -2;
   transition: background 0.2s;
 }
 
 .runButton::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 1px;
   background: var(--bg-card);
-  clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0 50%);
+  clip-path: polygon(
+    10px 0,
+    calc(100% - 10px) 0,
+    100% 50%,
+    calc(100% - 10px) 100%,
+    10px 100%,
+    0 50%
+  );
   z-index: -1;
 }
 
@@ -546,7 +632,6 @@
   animation-delay: 0.4s;
 }
 
-
 /* All caught screen */
 .allCaught {
   display: flex;
@@ -558,9 +643,17 @@
   background: var(--bg-card);
   padding: 40px 30px;
   border: none;
-  filter:
-    drop-shadow(0 0 1px var(--border-bright)) drop-shadow(0 24px 48px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 40px rgba(249, 199, 79, 0.15));
-  clip-path: polygon(16px 0, calc(100% - 16px) 0, 100% 50%, calc(100% - 16px) 100%, 16px 100%, 0 50%);
+  filter: drop-shadow(0 0 1px var(--border-bright))
+    drop-shadow(0 24px 48px rgba(0, 0, 0, 0.8))
+    drop-shadow(0 0 40px rgba(249, 199, 79, 0.15));
+  clip-path: polygon(
+    16px 0,
+    calc(100% - 16px) 0,
+    100% 50%,
+    calc(100% - 16px) 100%,
+    16px 100%,
+    0 50%
+  );
   position: relative;
   z-index: 10;
   max-width: 90vw;

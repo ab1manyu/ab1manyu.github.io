@@ -1,6 +1,5 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@config "../tailwind.config.js";
 
 @layer base {
   :root {
@@ -61,7 +60,9 @@
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--border-color);
     border-radius: 1.5rem;
-    transition: border-color 0.3s ease, transform 0.3s ease;
+    transition:
+      border-color 0.3s ease,
+      transform 0.3s ease;
   }
 
   .glass-panel:hover {
@@ -143,8 +144,20 @@
 .dot-grid-edge-flash {
   background-image: radial-gradient(var(--accent-solid) 1px, transparent 1px);
   background-size: 20px 20px;
-  -webkit-mask-image: linear-gradient(to right, black 0%, transparent 18%, transparent 82%, black 100%);
-  mask-image: linear-gradient(to right, black 0%, transparent 18%, transparent 82%, black 100%);
+  -webkit-mask-image: linear-gradient(
+    to right,
+    black 0%,
+    transparent 18%,
+    transparent 82%,
+    black 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    black 0%,
+    transparent 18%,
+    transparent 82%,
+    black 100%
+  );
   animation: dot-edge-pulse 1s ease-out forwards;
 }
 
@@ -169,8 +182,18 @@
 .dot-grid-pulse {
   background-image: radial-gradient(var(--accent-solid) 1px, transparent 1px);
   background-size: 20px 20px;
-  -webkit-mask-image: radial-gradient(circle at bottom center, transparent 45%, black 50%, transparent 60%);
-  mask-image: radial-gradient(circle at bottom center, transparent 45%, black 50%, transparent 60%);
+  -webkit-mask-image: radial-gradient(
+    circle at bottom center,
+    transparent 45%,
+    black 50%,
+    transparent 60%
+  );
+  mask-image: radial-gradient(
+    circle at bottom center,
+    transparent 45%,
+    black 50%,
+    transparent 60%
+  );
   -webkit-mask-position: bottom center;
   mask-position: bottom center;
   -webkit-mask-repeat: no-repeat;
@@ -179,10 +202,23 @@
 }
 
 .dot-grid-concentric-pulse {
-  background-image: radial-gradient(var(--accent-solid) 1.5px, transparent 1.5px);
+  background-image: radial-gradient(
+    var(--accent-solid) 1.5px,
+    transparent 1.5px
+  );
   background-size: 20px 20px;
-  -webkit-mask-image: radial-gradient(circle at center, transparent 40%, black 50%, transparent 60%);
-  mask-image: radial-gradient(circle at center, transparent 40%, black 50%, transparent 60%);
+  -webkit-mask-image: radial-gradient(
+    circle at center,
+    transparent 40%,
+    black 50%,
+    transparent 60%
+  );
+  mask-image: radial-gradient(
+    circle at center,
+    transparent 40%,
+    black 50%,
+    transparent 60%
+  );
   -webkit-mask-position: center center;
   mask-position: center center;
   -webkit-mask-repeat: no-repeat;
@@ -234,17 +270,15 @@
   }
 }
 
-
 .full-sweep-active {
   animation: full-sweep 1.5s linear forwards;
 }
 
 .pokeball-shake {
-  animation: pokeball-shake 0.5s cubic-bezier(.36, .07, .19, .97) both;
+  animation: pokeball-shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
 
 @keyframes pokeball-shake {
-
   10%,
   90% {
     transform: translate3d(-1px, 0, 0) rotate(-10deg);
@@ -340,7 +374,9 @@
 #gallery-modal #modal-card {
   opacity: 0;
   transform: scale(0.95);
-  transition: opacity 0.2s ease-out, transform 0.2s cubic-bezier(0.2, 0, 0.2, 1);
+  transition:
+    opacity 0.2s ease-out,
+    transform 0.2s cubic-bezier(0.2, 0, 0.2, 1);
 }
 
 #gallery-modal.active #modal-card {
@@ -443,6 +479,6 @@ input::-webkit-inner-spin-button {
 }
 
 /* Remove Firefox number input spinners */
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }

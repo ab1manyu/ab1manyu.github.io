@@ -21,7 +21,9 @@ function injectNavbar() {
   const radarIcon = isGallery ? "aperture" : "satellite-dish";
 
   // Only rotate on gallery page
-  const rotateClass = isGallery ? "transition-transform duration-700 group-hover:rotate-180" : "";
+  const rotateClass = isGallery
+    ? "transition-transform duration-700 group-hover:rotate-180"
+    : "";
 
   container.innerHTML = `
 	<nav class="fixed top-0 w-full z-50 border-b border-defense-border bg-black/80 backdrop-blur-md">
@@ -95,7 +97,7 @@ function initGalleryModal() {
 
   // Open Modal
   const items = document.querySelectorAll(".gallery-item");
-  items.forEach(item => {
+  items.forEach((item) => {
     item.addEventListener("click", () => {
       // 1. Populate Data
       const title = item.getAttribute("data-title");
@@ -112,7 +114,9 @@ function initGalleryModal() {
       if (modalLocation && location) modalLocation.textContent = location;
 
       // Handle Image vs Icon
-      const imageContainer = document.querySelector("#modal-card > div:first-child");
+      const imageContainer = document.querySelector(
+        "#modal-card > div:first-child"
+      );
       if (imageContainer) {
         // 1. Remove existing image, icon (i), or lucide svg
         const existingImg = imageContainer.querySelector("img");
@@ -127,7 +131,8 @@ function initGalleryModal() {
         if (imageSrc) {
           const img = document.createElement("img");
           img.src = imageSrc;
-          img.className = "w-full h-full object-contain max-h-[90%] fade-in cursor-zoom-in transition-transform duration-300 origin-center";
+          img.className =
+            "w-full h-full object-contain max-h-[90%] fade-in cursor-zoom-in transition-transform duration-300 origin-center";
 
           // Zoom Logic
           let zoomLevel = 0; // 0: None, 1: 2.5x, 2: 5x
@@ -268,7 +273,7 @@ function initFadeTransitions() {
   // Intercept all clicks on standard links (including nav-items that change page)
   const links = document.querySelectorAll("a"); // Catch all links
 
-  links.forEach(link => {
+  links.forEach((link) => {
     link.addEventListener("click", (e) => {
       const href = link.getAttribute("href");
 
@@ -276,7 +281,13 @@ function initFadeTransitions() {
       // 1. Hash links (anchors on same page)
       // 2. Target blank (new tabs)
       // 3. Javascript: links
-      if (!href || href.startsWith("#") || href.startsWith("javascript:") || link.target === "_blank") return;
+      if (
+        !href ||
+        href.startsWith("#") ||
+        href.startsWith("javascript:") ||
+        link.target === "_blank"
+      )
+        return;
 
       e.preventDefault();
 
@@ -393,8 +404,9 @@ function initRadar() {
 
       jet.innerHTML = `
                 <i data-lucide="plane" class="w-6 h-6 text-defense-accent" style="transform: rotate(${rotation}deg)"></i>
-                <span class="text-[8px] font-mono text-defense-accent bg-black/80 px-1 border border-defense-accent">BOGEY_0${i + 1
-        }</span>
+                <span class="text-[8px] font-mono text-defense-accent bg-black/80 px-1 border border-defense-accent">BOGEY_0${
+                  i + 1
+                }</span>
             `;
 
       document.body.appendChild(jet);

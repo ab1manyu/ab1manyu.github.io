@@ -1,15 +1,21 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import { getRandomPokemon, getPokemonByName, TYPE_COLORS } from "../data/pokemonData";
+import { getRandomPokemon, TYPE_COLORS } from "../data/pokemonData";
 import { catchPokemon } from "../db/pokemonDB";
 import styles from "./BattleScreen.module.css";
 
-const SPRITE_BASE = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/";
+const SPRITE_BASE =
+  "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/";
 
 function getSpriteUrl(id) {
   return `${SPRITE_BASE}${id}.png`;
 }
 
-export default function BattleScreen({ caughtIds, onCatch, generation, generationData }) {
+export default function BattleScreen({
+  caughtIds,
+  onCatch,
+  generation,
+  generationData,
+}) {
   const [wildPokemon, setWildPokemon] = useState(null);
   const [guess, setGuess] = useState("");
   const [phase, setPhase] = useState("guessing"); // guessing | caught | wrong | ran_away | all_caught
@@ -54,33 +60,47 @@ export default function BattleScreen({ caughtIds, onCatch, generation, generatio
     setMessage(`A wild Pokémon appeared!`);
 
     fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.id}`)
-      .then(r => r.json())
-      .then(d => {
+      .then((r) => r.json())
+      .then((d) => {
         const typeName = d.types[0].type.name;
         const hex = TYPE_COLORS[typeName] || "#e53935";
-        document.documentElement.style.setProperty('--theme-color', hex);
+        document.documentElement.style.setProperty("--theme-color", hex);
         const h = hex.replace("#", "");
         const rgb = `${parseInt(h.substring(0, 2), 16)}, ${parseInt(h.substring(2, 4), 16)}, ${parseInt(h.substring(4, 6), 16)}`;
-        document.documentElement.style.setProperty('--theme-color-rgb', rgb);
+        document.documentElement.style.setProperty("--theme-color-rgb", rgb);
       })
       .catch(() => {
-        document.documentElement.style.setProperty('--theme-color', "#e53935");
-        document.documentElement.style.setProperty('--theme-color-rgb', "229, 57, 53");
+        document.documentElement.style.setProperty("--theme-color", "#e53935");
+        document.documentElement.style.setProperty(
+          "--theme-color-rgb",
+          "229, 57, 53"
+        );
       });
 
     setTimeout(() => inputRef.current?.focus(), 100);
   }, [generationData]);
 
   const isMatch = useMemo(() => {
-    if (!wildPokemon || phase === "caught" || phase === "ran_away") return false;
-    const normalizedGuess = guess.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z]/g, "");
+    if (!wildPokemon || phase === "caught" || phase === "ran_away")
+      return false;
+    const normalizedGuess = guess
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z]/g, "");
     if (!normalizedGuess) return false;
     const actualName = wildPokemon.name.toLowerCase().replace(/[^a-z]/g, "");
     return normalizedGuess === actualName;
   }, [guess, wildPokemon, phase]);
 
   useEffect(() => {
-    if (!wildPokemon || phase === "caught" || phase === "ran_away" || phase === "wrong") return;
+    if (
+      !wildPokemon ||
+      phase === "caught" ||
+      phase === "ran_away" ||
+      phase === "wrong"
+    )
+      return;
     if (isMatch) {
       setMessage(`A wild ${wildPokemon.name} appeared!`);
     } else {
@@ -93,7 +113,7 @@ export default function BattleScreen({ caughtIds, onCatch, generation, generatio
     if (generationData && generationData.length > 0) {
       spawnNewPokemon();
     }
-  }, [generationData]); // trigger spawn on gen switch
+  }, [generationData, spawnNewPokemon]); // trigger spawn on gen switch
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -146,14 +166,21 @@ export default function BattleScreen({ caughtIds, onCatch, generation, generatio
     }
 
     const actual = wildPokemon.name.toLowerCase();
-    const typed = guess.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z]/g, "");
+    const typed = guess
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z]/g, "");
 
-    return actual.split("").map((char, i) => {
-      if (/[^a-z]/.test(char)) return char;
-      const typedChar = typed[i];
-      if (typedChar === char) return char.toUpperCase();
-      return "\u00A0";
-    }).join(" ");
+    return actual
+      .split("")
+      .map((char, i) => {
+        if (/[^a-z]/.test(char)) return char;
+        const typedChar = typed[i];
+        if (typedChar === char) return char.toUpperCase();
+        return "\u00A0";
+      })
+      .join(" ");
   };
 
   if (phase === "all_caught") {
@@ -164,7 +191,8 @@ export default function BattleScreen({ caughtIds, onCatch, generation, generatio
           <div className={styles.trophy}>🏆</div>
           <h2 className={styles.allCaughtTitle}>POKÉDEX COMPLETE!</h2>
           <p className={styles.allCaughtSub}>
-            You've caught all {generationData.length} {capitalize(generation)} Pokémon!
+            You've caught all {generationData.length} {capitalize(generation)}{" "}
+            Pokémon!
           </p>
         </div>
       </div>
@@ -178,13 +206,17 @@ export default function BattleScreen({ caughtIds, onCatch, generation, generatio
 
       <div className={styles.arena}>
         <div className={styles.wildBanner}>
-          <span className={`${styles.wildName} ${isMatch ? styles.wildNameMatch : ""} ${wildPokemon?.name.length > 11 ? styles.wildNameMini : wildPokemon?.name.length > 9 ? styles.wildNameSmall : ""}`}>
+          <span
+            className={`${styles.wildName} ${isMatch ? styles.wildNameMatch : ""} ${wildPokemon?.name.length > 11 ? styles.wildNameMini : wildPokemon?.name.length > 9 ? styles.wildNameSmall : ""}`}
+          >
             {getWordleDisplay()}
           </span>
         </div>
 
         {/* Sprite area */}
-        <div className={`${styles.spriteArea} ${phase === "caught" ? styles.spriteAreaCaught : ""}`}>
+        <div
+          className={`${styles.spriteArea} ${phase === "caught" ? styles.spriteAreaCaught : ""}`}
+        >
           {wildPokemon && (
             <>
               {!spriteLoaded && (
@@ -195,8 +227,10 @@ export default function BattleScreen({ caughtIds, onCatch, generation, generatio
               <img
                 key={wildPokemon.id}
                 src={getSpriteUrl(wildPokemon.id)}
-                alt={(revealed || isMatch) ? wildPokemon.name : "silhouetted Pokémon"}
-                className={`${styles.sprite} ${spriteLoaded ? styles.spriteVisible : ""} ${(revealed || isMatch) ? styles.spriteRevealed : (phase === "ran_away" ? styles.spriteRanAway : styles.spriteSilhouette)}`}
+                alt={
+                  revealed || isMatch ? wildPokemon.name : "silhouetted Pokémon"
+                }
+                className={`${styles.sprite} ${spriteLoaded ? styles.spriteVisible : ""} ${revealed || isMatch ? styles.spriteRevealed : phase === "ran_away" ? styles.spriteRanAway : styles.spriteSilhouette}`}
                 onLoad={() => setSpriteLoaded(true)}
                 draggable={false}
               />
@@ -205,15 +239,23 @@ export default function BattleScreen({ caughtIds, onCatch, generation, generatio
         </div>
 
         {/* Message box */}
-        <div className={`${styles.messageBox} ${phase === "wrong" ? styles.messageBoxWrong : ""} ${phase === "caught" ? styles.messageBoxCaught : ""}`}>
+        <div
+          className={`${styles.messageBox} ${phase === "wrong" ? styles.messageBoxWrong : ""} ${phase === "caught" ? styles.messageBoxCaught : ""}`}
+        >
           <p className={styles.messageText} aria-live="polite">
             {displayedMessage}
           </p>
         </div>
 
         {/* Input area */}
-        <form className={`${styles.guessForm} ${(phase === "caught" || phase === "ran_away") ? styles.hiddenForm : ""}`} onSubmit={handleSubmit} autoComplete="off">
-          <div className={`${styles.inputWrapper} ${phase === "wrong" ? styles.inputShake : ""}`}>
+        <form
+          className={`${styles.guessForm} ${phase === "caught" || phase === "ran_away" ? styles.hiddenForm : ""}`}
+          onSubmit={handleSubmit}
+          autoComplete="off"
+        >
+          <div
+            className={`${styles.inputWrapper} ${phase === "wrong" ? styles.inputShake : ""}`}
+          >
             <input
               ref={inputRef}
               id="pokemon-guess-input"

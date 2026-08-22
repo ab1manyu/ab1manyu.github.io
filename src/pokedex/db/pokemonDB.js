@@ -2,7 +2,7 @@ import { openDB } from "idb";
 
 const DB_VERSION = 2;
 const STORE_CAUGHT = "caught";
-const STORE_META   = "meta";
+const STORE_META = "meta";
 
 let dbPromises = {};
 
@@ -10,12 +10,14 @@ function getDB(generation) {
   const DB_NAME = `pokedex-db-${generation}`;
   if (!dbPromises[generation]) {
     dbPromises[generation] = openDB(DB_NAME, DB_VERSION, {
-      upgrade(db, oldVersion) {
+      upgrade(db) {
         if (!db.objectStoreNames.contains(STORE_CAUGHT)) {
           db.createObjectStore(STORE_CAUGHT, { keyPath: "id" });
         }
         if (!db.objectStoreNames.contains(STORE_META)) {
-          const metaStore = db.createObjectStore(STORE_META, { keyPath: "key" });
+          const metaStore = db.createObjectStore(STORE_META, {
+            keyPath: "key",
+          });
           // seed run start on first creation
           metaStore.put({ key: "runStart", value: Date.now() });
         }
@@ -58,7 +60,7 @@ export async function getLastCaughtTime(generation) {
   const db = await getDB(generation);
   const all = await db.getAll(STORE_CAUGHT);
   if (all.length === 0) return null;
-  return Math.max(...all.map(entry => entry.caughtAt || 0));
+  return Math.max(...all.map((entry) => entry.caughtAt || 0));
 }
 
 /* ── Run-meta helpers ─────────────────────────────────────────── */
@@ -104,11 +106,10 @@ export async function resetRun(generation) {
 export async function exportData(generation) {
   const db = await getDB(generation);
   const caught = await db.getAll(STORE_CAUGHT);
-  const meta   = await db.getAll(STORE_META);
-  const blob = new Blob(
-    [JSON.stringify({ caught, meta }, null, 2)],
-    { type: "application/json" }
-  );
+  const meta = await db.getAll(STORE_META);
+  const blob = new Blob([JSON.stringify({ caught, meta }, null, 2)], {
+    type: "application/json",
+  });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
@@ -125,7 +126,7 @@ export async function importData(generation, jsonString) {
   const tx = db.transaction([STORE_CAUGHT, STORE_META], "readwrite");
   await tx.objectStore(STORE_CAUGHT).clear();
   for (const entry of caught) await tx.objectStore(STORE_CAUGHT).put(entry);
-  for (const entry of meta)   await tx.objectStore(STORE_META).put(entry);
+  for (const entry of meta) await tx.objectStore(STORE_META).put(entry);
   await tx.done;
   dbPromises[generation] = null;
 }

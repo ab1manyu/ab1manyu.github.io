@@ -1,18 +1,23 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { lazy, Suspense } from 'react';
-import { Analytics } from '@vercel/analytics/react';
-import Home from './pages/Home';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
-import Loader from './components/Loader';
-import BackgroundElements from './components/BackgroundElements';
-import DotGrid from './components/DotGrid';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { lazy, Suspense } from "react";
+import { Analytics } from "@vercel/analytics/react";
+import Home from "./pages/Home";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import Loader from "./components/Loader";
+import BackgroundElements from "./components/BackgroundElements";
+import DotGrid from "./components/DotGrid";
 
-const Gallery = lazy(() => import('./pages/Gallery'));
-const KaiCards = lazy(() => import('./pages/KaiCards'));
-const Pokedex = lazy(() => import('./pages/Pokedex'));
-const DartScore = lazy(() => import('./pages/DartScore'));
-const NotFound = lazy(() => import('./pages/NotFound'));
+const Gallery = lazy(() => import("./pages/Gallery"));
+const KaiCards = lazy(() => import("./pages/KaiCards"));
+const Pokedex = lazy(() => import("./pages/Pokedex"));
+const DartScore = lazy(() => import("./pages/DartScore"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 function App() {
   return (

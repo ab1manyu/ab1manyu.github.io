@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
-const eyesList = ['-', 'o', '>', '<'];
+const eyesList = ["-", "o", ">", "<"];
 
 const generateGrid = (rows, cols) => {
   let grid = [];
@@ -9,7 +9,10 @@ const generateGrid = (rows, cols) => {
     let row = [];
     for (let c = 0; c < cols; c++) {
       let n1 = eyesList[Math.floor(Math.random() * eyesList.length)];
-      let n2 = Math.random() < 0.75 ? n1 : eyesList[Math.floor(Math.random() * eyesList.length)];
+      let n2 =
+        Math.random() < 0.75
+          ? n1
+          : eyesList[Math.floor(Math.random() * eyesList.length)];
       row.push({ n1, n2, key: `${r}-${c}` });
     }
     grid.push(row);
@@ -22,10 +25,10 @@ function Cat({ initialN1, initialN2, isLit, onClick, sweeping, sweepDelay }) {
   const [n2, setN2] = useState(initialN2);
 
   const invert = (e) => {
-    if (e === 'o') return 'o';
-    if (e === '-') return '-';
-    if (e === '>') return '<';
-    if (e === '<') return '>';
+    if (e === "o") return "o";
+    if (e === "-") return "-";
+    if (e === ">") return "<";
+    if (e === "<") return ">";
     return e;
   };
 
@@ -33,7 +36,8 @@ function Cat({ initialN1, initialN2, isLit, onClick, sweeping, sweepDelay }) {
     let h1 = invert(n1);
     let h2 = invert(n2);
     if (Math.random() < 0.9) {
-      if (Math.random() < 0.5) h1 = eyesList[Math.floor(Math.random() * eyesList.length)];
+      if (Math.random() < 0.5)
+        h1 = eyesList[Math.floor(Math.random() * eyesList.length)];
       else h2 = eyesList[Math.floor(Math.random() * eyesList.length)];
     }
     setN1(h1);
@@ -46,18 +50,18 @@ function Cat({ initialN1, initialN2, isLit, onClick, sweeping, sweepDelay }) {
   };
 
   const colorClass = isLit
-    ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,1)] relative z-20 cursor-pointer'
-    : 'text-defense-accent opacity-70 relative z-10 cursor-pointer';
+    ? "text-white drop-shadow-[0_0_8px_rgba(255,255,255,1)] relative z-20 cursor-pointer"
+    : "text-defense-accent opacity-70 relative z-10 cursor-pointer";
 
   const sweepStyle = sweeping
     ? {
-      transitionProperty: 'color, filter, opacity',
-      transitionDuration: '180ms',
-      transitionDelay: `${sweepDelay}ms`,
-      color: '#4ade80',
-      filter: 'drop-shadow(0 0 10px #4ade80)',
-      opacity: 0.5,
-    }
+        transitionProperty: "color, filter, opacity",
+        transitionDuration: "180ms",
+        transitionDelay: `${sweepDelay}ms`,
+        color: "#4ade80",
+        filter: "drop-shadow(0 0 10px #4ade80)",
+        opacity: 0.5,
+      }
     : {};
 
   return (
@@ -84,8 +88,9 @@ export default function AsciiCats() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const timeouts = timeoutRefs.current;
     return () => {
-      timeoutRefs.current.forEach(clearTimeout);
+      timeouts.forEach(clearTimeout);
     };
   }, []);
 
@@ -98,8 +103,8 @@ export default function AsciiCats() {
       }
     };
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   useEffect(() => {
@@ -108,12 +113,12 @@ export default function AsciiCats() {
   }, [gridSize.rows, gridSize.cols]);
 
   const totalCats = gridSize.rows * gridSize.cols;
-  const maxDiagonal = (gridSize.rows - 1) + (gridSize.cols - 1);
+  const maxDiagonal = gridSize.rows - 1 + (gridSize.cols - 1);
   const sweepStepMs = 60;
   const sweepDuration = maxDiagonal * sweepStepMs + 200;
 
   const handleCatClick = (key) => {
-    setLitCats(prev => {
+    setLitCats((prev) => {
       const next = new Set(prev);
       if (next.has(key)) {
         next.delete(key);
@@ -127,7 +132,7 @@ export default function AsciiCats() {
         `0-0`,
         `0-${cols - 1}`,
         `${rows - 1}-0`,
-        `${rows - 1}-${cols - 1}`
+        `${rows - 1}-${cols - 1}`,
       ];
 
       const middleCats = [];
@@ -140,14 +145,18 @@ export default function AsciiCats() {
       }
 
       // Check if corners are lit
-      const allCornersLit = corners.every(c => next.has(c));
-      const allMiddleLit = middleCats.length > 0 && middleCats.every(c => next.has(c));
+      const allCornersLit = corners.every((c) => next.has(c));
+      const allMiddleLit =
+        middleCats.length > 0 && middleCats.every((c) => next.has(c));
 
       // 4 Corners lit -> Pokedex
       if (allCornersLit && next.size === 4) {
         const t1 = setTimeout(() => {
           setSweeping(true);
-          const t2 = setTimeout(() => navigate('/pokedex'), sweepDuration + 100);
+          const t2 = setTimeout(
+            () => navigate("/pokedex"),
+            sweepDuration + 100
+          );
           timeoutRefs.current.push(t2);
         }, 150);
         timeoutRefs.current.push(t1);
@@ -157,7 +166,7 @@ export default function AsciiCats() {
       if (allMiddleLit && next.size === middleCats.length) {
         const t1 = setTimeout(() => {
           setSweeping(true);
-          const t2 = setTimeout(() => navigate('/darts'), sweepDuration + 100);
+          const t2 = setTimeout(() => navigate("/darts"), sweepDuration + 100);
           timeoutRefs.current.push(t2);
         }, 150);
         timeoutRefs.current.push(t1);
@@ -167,7 +176,7 @@ export default function AsciiCats() {
       if (next.size === totalCats) {
         const t1 = setTimeout(() => {
           setSweeping(true);
-          const t2 = setTimeout(() => navigate('/kai'), sweepDuration + 100);
+          const t2 = setTimeout(() => navigate("/kai"), sweepDuration + 100);
           timeoutRefs.current.push(t2);
         }, 150);
         timeoutRefs.current.push(t1);

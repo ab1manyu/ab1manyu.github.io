@@ -1,5 +1,5 @@
-import { useLayoutEffect } from 'react';
-import PokedexCore from '../pokedex/PokedexCore';
+import { useLayoutEffect } from "react";
+import PokedexCore from "../pokedex/PokedexCore";
 
 export default function Pokedex() {
   useLayoutEffect(() => {

@@ -18,21 +18,39 @@
 }
 
 .card::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: var(--border);
-  clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
+  clip-path: polygon(
+    8px 0,
+    calc(100% - 8px) 0,
+    100% 8px,
+    100% calc(100% - 8px),
+    calc(100% - 8px) 100%,
+    8px 100%,
+    0 calc(100% - 8px),
+    0 8px
+  );
   z-index: -2;
   transition: background 0.3s;
 }
 
 .card::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 1px;
   background: var(--bg-card);
-  clip-path: polygon(7px 0, calc(100% - 7px) 0, 100% 7px, 100% calc(100% - 7px), calc(100% - 7px) 100%, 7px 100%, 0 calc(100% - 7px), 0 7px);
+  clip-path: polygon(
+    7px 0,
+    calc(100% - 7px) 0,
+    100% 7px,
+    100% calc(100% - 7px),
+    calc(100% - 7px) 100%,
+    7px 100%,
+    0 calc(100% - 7px),
+    0 7px
+  );
   z-index: -1;
   transition: background 0.3s;
 }
@@ -56,7 +74,8 @@
 }
 
 .cardCaught:hover .img {
-  filter: brightness(1.1) saturate(1.1) drop-shadow(0 2px 8px var(--card-theme, var(--theme-color)));
+  filter: brightness(1.1) saturate(1.1)
+    drop-shadow(0 2px 8px var(--card-theme, var(--theme-color)));
 }
 
 .cardUncaught {
@@ -165,8 +184,15 @@
   font-size: 6px;
   color: #fff;
   letter-spacing: 1px;
-  text-shadow: 0 0 2px rgba(0,0,0,0.5);
-  clip-path: polygon(4px 0, calc(100% - 4px) 0, 100% 50%, calc(100% - 4px) 100%, 4px 100%, 0 50%);
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+  clip-path: polygon(
+    4px 0,
+    calc(100% - 4px) 0,
+    100% 50%,
+    calc(100% - 4px) 100%,
+    4px 100%,
+    0 50%
+  );
 }
 
 .hiddenCard {
@@ -179,6 +205,12 @@
 }
 
 @keyframes slide-up-fade {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

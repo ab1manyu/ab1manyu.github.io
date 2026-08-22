@@ -1,3 +1,15 @@
+export const GENERATIONS = [
+  "kanto",
+  "johto",
+  "hoenn",
+  "sinnoh",
+  "unova",
+  "kalos",
+  "alola",
+  "galar",
+  "paldea",
+];
+
 export const TYPE_COLORS = {
   normal: "#9a9a7b",
   fire: "#e8622a",
@@ -16,7 +28,7 @@ export const TYPE_COLORS = {
   dragon: "#7038f8",
   dark: "#705848",
   steel: "#b8b8d0",
-  fairy: "#ee99ac"
+  fairy: "#ee99ac",
 };
 
 export function getPokemonByName(pokemonList, name) {
@@ -27,7 +39,8 @@ export function getPokemonByName(pokemonList, name) {
 
 export function getRandomPokemon(pokemonList, excludeIds = []) {
   const pool = pokemonList.filter((p) => !excludeIds.includes(p.id));
-  if (pool.length === 0) return pokemonList[Math.floor(Math.random() * pokemonList.length)];
+  if (pool.length === 0)
+    return pokemonList[Math.floor(Math.random() * pokemonList.length)];
   return pool[Math.floor(Math.random() * pool.length)];
 }
 
@@ -46,7 +59,7 @@ export function getEarnedBadges(pokemonList, caughtIds) {
   const typeTotals = getTypeTotals(pokemonList);
   const caughtCounts = {};
   for (const id of caughtIds) {
-    const p = pokemonList.find(x => x.id === id);
+    const p = pokemonList.find((x) => x.id === id);
     if (!p || !p.types) continue;
     for (const t of p.types) {
       caughtCounts[t] = (caughtCounts[t] || 0) + 1;

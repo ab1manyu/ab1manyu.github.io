@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
 
 :root {
   /* Common variables for Pokedex */
-  --font-pixel: 'Press Start 2P', cursive;
-  --font-main: 'Inter', sans-serif;
+  --font-pixel: "Press Start 2P", cursive;
+  --font-main: "Inter", sans-serif;
 
   --bg-primary: #000;
   --bg-secondary: #0a0a12;
@@ -75,7 +75,6 @@
 }
 
 @keyframes shake {
-
   0%,
   100% {
     transform: translateX(0);
@@ -95,7 +94,6 @@
 }
 
 @keyframes pulse-glow {
-
   0%,
   100% {
     opacity: 0.8;

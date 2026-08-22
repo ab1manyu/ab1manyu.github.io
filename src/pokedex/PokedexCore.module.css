@@ -6,7 +6,11 @@
   position: relative;
   overflow: hidden;
   /* background is now handled by site-wide background, but we can add a subtle tint */
-  background: radial-gradient(circle at center, rgba(var(--theme-color-rgb), 0.03) 0%, transparent 70%);
+  background: radial-gradient(
+    circle at center,
+    rgba(var(--theme-color-rgb), 0.03) 0%,
+    transparent 70%
+  );
 }
 
 /* ─── Main ───────────────────────────────────────────────────── */
@@ -70,13 +74,20 @@
   align-items: center;
   gap: 12px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
-  animation: slide-in-toast 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  animation: slide-in-toast 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)
+    forwards;
   pointer-events: auto;
 }
 
 @keyframes slide-in-toast {
-  from { transform: translateX(100%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 .toastIcon {
