@@ -12,6 +12,7 @@ const Gallery = lazy(() => import('./pages/Gallery'));
 const KaiCards = lazy(() => import('./pages/KaiCards'));
 const Pokedex = lazy(() => import('./pages/Pokedex'));
 const DartScore = lazy(() => import('./pages/DartScore'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 function App() {
   return (
@@ -30,7 +31,7 @@ function App() {
           <Route path="/kai" element={<KaiCards />} />
           <Route path="/pokedex" element={<Pokedex />} />
           <Route path="/darts" element={<DartScore />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
       <Footer />
