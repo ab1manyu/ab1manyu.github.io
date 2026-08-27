@@ -1,0 +1,141 @@
+@keyframes dotEdgePulse {
+  0% {
+    opacity: 0;
+  }
+  6% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes waveFunction {
+  0% {
+    -webkit-mask-size: 0vmax 0vmax;
+    mask-size: 0vmax 0vmax;
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    -webkit-mask-size: 250vmax 250vmax;
+    mask-size: 250vmax 250vmax;
+    opacity: 0;
+  }
+}
+
+@keyframes concentricWave {
+  0% {
+    -webkit-mask-size: 260vmax 260vmax;
+    mask-size: 260vmax 260vmax;
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 0.9;
+  }
+  100% {
+    -webkit-mask-size: 0vmax 0vmax;
+    mask-size: 0vmax 0vmax;
+    opacity: 0;
+  }
+}
+
+.baseGrid {
+  background-image: radial-gradient(#1a332a 1px, transparent 1px);
+  background-size: 20px 20px;
+  opacity: 0.4;
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+}
+
+.edgeFlash {
+  background-image: radial-gradient(var(--accent-solid) 1px, transparent 1px);
+  background-size: 20px 20px;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    black 0%,
+    transparent 18%,
+    transparent 82%,
+    black 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    black 0%,
+    transparent 18%,
+    transparent 82%,
+    black 100%
+  );
+  animation: dotEdgePulse 1s ease-out forwards;
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+}
+
+.pulse {
+  background-image: radial-gradient(var(--accent-solid) 1px, transparent 1px);
+  background-size: 20px 20px;
+  -webkit-mask-image: radial-gradient(
+    circle at bottom center,
+    transparent 45%,
+    black 50%,
+    transparent 60%
+  );
+  mask-image: radial-gradient(
+    circle at bottom center,
+    transparent 45%,
+    black 50%,
+    transparent 60%
+  );
+  -webkit-mask-position: bottom center;
+  mask-position: bottom center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  animation: waveFunction 3s cubic-bezier(0.2, 0, 0, 1) forwards;
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+}
+
+.concentricPulse {
+  background-image: radial-gradient(
+    var(--accent-solid) 1.5px,
+    transparent 1.5px
+  );
+  background-size: 20px 20px;
+  -webkit-mask-image: radial-gradient(
+    circle at center,
+    transparent 40%,
+    black 50%,
+    transparent 60%
+  );
+  mask-image: radial-gradient(
+    circle at center,
+    transparent 40%,
+    black 50%,
+    transparent 60%
+  );
+  -webkit-mask-position: center center;
+  mask-position: center center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  animation: concentricWave 2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+}

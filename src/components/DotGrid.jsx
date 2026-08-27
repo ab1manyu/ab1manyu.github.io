@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import styles from "./DotGrid.module.css";
 
 export default function DotGrid() {
   const [flashes, setFlashes] = useState([]);
@@ -43,27 +44,15 @@ export default function DotGrid() {
 
   return (
     <>
-      <div className="dot-grid pointer-events-none z-[-2] fixed inset-0" />
+      <div className={styles.baseGrid} />
       {concentricPulses.map((id) => (
-        <div
-          key={`concentric-${id}`}
-          className="dot-grid-concentric-pulse pointer-events-none fixed inset-0"
-          style={{ zIndex: -1 }}
-        />
+        <div key={`concentric-${id}`} className={styles.concentricPulse} />
       ))}
       {flashes.map((id) => (
-        <div
-          key={`flash-${id}`}
-          className="dot-grid-edge-flash pointer-events-none fixed inset-0"
-          style={{ zIndex: -1 }}
-        />
+        <div key={`flash-${id}`} className={styles.edgeFlash} />
       ))}
       {pulses.map((id) => (
-        <div
-          key={`pulse-${id}`}
-          className="dot-grid-pulse pointer-events-none fixed inset-0"
-          style={{ zIndex: -1 }}
-        />
+        <div key={`pulse-${id}`} className={styles.pulse} />
       ))}
     </>
   );

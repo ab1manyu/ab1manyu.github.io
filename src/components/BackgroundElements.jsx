@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { Plane } from "lucide-react";
+import styles from "./BackgroundElements.module.css";
 
 export default function BackgroundElements() {
   const [fadedOut, setFadedOut] = useState(false);
@@ -99,18 +100,21 @@ export default function BackgroundElements() {
       revealTimeoutsRef.current.forEach(clearTimeout);
     };
   }, []);
+
   return (
     <>
       <div
         id="radar-screen-sweep"
-        className={`fixed top-0 left-0 w-[50px] h-[50px] rounded-full border-2 border-defense-accent pointer-events-none z-0 ${radarActive ? "full-sweep-active" : "opacity-0"}`}
+        className={`${styles.radarSweep} ${
+          radarActive ? styles.fullSweepActive : "opacity-0"
+        }`}
       ></div>
 
       {bogeys.map((bogey) => {
         return (
           <div
             key={bogey.id}
-            className="fighter-jet-dynamic fixed z-0 flex flex-col items-center gap-1 pointer-events-none"
+            className={styles.fighterJet}
             style={{
               top: `${bogey.top}%`,
               ...(bogey.left !== null ? { left: `${bogey.left}%` } : {}),
@@ -129,10 +133,12 @@ export default function BackgroundElements() {
         );
       })}
 
-      {/* PAGE TRANSITION OVERLAY */}
+      {/* Page Transition Overlay */}
       <div
         id="transition-overlay"
-        className={fadedOut ? "faded-out" : ""}
+        className={`${styles.transitionOverlay} ${
+          fadedOut ? styles.fadedOut : ""
+        }`}
       ></div>
     </>
   );

@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import CatCell from "./AsciiCats/CatCell";
+import styles from "./AsciiCats.module.css";
 
 const eyesList = ["-", "o", ">", "<"];
 
@@ -19,65 +21,6 @@ const generateGrid = (rows, cols) => {
   }
   return grid;
 };
-
-function Cat({ initialN1, initialN2, isLit, onClick, sweeping, sweepDelay }) {
-  const [n1, setN1] = useState(initialN1);
-  const [n2, setN2] = useState(initialN2);
-
-  const invert = (e) => {
-    if (e === "o") return "o";
-    if (e === "-") return "-";
-    if (e === ">") return "<";
-    if (e === "<") return ">";
-    return e;
-  };
-
-  const handleMouseEnter = () => {
-    let h1 = invert(n1);
-    let h2 = invert(n2);
-    if (Math.random() < 0.9) {
-      if (Math.random() < 0.5)
-        h1 = eyesList[Math.floor(Math.random() * eyesList.length)];
-      else h2 = eyesList[Math.floor(Math.random() * eyesList.length)];
-    }
-    setN1(h1);
-    setN2(h2);
-  };
-
-  const handleMouseLeave = () => {
-    setN1(initialN1);
-    setN2(initialN2);
-  };
-
-  const colorClass = isLit
-    ? "text-white drop-shadow-[0_0_8px_rgba(255,255,255,1)] relative z-20 cursor-pointer"
-    : "text-defense-accent opacity-70 relative z-10 cursor-pointer";
-
-  const sweepStyle = sweeping
-    ? {
-        transitionProperty: "color, filter, opacity",
-        transitionDuration: "180ms",
-        transitionDelay: `${sweepDelay}ms`,
-        color: "#4ade80",
-        filter: "drop-shadow(0 0 10px #4ade80)",
-        opacity: 0.5,
-      }
-    : {};
-
-  return (
-    <div
-      className={`flex flex-col items-center justify-center transition-all duration-300 whitespace-pre ${colorClass}`}
-      style={sweepStyle}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onClick={onClick}
-    >
-      <div className="leading-[1.2]">{" /\\_/\\ "}</div>
-      <div className="leading-[1.2]">{`( ${n1}.${n2} )`}</div>
-      <div className="leading-[1.2]">{" > ^ < "}</div>
-    </div>
-  );
-}
 
 export default function AsciiCats() {
   const [gridSize, setGridSize] = useState({ rows: 4, cols: 5 });
@@ -109,7 +52,7 @@ export default function AsciiCats() {
 
   useEffect(() => {
     setInitialGrid(generateGrid(gridSize.rows, gridSize.cols));
-    setLitCats(new Set()); // Bonus fix: clear lit cats on resize to prevent bug #1
+    setLitCats(new Set());
   }, [gridSize.rows, gridSize.cols]);
 
   const totalCats = gridSize.rows * gridSize.cols;
@@ -187,13 +130,15 @@ export default function AsciiCats() {
 
   return (
     <div className="glass-panel md:col-span-4 relative flex flex-col items-center justify-center py-6 px-1 sm:p-6 overflow-hidden min-h-[160px] group border border-defense-border hover:border-defense-accent transition-colors cursor-default select-none">
-      <div className="absolute inset-0 bg-[#060f09] opacity-80 pointer-events-none"></div>
+      <div
+        className={`absolute inset-0 opacity-80 pointer-events-none ${styles.container}`}
+      ></div>
 
       <div className="relative z-10 flex flex-col items-center justify-center gap-3 sm:gap-2 font-mono text-[12px] sm:text-[10px]">
         {initialGrid.map((row, r) => (
           <div key={`row-${r}`} className="flex flex-row gap-3 sm:gap-3">
             {row.map((cat, c) => (
-              <Cat
+              <CatCell
                 key={cat.key}
                 initialN1={cat.n1}
                 initialN2={cat.n2}
@@ -208,7 +153,7 @@ export default function AsciiCats() {
       </div>
 
       {/* Scanline overlay */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%)] bg-[length:100%_4px] z-20 pointer-events-none opacity-40"></div>
+      <div className={styles.scanlineOverlay}></div>
     </div>
   );
 }

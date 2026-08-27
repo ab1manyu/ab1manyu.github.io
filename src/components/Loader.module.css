@@ -1,0 +1,20 @@
+.loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-tech);
+  transition: opacity 0.8s ease-in-out;
+}
+
+.loaderHidden {
+  opacity: 0;
+  pointer-events: none;
+}

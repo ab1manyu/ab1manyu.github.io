@@ -1,0 +1,124 @@
+.cardBase {
+  position: absolute;
+  inset: 0;
+  border-radius: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  pointer-events: auto;
+  font-family: monospace;
+  will-change: auto;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.standardCard {
+  border: 1px solid var(--border-color);
+  color: var(--accent-solid);
+}
+
+.legendaryCard {
+  border: 1.5px solid #c8960c;
+  color: #f0c040;
+  box-shadow:
+    0 0 24px rgba(200, 150, 12, 0.35),
+    0 4px 32px rgba(0, 0, 0, 0.8);
+}
+
+.innerStandard {
+  background: #060f09;
+}
+
+.innerLegendary {
+  background: #16100a;
+}
+
+.legendaryName {
+  color: #f0c040;
+  text-shadow: 0 0 8px rgba(240, 192, 64, 0.6);
+}
+
+.badgeStandard {
+  border: 1px solid var(--border-color);
+  background: #0a1a10;
+}
+
+.badgeLegendary {
+  border: 1px solid #c8960c;
+  background: #231808;
+}
+
+.frameStandard {
+  border: 1px solid var(--border-color);
+}
+
+.frameLegendary {
+  border: 1px solid #c8960c;
+}
+
+.legendaryShimmer {
+  background: linear-gradient(
+    180deg,
+    rgba(200, 150, 12, 0.08) 0%,
+    transparent 40%
+  );
+}
+
+.metaStandard {
+  background: #0a1a10;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.metaLegendary {
+  background: #1a1000;
+  border-top: 1px solid #c8960c;
+  border-bottom: 1px solid #c8960c;
+  color: #c8960c;
+}
+
+.movesStandard {
+  background: #08120b;
+}
+
+.movesLegendary {
+  background: #110c00;
+}
+
+.moveBorderStandard {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.moveBorderLegendary {
+  border-bottom: 1px solid #c8960c;
+  color: #f0c040;
+}
+
+.footerBorderStandard {
+  border-top: 1px solid var(--border-color);
+  color: #2d8a4e;
+}
+
+.footerBorderLegendary {
+  border-top: 1px solid #c8960c;
+  color: #8a6a00;
+}
+
+.flavorStandard {
+  border-top: 1px solid var(--border-color);
+  color: #2d8a4e;
+}
+
+.flavorLegendary {
+  border-top: 1px solid #c8960c;
+  color: #a07820;
+}
+
+.bottomInfoStandard {
+  color: #1f6036;
+}
+
+.bottomInfoLegendary {
+  color: #6a4800;
+}

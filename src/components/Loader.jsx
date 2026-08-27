@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import styles from "./Loader.module.css";
 
 export default function Loader() {
   const [progress, setProgress] = useState(0);
@@ -61,8 +62,8 @@ export default function Loader() {
   return (
     <div
       id="loader"
-      style={{ opacity, transition: "opacity 0.8s ease-in-out" }}
-      className="fixed top-0 left-0 w-full h-full bg-black z-[9999] flex flex-col items-center justify-center font-mono"
+      style={{ opacity }}
+      className={`${styles.loader} ${opacity === 0 ? styles.loaderHidden : ""}`}
     >
       <div className="w-64 md:w-96 relative font-mono">
         <div className="flex justify-between text-xs text-gray-500 mb-2 uppercase tracking-widest">

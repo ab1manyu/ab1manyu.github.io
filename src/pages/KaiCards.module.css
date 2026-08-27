@@ -1,7 +1,25 @@
 .kaicardsContainer {
   cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .kaicardsContainer:active {
   cursor: grabbing;
+}
+
+.bottomGlow {
+  pointer-events: none;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 45vh;
+  z-index: 0;
+  background: radial-gradient(
+    ellipse 80% 60% at 50% 100%,
+    rgba(16, 185, 129, 0.13) 0%,
+    rgba(16, 185, 129, 0.05) 45%,
+    transparent 100%
+  );
 }

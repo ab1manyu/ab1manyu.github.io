@@ -1,0 +1,52 @@
+@keyframes radarPing {
+  0% {
+    transform: scale(0);
+    opacity: 0.8;
+  }
+  75%,
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+@keyframes pokeballShake {
+  10%,
+  90% {
+    transform: translate3d(-1px, 0, 0) rotate(-10deg);
+  }
+  20%,
+  80% {
+    transform: translate3d(2px, 0, 0) rotate(15deg);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-4px, 0, 0) rotate(-20deg);
+  }
+  40%,
+  60% {
+    transform: translate3d(4px, 0, 0) rotate(20deg);
+  }
+}
+
+@keyframes spinOnceAnim {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.radarActive {
+  animation: radarPing 1s cubic-bezier(0, 0, 0.2, 1) forwards;
+}
+
+.pokeballShake {
+  animation: pokeballShake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+.spinOnce {
+  animation: spinOnceAnim 0.75s ease-in-out;
+}
