@@ -1,5 +1,26 @@
 @import "tailwindcss";
-@config "../tailwind.config.js";
+
+@theme {
+  --font-sans: "Inter", sans-serif;
+  --font-mono: "Share Tech Mono", monospace;
+
+  --color-defense-base: #000000;
+  --color-defense-panel: rgba(10, 25, 15, 0.6);
+  --color-defense-border: #1a332a;
+  --color-defense-accent: #10b981;
+  --color-defense-muted: #6b7280;
+
+  --animate-slideRight: slideRight 2s linear infinite;
+
+  @keyframes slideRight {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(300%);
+    }
+  }
+}
 
 @layer base {
   :root {
