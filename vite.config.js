@@ -7,7 +7,6 @@ import pkg from "./package.json" with { type: "json" };
 export default defineConfig({
   define: {
     "import.meta.env.PACKAGE_VERSION": JSON.stringify(pkg.version),
-    "import.meta.env.VITE_APP_VERSION": JSON.stringify(pkg.version),
   },
   plugins: [
     tailwindcss(),
@@ -17,20 +16,4 @@ export default defineConfig({
       },
     }),
   ],
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (
-            id.includes("node_modules/react/") ||
-            id.includes("node_modules/react-dom/") ||
-            id.includes("node_modules/react-router-dom/") ||
-            id.includes("node_modules/gsap/")
-          ) {
-            return "vendor";
-          }
-        },
-      },
-    },
-  },
 });

@@ -1,17 +1,12 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import { Analytics } from "@vercel/analytics/react";
 import Home from "./pages/Home";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import Loader from "./components/Loader";
-import BackgroundElements from "./components/BackgroundElements";
-import DotGrid from "./components/DotGrid";
+import Navbar from "./components/layout/Navbar";
+import Footer from "./components/layout/Footer";
+import Loader from "./components/feedback/Loader";
+import BackgroundElements from "./components/layout/BackgroundElements";
+import DotGrid from "./components/layout/DotGrid";
 
 const Gallery = lazy(() => import("./pages/Gallery"));
 const KaiCards = lazy(() => import("./pages/KaiCards"));
