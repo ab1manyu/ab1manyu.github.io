@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
 import { Terminal, ArrowUpRight } from "lucide-react";
-import MatrixRain from "../../../components/common/MatrixRain";
+import MatrixRain from "@/shared/components/common/MatrixRain";
 import AsciiCats from "./AsciiCats";
-import { TextScramble } from "../../../utils/textScramble";
+import { TextScramble } from "@/shared/lib/textScramble";
 import styles from "./AboutSection.module.css";
 
 export default function AboutSection() {

@@ -1,14 +1,14 @@
 import { useLayoutEffect } from "react";
-import DartScoreCore from "./darts/DartScoreCore";
+import { PokedexCore } from "@/features/pokedex";
 
-export default function DartScore() {
+export default function Pokedex() {
   useLayoutEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   return (
     <div className="w-full min-h-screen pt-16 flex flex-col items-center">
-      <DartScoreCore />
+      <PokedexCore />
     </div>
   );
 }

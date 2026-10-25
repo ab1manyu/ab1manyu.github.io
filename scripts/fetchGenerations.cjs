@@ -94,7 +94,10 @@ async function fetchGeneration(genName, genId) {
 }
 
 async function main() {
-  const dataDir = path.join(__dirname, "../src/pages/pokedex/data/generations");
+  const dataDir = path.join(
+    __dirname,
+    "../src/features/pokedex/data/generations"
+  );
   if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });
   }

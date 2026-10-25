@@ -41,4 +41,42 @@ export default [
       ],
     },
   },
+  {
+    // Architecture boundary: features are self-contained (use relative imports
+    // internally and @/shared for shared code); they never reach into other
+    // features, routes, or the app shell.
+    files: ["src/features/**/*.{js,jsx}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["@/features/*", "@/routes/*", "@/app/*"],
+              message:
+                "Features may only import from their own folder and @/shared.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    // Architecture boundary: shared code must stay feature-agnostic.
+    files: ["src/shared/**/*.{js,jsx}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["@/features/*", "@/routes/*", "@/app/*"],
+              message:
+                "Shared code must not depend on features, routes or app.",
+            },
+          ],
+        },
+      ],
+    },
+  },
 ];

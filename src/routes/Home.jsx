@@ -1,8 +1,6 @@
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
-import AboutSection from "./home/components/AboutSection";
-import SkillsSection from "./home/components/SkillsSection";
-import ContactSection from "./home/components/ContactSection";
+import { AboutSection, SkillsSection, ContactSection } from "@/features/home";
 
 export default function Home() {
   const location = useLocation();

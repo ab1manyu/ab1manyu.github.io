@@ -1,18 +1,18 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import { Analytics } from "@vercel/analytics/react";
-import Home from "./pages/Home";
-import Navbar from "./components/layout/Navbar";
-import Footer from "./components/layout/Footer";
-import Loader from "./components/feedback/Loader";
-import BackgroundElements from "./components/layout/BackgroundElements";
-import DotGrid from "./components/layout/DotGrid";
+import Home from "@/routes/Home";
+import Navbar from "@/shared/components/layout/Navbar";
+import Footer from "@/shared/components/layout/Footer";
+import Loader from "@/shared/components/feedback/Loader";
+import BackgroundElements from "@/shared/components/layout/BackgroundElements";
+import DotGrid from "@/shared/components/layout/DotGrid";
 
-const Gallery = lazy(() => import("./pages/Gallery"));
-const KaiCards = lazy(() => import("./pages/KaiCards"));
-const Pokedex = lazy(() => import("./pages/Pokedex"));
-const DartScore = lazy(() => import("./pages/DartScore"));
-const NotFound = lazy(() => import("./pages/NotFound"));
+const Gallery = lazy(() => import("@/routes/Gallery"));
+const KaiCards = lazy(() => import("@/routes/KaiCards"));
+const Pokedex = lazy(() => import("@/routes/Pokedex"));
+const DartScore = lazy(() => import("@/routes/DartScore"));
+const NotFound = lazy(() => import("@/routes/NotFound"));
 
 function App() {
   return (

@@ -8,7 +8,7 @@ import {
   ArrowUp,
 } from "lucide-react";
 import gsap from "gsap";
-import { TextScramble } from "../../../utils/textScramble";
+import { TextScramble } from "@/shared/lib/textScramble";
 import styles from "./SkillsSection.module.css";
 import { COURSES } from "../data/coursesData";
 
