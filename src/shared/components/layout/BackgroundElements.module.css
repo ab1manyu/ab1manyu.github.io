@@ -2,43 +2,65 @@
   0% {
     width: 0px;
     height: 0px;
-    opacity: 0.85;
+    opacity: 0.95;
   }
 
   70% {
-    opacity: 0.45;
+    opacity: 0.8;
   }
 
   100% {
-    width: 260vmax;
-    height: 260vmax;
+    width: 280vmax;
+    height: 280vmax;
     opacity: 0;
   }
 }
 
-@keyframes fadeInOut {
+@keyframes bogeyPing {
   0% {
     opacity: 0;
+    transform: scale(0.35);
+    filter: brightness(2.5) drop-shadow(0 0 14px var(--accent-solid));
   }
-  5% {
+
+  8% {
     opacity: 1;
+    transform: scale(1.3);
+    filter: brightness(2.5) drop-shadow(0 0 18px #34d399);
   }
-  75% {
+
+  18% {
     opacity: 1;
+    transform: scale(1);
+    filter: brightness(1.2) drop-shadow(0 0 6px var(--accent-solid));
   }
+
+  82% {
+    opacity: 1;
+    transform: scale(1);
+    filter: brightness(1) drop-shadow(0 0 3px rgba(16, 185, 129, 0.5));
+  }
+
   100% {
     opacity: 0;
+    transform: scale(0.85);
+    filter: brightness(0.5);
   }
 }
 
 .radarSweep {
   position: fixed;
-  top: 25px;
-  left: 25px;
   border-radius: 9999px;
-  border: 1.5px solid var(--accent-solid);
-  background-color: rgba(16, 185, 129, 0.03);
-  box-shadow: 0 0 12px rgba(16, 185, 129, 0.35);
+  border: 12px solid var(--accent-solid);
+  background: radial-gradient(
+    circle,
+    rgba(16, 185, 129, 0.02) 0%,
+    rgba(16, 185, 129, 0.08) 75%,
+    rgba(16, 185, 129, 0.25) 100%
+  );
+  box-shadow:
+    0 0 35px 8px rgba(16, 185, 129, 0.75),
+    inset 0 0 30px 6px rgba(16, 185, 129, 0.35);
   transform: translate(-50%, -50%);
   pointer-events: none;
   z-index: 0;
@@ -46,7 +68,7 @@
 }
 
 .fullSweepActive {
-  animation: fullSweep 1.5s ease-out forwards;
+  animation: fullSweep 1.6s linear forwards;
 }
 
 .transitionOverlay {
@@ -75,4 +97,12 @@
   align-items: center;
   gap: 0.25rem;
   pointer-events: none;
+  opacity: 0;
+}
+
+.bogeyVisible {
+  animation-name: bogeyPing;
+  animation-duration: 4.2s;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: both;
 }
