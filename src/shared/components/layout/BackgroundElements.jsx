@@ -64,7 +64,7 @@ export default function BackgroundElements() {
         const delay = distancePix / (2500 / 1.5);
 
         newBogeys.push({
-          id: Math.random().toString(36).substr(2, 9),
+          id: Math.random().toString(36).slice(2, 11),
           index: i,
           top: verticalPos,
           left: isLeft ? horizontalOffset : null,

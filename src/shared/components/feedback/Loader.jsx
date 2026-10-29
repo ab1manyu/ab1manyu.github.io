@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useBodyScrollLock } from "@/shared/hooks";
 import styles from "./Loader.module.css";
 
 export default function Loader() {
@@ -6,6 +7,9 @@ export default function Loader() {
   const [logs, setLogs] = useState(["> BIOS_CHECK... OK"]);
   const [visible, setVisible] = useState(true);
   const [opacity, setOpacity] = useState(1);
+
+  // Disable scrolling while the boot screen is showing
+  useBodyScrollLock(visible);
 
   useEffect(() => {
     if (sessionStorage.getItem("booted")) {
@@ -21,9 +25,6 @@ export default function Loader() {
     ];
     let currentProgress = 0;
     let logIndex = 0;
-
-    // Disable scrolling
-    document.body.style.overflow = "hidden";
 
     const interval = setInterval(() => {
       currentProgress += Math.floor(Math.random() * 5) + 1;
@@ -46,7 +47,6 @@ export default function Loader() {
           setOpacity(0);
           setTimeout(() => {
             setVisible(false);
-            document.body.style.overflow = "auto";
             // Dispatch event for TextScramble
             window.dispatchEvent(new Event("loader-finished"));
           }, 1000);

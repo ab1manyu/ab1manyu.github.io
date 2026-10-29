@@ -44,6 +44,14 @@ export default function BattleScreen({
     return () => clearInterval(interval);
   }, [message]);
 
+  // Clean up CSS custom properties on unmount
+  useEffect(() => {
+    return () => {
+      document.documentElement.style.removeProperty("--theme-color");
+      document.documentElement.style.removeProperty("--theme-color-rgb");
+    };
+  }, []);
+
   const spawnNewPokemon = useCallback(() => {
     const ids = [...caughtIdsRef.current];
     if (!generationData || generationData.length === 0) return;
@@ -59,23 +67,12 @@ export default function BattleScreen({
     setSpriteLoaded(false);
     setMessage(`A wild Pokémon appeared!`);
 
-    fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.id}`)
-      .then((r) => r.json())
-      .then((d) => {
-        const typeName = d.types[0].type.name;
-        const hex = TYPE_COLORS[typeName] || "#e53935";
-        document.documentElement.style.setProperty("--theme-color", hex);
-        const h = hex.replace("#", "");
-        const rgb = `${parseInt(h.substring(0, 2), 16)}, ${parseInt(h.substring(2, 4), 16)}, ${parseInt(h.substring(4, 6), 16)}`;
-        document.documentElement.style.setProperty("--theme-color-rgb", rgb);
-      })
-      .catch(() => {
-        document.documentElement.style.setProperty("--theme-color", "#e53935");
-        document.documentElement.style.setProperty(
-          "--theme-color-rgb",
-          "229, 57, 53"
-        );
-      });
+    const typeName = pokemon.types?.[0]?.toLowerCase() || "normal";
+    const hex = TYPE_COLORS[typeName] || "#e53935";
+    document.documentElement.style.setProperty("--theme-color", hex);
+    const h = hex.replace("#", "");
+    const rgb = `${parseInt(h.substring(0, 2), 16)}, ${parseInt(h.substring(2, 4), 16)}, ${parseInt(h.substring(4, 6), 16)}`;
+    document.documentElement.style.setProperty("--theme-color-rgb", rgb);
 
     setTimeout(() => inputRef.current?.focus(), 100);
   }, [generationData]);

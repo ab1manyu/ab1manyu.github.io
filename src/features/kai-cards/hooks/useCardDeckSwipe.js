@@ -204,11 +204,17 @@ export function useCardDeckSwipe(cardsRef, totalCards) {
     const onKeyDown = (e) => {
       if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
         e.preventDefault();
-        const target = Math.max(0, Math.round(progressRef.current) + 1);
+        const target = Math.max(
+          0,
+          Math.min(N - 1, Math.round(progressRef.current) - 1)
+        );
         snapTo(target);
       } else if (e.key === "ArrowDown" || e.key === "ArrowRight") {
         e.preventDefault();
-        const target = Math.min(N - 1, Math.round(progressRef.current) - 1);
+        const target = Math.max(
+          0,
+          Math.min(N - 1, Math.round(progressRef.current) + 1)
+        );
         snapTo(target);
       }
     };

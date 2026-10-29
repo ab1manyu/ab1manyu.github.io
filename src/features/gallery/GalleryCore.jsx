@@ -1,4 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import {
+  useScrollToTop,
+  useRevealOnScroll,
+  useBodyScrollLock,
+} from "@/shared/hooks";
 import { GALLERY_ITEMS } from "./data/galleryData";
 import GalleryCard from "./components/GalleryCard";
 import GalleryModal from "./components/GalleryModal";
@@ -6,45 +11,9 @@ import GalleryModal from "./components/GalleryModal";
 export default function GalleryCore() {
   const [selectedItem, setSelectedItem] = useState(null);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
-  useEffect(() => {
-    // Intersection Observer for glass-panels
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.style.opacity = "1";
-            entry.target.style.transform = "translateY(0)";
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    document.querySelectorAll(".glass-panel").forEach((el) => {
-      el.style.opacity = "0";
-      el.style.transform = "translateY(20px)";
-      el.style.transition =
-        "opacity 0.6s ease, transform 0.6s ease, border-color 0.3s ease";
-      observer.observe(el);
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (selectedItem) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [selectedItem]);
+  useScrollToTop();
+  useRevealOnScroll();
+  useBodyScrollLock(Boolean(selectedItem));
 
   return (
     <>

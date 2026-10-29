@@ -1,5 +1,6 @@
-import { useEffect, useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
+import { useRevealOnScroll, useNavScrollSpy } from "@/shared/hooks";
 import { AboutSection, SkillsSection, ContactSection } from "@/features/home";
 
 export default function Home() {
@@ -34,67 +35,8 @@ export default function Home() {
     }
   }, [location]);
 
-  useEffect(() => {
-    // 2. Intersection Observer for glass-panels
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.style.opacity = "1";
-            entry.target.style.transform = "translateY(0)";
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    // Note: Since child components may render slightly after the effect runs
-    // we wait a tiny bit to make sure `.glass-panel`s are mounted.
-    setTimeout(() => {
-      document.querySelectorAll(".glass-panel").forEach((el) => {
-        el.style.opacity = "0";
-        el.style.transform = "translateY(20px)";
-        el.style.transition =
-          "opacity 0.6s ease, transform 0.6s ease, border-color 0.3s ease";
-        observer.observe(el);
-      });
-    }, 0);
-
-    // 3. Scroll Spy for Navbar
-    const navLinks = document.querySelectorAll(".nav-item");
-    const spyObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const id = entry.target.getAttribute("id");
-            navLinks.forEach((link) => {
-              link.classList.remove("text-white", "text-defense-accent");
-              link.classList.add("text-defense-muted");
-            });
-            const activeLink = document.querySelector(
-              `.nav-item[href="#${id}"]`
-            );
-            if (activeLink) {
-              activeLink.classList.remove("text-defense-muted");
-              activeLink.classList.add("text-white");
-            }
-          }
-        });
-      },
-      { root: null, rootMargin: "-50% 0px -50% 0px", threshold: 0 }
-    );
-
-    setTimeout(() => {
-      document
-        .querySelectorAll("section")
-        .forEach((section) => spyObserver.observe(section));
-    }, 0);
-
-    return () => {
-      observer.disconnect();
-      spyObserver.disconnect();
-    };
-  }, []);
+  useRevealOnScroll();
+  useNavScrollSpy();
 
   return (
     <>

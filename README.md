@@ -17,13 +17,15 @@ npm run dev
 | `npm run build`         | Production build to `dist/`        |
 | `npm run preview`       | Preview the production build       |
 | `npm run lint`          | ESLint                             |
+| `npm run test`          | Run Vitest unit tests              |
+| `npm run test:e2e`      | Run Playwright e2e tests           |
 | `npm run format`        | Prettier write                     |
 | `npm run format:check`  | Prettier check                     |
 | `npm run fetch:pokemon` | Regenerate Pokédex generation JSON |
 
 ## Project structure
 
-See [ARCHITECTURE.md](./ARCHITECTURE.md) once the re-architecture lands. Until then, code lives under `src/components` (shared UI) and `src/pages` (routes and their feature code).
+See [ARCHITECTURE.md](./ARCHITECTURE.md) for details on the feature-driven architecture (`app/`, `routes/`, `features/`, `shared/`) and boundary rules.
 
 ## Deployment
 

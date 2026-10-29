@@ -55,7 +55,8 @@ export default function MatrixRain() {
       ctx.font = `${fontSize}px 'Share Tech Mono', monospace`;
 
       for (let i = 0; i < drops.length; i++) {
-        const text = Math.random() > 0.5 ? "abi" : "abi";
+        const text =
+          Math.random() > 0.6 ? "abi" : Math.random() > 0.5 ? "1" : "0";
 
         if (drops[i] * fontSize >= -fontSize) {
           ctx.fillText(text, i * fontSize, drops[i] * fontSize);

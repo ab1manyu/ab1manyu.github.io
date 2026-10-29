@@ -1,4 +1,5 @@
-import { useState, useEffect, useLayoutEffect } from "react";
+import { useState, useEffect } from "react";
+import { useScrollToTop } from "@/shared/hooks";
 
 const frames = [
   //   `+-----------------------------------------------------------------------+
@@ -59,9 +60,7 @@ const frames = [
 export default function NotFound() {
   const [frameIndex, setFrameIndex] = useState(0);
 
-  useLayoutEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  useScrollToTop();
 
   useEffect(() => {
     const timer = setInterval(() => {

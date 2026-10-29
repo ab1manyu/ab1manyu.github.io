@@ -1,6 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { AlertTriangle } from "lucide-react";
 import { PLAYER_THEMES } from "./data/dartsThemes";
+import {
+  createPlayers,
+  buildDart,
+  sumDarts,
+  buildTypedInTurn,
+  applyTurn,
+} from "./lib/gameLogic";
 import GameHeader from "./components/GameHeader";
 import PlayerCard from "./components/PlayerCard";
 import ActiveTurnPanel from "./components/ActiveTurnPanel";
@@ -21,32 +28,7 @@ export default function DartScoreCore() {
   const [customStartInput, setCustomStartInput] = useState("");
 
   // Player state
-  const [players, setPlayers] = useState([
-    {
-      id: 1,
-      name: "PLAYER 1",
-      themeIndex: 0,
-      score: 301,
-      legs: 0,
-      totalScored: 0,
-      dartsThrown: 0,
-      lastTurn: 0,
-      history: [],
-      timeSeconds: 0,
-    },
-    {
-      id: 2,
-      name: "PLAYER 2",
-      themeIndex: 1,
-      score: 301,
-      legs: 0,
-      totalScored: 0,
-      dartsThrown: 0,
-      lastTurn: 0,
-      history: [],
-      timeSeconds: 0,
-    },
-  ]);
+  const [players, setPlayers] = useState(() => createPlayers(2, 301));
 
   const [activePlayerIndex, setActivePlayerIndex] = useState(0);
 
@@ -96,19 +78,7 @@ export default function DartScoreCore() {
   }, [isTimerRunning, activePlayerIndex, winner]);
 
   const resetMatch = (newStartScore = startScore, count = numPlayers) => {
-    const newPlayers = Array.from({ length: count }, (_, i) => ({
-      id: i + 1,
-      name: `PLAYER ${i + 1}`,
-      themeIndex: i % 4,
-      score: newStartScore,
-      legs: 0,
-      totalScored: 0,
-      dartsThrown: 0,
-      lastTurn: 0,
-      history: [],
-      timeSeconds: 0,
-    }));
-    setPlayers(newPlayers);
+    setPlayers(createPlayers(count, newStartScore));
     setActivePlayerIndex(0);
     setCurrentDarts([]);
     setMultiplier(1);
@@ -199,31 +169,10 @@ export default function DartScoreCore() {
   const handleAddDart = (num) => {
     if (!activePlayer || currentDarts.length >= 3 || isProcessingTurn) return;
 
+    const dartObj = buildDart(num, multiplier);
+    if (!dartObj) return;
+
     pushUndoState();
-
-    let value = num * multiplier;
-    let isDouble = multiplier === 2;
-    let isTriple = multiplier === 3;
-
-    if (num === 25) {
-      if (multiplier === 3) return;
-      if (multiplier === 2) {
-        value = 50;
-        isDouble = true;
-        isTriple = false;
-      } else {
-        value = 25;
-        isDouble = false;
-        isTriple = false;
-      }
-    } else if (num === 0) {
-      value = 0;
-      isDouble = false;
-      isTriple = false;
-    }
-
-    const label = `${value}`;
-    const dartObj = { num, label, value, multiplier, isDouble, isTriple };
     const nextDarts = [...currentDarts, dartObj];
     setCurrentDarts(nextDarts);
     setMultiplier(1);
@@ -231,7 +180,7 @@ export default function DartScoreCore() {
     if (nextDarts.length === 3) {
       setIsProcessingTurn(true);
       setTimeout(() => {
-        const sum = nextDarts.reduce((a, b) => a + b.value, 0);
+        const sum = sumDarts(nextDarts);
         applyTurnScore(sum, 3, nextDarts);
         setIsProcessingTurn(false);
       }, 750);
@@ -246,21 +195,13 @@ export default function DartScoreCore() {
 
     if (pts === null) {
       if (currentDarts.length > 0) {
-        pts = currentDarts.reduce((a, b) => a + b.value, 0);
+        pts = sumDarts(currentDarts);
         dartsCount = currentDarts.length;
       } else {
         return;
       }
     } else {
-      dartArray = [
-        {
-          label: `${pts}`,
-          value: pts,
-          multiplier: 1,
-          isDouble: false,
-          isTriple: false,
-        },
-      ];
+      dartArray = buildTypedInTurn(pts);
     }
 
     applyTurnScore(pts, dartsCount, dartArray);
@@ -278,94 +219,27 @@ export default function DartScoreCore() {
   const applyTurnScore = (pts, dartsCount, dartArray) => {
     if (!activePlayer) return;
 
-    const remaining = activePlayer.score - pts;
+    const result = applyTurn(players, activePlayerIndex, {
+      points: pts,
+      dartsCount,
+      darts: dartArray,
+      startScore,
+      doubleOut,
+    });
 
-    let isBust = false;
-    if (doubleOut) {
-      if (remaining < 0 || remaining === 1) isBust = true;
-    } else {
-      if (remaining < 0) isBust = true;
-    }
-
-    if (isBust) {
+    if (result.outcome === "bust") {
       setBustAlert(true);
       setTimeout(() => setBustAlert(false), 2200);
-
-      setPlayers((prev) =>
-        prev.map((p, idx) => {
-          if (idx === activePlayerIndex) {
-            return {
-              ...p,
-              dartsThrown: p.dartsThrown + dartsCount,
-              lastTurn: 0,
-              history: [
-                ...p.history,
-                { score: 0, bust: true, prevScore: p.score, darts: dartArray },
-              ],
-            };
-          }
-          return p;
-        })
-      );
-    } else if (remaining === 0) {
-      const newLegs = activePlayer.legs + 1;
+    } else if (result.outcome === "win") {
       setWinner({
         name: activePlayer.name,
-        legs: newLegs,
+        legs: result.legs,
         theme: activeTheme,
         icon: activeTheme.icon,
       });
-
-      setPlayers((prev) =>
-        prev.map((p, idx) => {
-          if (idx === activePlayerIndex) {
-            return {
-              ...p,
-              score: startScore,
-              legs: newLegs,
-              totalScored: p.totalScored + pts,
-              dartsThrown: p.dartsThrown + dartsCount,
-              lastTurn: pts,
-              history: [
-                ...p.history,
-                {
-                  score: pts,
-                  bust: false,
-                  prevScore: p.score,
-                  darts: dartArray,
-                },
-              ],
-            };
-          }
-          return { ...p, score: startScore };
-        })
-      );
-    } else {
-      setPlayers((prev) =>
-        prev.map((p, idx) => {
-          if (idx === activePlayerIndex) {
-            return {
-              ...p,
-              score: remaining,
-              totalScored: p.totalScored + pts,
-              dartsThrown: p.dartsThrown + dartsCount,
-              lastTurn: pts,
-              history: [
-                ...p.history,
-                {
-                  score: pts,
-                  bust: false,
-                  prevScore: p.score,
-                  darts: dartArray,
-                },
-              ],
-            };
-          }
-          return p;
-        })
-      );
     }
 
+    setPlayers(result.players);
     setCurrentDarts([]);
     setMultiplier(1);
     setActivePlayerIndex((activePlayerIndex + 1) % players.length);

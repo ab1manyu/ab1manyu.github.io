@@ -1,10 +1,8 @@
-import { useLayoutEffect } from "react";
+import { useScrollToTop } from "@/shared/hooks";
 import { PokedexCore } from "@/features/pokedex";
 
 export default function Pokedex() {
-  useLayoutEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  useScrollToTop();
 
   return (
     <div className="w-full min-h-screen pt-16 flex flex-col items-center">
