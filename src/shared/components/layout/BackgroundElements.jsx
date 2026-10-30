@@ -139,16 +139,17 @@ export default function BackgroundElements() {
             top: `${bogey.top}%`,
             ...(bogey.left !== null ? { left: `${bogey.left}%` } : {}),
             ...(bogey.right !== null ? { right: `${bogey.right}%` } : {}),
+            "--bogey-delay": `${bogey.delay.toFixed(2)}s`,
             animationDelay: `${bogey.delay.toFixed(2)}s`,
           }}
         >
-          <Plane
-            className="w-6 h-6 text-defense-accent"
-            style={{ transform: `rotate(${bogey.rotation}deg)` }}
-          />
-          <span className="text-[8px] font-mono text-defense-accent bg-black/80 px-1 border border-defense-accent">
-            BOGEY_0{bogey.index + 1}
-          </span>
+          <div className={styles.jetIconWrapper}>
+            <Plane
+              className="w-6 h-6 text-defense-accent"
+              style={{ transform: `rotate(${bogey.rotation}deg)` }}
+            />
+          </div>
+          <span className={styles.bogeyBadge}>BOGEY_0{bogey.index + 1}</span>
         </div>
       ))}
 

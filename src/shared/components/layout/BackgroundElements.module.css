@@ -16,33 +16,46 @@
   }
 }
 
-@keyframes bogeyPing {
+@keyframes bogeyContainerFade {
   0% {
     opacity: 0;
+  }
+
+  6% {
+    opacity: 1;
+  }
+
+  82% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes jetPing {
+  0% {
     transform: scale(0.35);
-    filter: brightness(2.5) drop-shadow(0 0 14px var(--accent-solid));
+    filter: brightness(2.5) drop-shadow(0 0 16px var(--accent-solid));
   }
 
   8% {
-    opacity: 1;
-    transform: scale(1.3);
-    filter: brightness(2.5) drop-shadow(0 0 18px #34d399);
+    transform: scale(1.35);
+    filter: brightness(2.5) drop-shadow(0 0 20px #34d399);
   }
 
   18% {
-    opacity: 1;
     transform: scale(1);
     filter: brightness(1.2) drop-shadow(0 0 6px var(--accent-solid));
   }
 
   82% {
-    opacity: 1;
     transform: scale(1);
     filter: brightness(1) drop-shadow(0 0 3px rgba(16, 185, 129, 0.5));
   }
 
   100% {
-    opacity: 0;
     transform: scale(0.85);
     filter: brightness(0.5);
   }
@@ -101,8 +114,34 @@
 }
 
 .bogeyVisible {
-  animation-name: bogeyPing;
+  animation-name: bogeyContainerFade;
   animation-duration: 4.2s;
   animation-timing-function: ease-in-out;
   animation-fill-mode: both;
+}
+
+.jetIconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: jetPing 4.2s ease-in-out var(--bogey-delay, 0s) both;
+}
+
+.bogeyBadge {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 8.5px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  color: var(--accent-solid);
+  background-color: rgba(0, 0, 0, 0.9);
+  border: 1px solid var(--accent-solid);
+  padding: 2px 4px;
+  border-radius: 1px;
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+  user-select: none;
+  white-space: nowrap;
 }
