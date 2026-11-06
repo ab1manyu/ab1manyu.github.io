@@ -27,8 +27,6 @@ function AppRoutes() {
       <Suspense fallback={<Loader />}>
         <Routes>
           <Route path="/" element={<Home />} />
-          {/* Keeping old URL path for backwards compatibility initially */}
-          <Route path="/gallery.html" element={<Gallery />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/kai" element={<KaiCards />} />
           <Route path="/pokedex" element={<Pokedex />} />

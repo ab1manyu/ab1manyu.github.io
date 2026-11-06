@@ -6,8 +6,7 @@ import styles from "./Navbar.module.css";
 
 export default function NavBrandSection() {
   const location = useLocation();
-  const isGallery =
-    location.pathname === "/gallery" || location.pathname === "/gallery.html";
+  const isGallery = location.pathname === "/gallery";
   const isPokedex = location.pathname === "/pokedex";
   const isKai = location.pathname === "/kai";
   const isScore = location.pathname === "/darts";
