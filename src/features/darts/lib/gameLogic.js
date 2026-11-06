@@ -3,7 +3,7 @@
  * deterministic so it can be unit tested in isolation.
  */
 
-export const MAX_THEME_COUNT = 4;
+const MAX_THEME_COUNT = 4;
 
 export function createPlayer(index, startScore) {
   return {

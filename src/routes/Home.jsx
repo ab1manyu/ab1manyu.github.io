@@ -39,12 +39,10 @@ export default function Home() {
   useNavScrollSpy();
 
   return (
-    <>
-      <main className="pt-24 pb-12 px-4 md:px-6 max-w-7xl mx-auto relative z-10 transition-opacity duration-500">
-        <AboutSection />
-        <SkillsSection />
-        <ContactSection />
-      </main>
-    </>
+    <main className="pt-24 pb-12 px-4 md:px-6 max-w-7xl mx-auto relative z-10 transition-opacity duration-500">
+      <AboutSection />
+      <SkillsSection />
+      <ContactSection />
+    </main>
   );
 }

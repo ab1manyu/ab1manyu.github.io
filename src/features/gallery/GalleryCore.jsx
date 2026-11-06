@@ -1,9 +1,5 @@
 import { useState } from "react";
-import {
-  useScrollToTop,
-  useRevealOnScroll,
-  useBodyScrollLock,
-} from "@/shared/hooks";
+import { useRevealOnScroll, useBodyScrollLock } from "@/shared/hooks";
 import { GALLERY_ITEMS } from "./data/galleryData";
 import GalleryCard from "./components/GalleryCard";
 import GalleryModal from "./components/GalleryModal";
@@ -11,14 +7,11 @@ import GalleryModal from "./components/GalleryModal";
 export default function GalleryCore() {
   const [selectedItem, setSelectedItem] = useState(null);
 
-  useScrollToTop();
   useRevealOnScroll();
   useBodyScrollLock(Boolean(selectedItem));
 
   return (
     <>
-      <div className="dot-grid"></div>
-
       <main className="pt-24 pb-12 px-4 md:px-6 max-w-7xl mx-auto min-h-screen relative z-10 transition-opacity duration-500">
         <div className="flex justify-between items-end mb-8 border-defense-border pb-4">
           <div>

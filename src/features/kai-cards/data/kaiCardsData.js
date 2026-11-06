@@ -9,7 +9,7 @@ import {
   Leaf,
 } from "lucide-react";
 
-export const TYPES = [
+const TYPES = [
   { name: "Fire", icon: Flame, color: "#ef4444" },
   { name: "Water", icon: Droplet, color: "#3b82f6" },
   { name: "Electric", icon: Zap, color: "#eab308" },
@@ -20,7 +20,7 @@ export const TYPES = [
   { name: "Dark", icon: Skull, color: "#9ca3af" },
 ];
 
-export const IMAGES = [
+const IMAGES = [
   "/kai/kai.jpg",
   "/kai/kai2.jpg",
   "/kai/kai3.jpg",
@@ -34,9 +34,9 @@ export const IMAGES = [
 ];
 
 export const TOTAL_CARDS = 20;
-export const LEGENDARY_CHANCE = 0.15; // 15%
+const LEGENDARY_CHANCE = 0.15; // 15%
 
-export const MOVES = [
+const MOVES = [
   {
     name: "Earthquake",
     dmg: 100,
@@ -63,7 +63,7 @@ export const MOVES = [
   { name: "Leaf Storm", dmg: 130, type: TYPES.find((t) => t.name === "Grass") },
 ];
 
-export const LEGENDARY_MOVES = [
+const LEGENDARY_MOVES = [
   {
     name: "Kai Mega Punch ",
     dmg: 250,
@@ -77,7 +77,7 @@ export const LEGENDARY_MOVES = [
 ];
 
 // Fisher-Yates shuffle
-export const shuffle = (arr) => {
+const shuffle = (arr) => {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));

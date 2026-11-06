@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import gsap from "gsap";
 import { TextScramble } from "@/shared/lib/textScramble";
-import styles from "./SkillsSection.module.css";
+import styles from "./AcademiaBlock.module.css";
 import { COURSES } from "../data/coursesData";
 
 export default function AcademiaBlock() {

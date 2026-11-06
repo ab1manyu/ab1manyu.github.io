@@ -48,19 +48,6 @@
 }
 
 @layer utilities {
-  .dot-grid {
-    background-image: radial-gradient(#1a332a 1px, transparent 1px);
-    background-size: 20px 20px;
-    opacity: 0.4;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    pointer-events: none;
-  }
-
   .noise {
     position: fixed;
     top: 0;
