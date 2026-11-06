@@ -26,6 +26,12 @@ export default function AsciiCats() {
   const [gridSize, setGridSize] = useState({ rows: 4, cols: 5 });
   const [litCats, setLitCats] = useState(new Set());
   const [sweeping, setSweeping] = useState(false);
+  // Clue overlay lifecycle: cats -> hiding -> clues -> returning -> cats
+  const [phase, setPhase] = useState("cats");
+  const phaseTimer = useRef(null);
+  const showClues = phase === "clues";
+  const hidingCats = phase === "hiding" || phase === "clues";
+  const returning = phase === "returning";
   const [initialGrid, setInitialGrid] = useState(() => generateGrid(4, 5));
   const timeoutRefs = useRef([]);
   const navigate = useNavigate();
@@ -34,6 +40,7 @@ export default function AsciiCats() {
     const timeouts = timeoutRefs.current;
     return () => {
       timeouts.forEach(clearTimeout);
+      clearTimeout(phaseTimer.current);
     };
   }, []);
 
@@ -53,12 +60,37 @@ export default function AsciiCats() {
   useEffect(() => {
     setInitialGrid(generateGrid(gridSize.rows, gridSize.cols));
     setLitCats(new Set());
+    clearTimeout(phaseTimer.current);
+    setPhase("cats");
   }, [gridSize.rows, gridSize.cols]);
 
   const totalCats = gridSize.rows * gridSize.cols;
   const maxDiagonal = gridSize.rows - 1 + (gridSize.cols - 1);
   const sweepStepMs = 60;
   const sweepDuration = maxDiagonal * sweepStepMs + 200;
+
+  const hideStepMs = 30;
+  const hideFadeMs = 100;
+  const hideDuration = maxDiagonal * hideStepMs + hideFadeMs;
+
+  const returnDuration = maxDiagonal * sweepStepMs + 900 + 100;
+
+  const schedulePhase = (next, ms) => {
+    clearTimeout(phaseTimer.current);
+    phaseTimer.current = setTimeout(() => setPhase(next), ms);
+  };
+
+  const handleBackgroundClick = () => {
+    if (sweeping) return;
+    if (phase === "cats" || phase === "returning") {
+      setPhase("hiding");
+      schedulePhase("clues", hideDuration);
+    } else if (phase === "clues") {
+      setPhase("returning");
+      // Once the glisten finishes, drop back to the plain resting state.
+      schedulePhase("cats", returnDuration);
+    }
+  };
 
   const handleCatClick = (key) => {
     setLitCats((prev) => {
@@ -129,12 +161,40 @@ export default function AsciiCats() {
   };
 
   return (
-    <div className="glass-panel md:col-span-4 relative flex flex-col items-center justify-center py-6 px-1 sm:p-6 overflow-hidden min-h-[160px] group border border-defense-border hover:border-defense-accent transition-colors cursor-default select-none">
+    <div
+      className="glass-panel md:col-span-4 relative flex flex-col items-center justify-center py-6 px-1 sm:p-6 overflow-hidden min-h-[160px] group border border-defense-border hover:border-defense-accent transition-colors cursor-default select-none"
+      onClick={handleBackgroundClick}
+    >
       <div
         className={`absolute inset-0 opacity-80 pointer-events-none ${styles.container}`}
       ></div>
 
-      <div className="relative z-10 flex flex-col items-center justify-center gap-3 sm:gap-2 font-mono text-[12px] sm:text-[10px]">
+      <div
+        className={`absolute inset-0 z-10 flex flex-row items-center justify-center gap-2 p-2 pointer-events-none transition-opacity duration-500 ${
+          showClues ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        <img
+          src={`${import.meta.env.BASE_URL}cat-clues/${
+            gridSize.rows === 3 ? "mobile" : "desktop"
+          }.svg`}
+          alt="Clues showing the available cat patterns"
+          className="w-full h-full object-contain"
+          style={{
+            WebkitMaskImage:
+              "radial-gradient(ellipse at center, #000 45%, transparent 85%)",
+            maskImage:
+              "radial-gradient(ellipse at center, #000 45%, transparent 85%)",
+          }}
+        />
+      </div>
+
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className={`relative z-10 flex flex-col items-center justify-center gap-3 sm:gap-2 font-mono text-[12px] sm:text-[10px] ${
+          hidingCats ? "pointer-events-none" : ""
+        }`}
+      >
         {initialGrid.map((row, r) => (
           <div key={`row-${r}`} className="flex flex-row gap-3 sm:gap-3">
             {row.map((cat, c) => (
@@ -146,6 +206,11 @@ export default function AsciiCats() {
                 onClick={() => handleCatClick(cat.key)}
                 sweeping={sweeping}
                 sweepDelay={(r + c) * sweepStepMs}
+                hidden={hidingCats}
+                returning={returning}
+                hideDelay={(r + c) * hideStepMs}
+                hideFadeMs={hideFadeMs}
+                returnDelay={(r + c) * sweepStepMs}
               />
             ))}
           </div>
