@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import FireworksLayer from "./FireworksLayer";
 import styles from "./DotGrid.module.css";
 
 export default function DotGrid() {
+  const { pathname } = useLocation();
   const [flashes, setFlashes] = useState([]);
   const [pulses, setPulses] = useState([]);
   const [concentricPulses, setConcentricPulses] = useState([]);
@@ -45,6 +48,7 @@ export default function DotGrid() {
   return (
     <>
       <div className={styles.baseGrid} />
+      {pathname === "/diwali" && <FireworksLayer />}
       {concentricPulses.map((id) => (
         <div key={`concentric-${id}`} className={styles.concentricPulse} />
       ))}

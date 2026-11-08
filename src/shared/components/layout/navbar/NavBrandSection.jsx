@@ -1,6 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { SatelliteDish, Camera, Croissant, Target } from "lucide-react";
+import {
+  SatelliteDish,
+  Camera,
+  Croissant,
+  Target,
+  Sparkles,
+} from "lucide-react";
 import PokeballIcon from "../../icons/PokeballIcon";
 import styles from "./Navbar.module.css";
 
@@ -10,12 +16,14 @@ export default function NavBrandSection() {
   const isPokedex = location.pathname === "/pokedex";
   const isKai = location.pathname === "/kai";
   const isScore = location.pathname === "/darts";
+  const isDiwali = location.pathname === "/diwali";
 
   const [radarStatus, setRadarStatus] = useState("SYS_ONLINE");
   const [shutterStatus, setShutterStatus] = useState("SYS_ONLINE");
   const [pokedexStatus, setPokedexStatus] = useState("SYS_ONLINE");
   const [catStatus, setCatStatus] = useState("SYS_ONLINE");
   const [bullseyeActive, setBullseyeActive] = useState(false);
+  const [boom, setBoom] = useState(false);
   const [isShaking, setIsShaking] = useState(false);
 
   const radarPulseRef = useRef(null);
@@ -75,6 +83,15 @@ export default function NavBrandSection() {
       }, 1500);
     }
   };
+
+  const boomTimer = useRef(null);
+  const handleSparklesClick = () => {
+    setBoom(true);
+    window.dispatchEvent(new Event("diwali-fireworks"));
+    clearTimeout(boomTimer.current);
+    boomTimer.current = setTimeout(() => setBoom(false), 2500);
+  };
+  useEffect(() => () => clearTimeout(boomTimer.current), []);
 
   const handleRadarClick = () => {
     if (radarPulseRef.current) {
@@ -137,6 +154,18 @@ export default function NavBrandSection() {
               }`}
             />
           </button>
+        ) : isDiwali ? (
+          <button
+            onClick={handleSparklesClick}
+            className="relative z-10 text-defense-accent hover:text-white transition-colors outline-none cursor-pointer active:scale-90"
+            aria-label="Launch fireworks"
+          >
+            <Sparkles
+              className={`w-6 h-6 transition-all duration-300 ${
+                boom ? "text-orange-400 scale-125 rotate-12" : ""
+              }`}
+            />
+          </button>
         ) : (
           <button
             id="radar-trigger"
@@ -195,6 +224,14 @@ export default function NavBrandSection() {
             }`}
           >
             {bullseyeActive ? "BULLSEYE!" : "DARTS_COUNTER"}
+          </span>
+        ) : isDiwali ? (
+          <span
+            className={`font-mono text-[10px] whitespace-nowrap transition-colors duration-200 ${
+              boom ? "text-orange-400 font-bold" : "text-gray-500"
+            }`}
+          >
+            {boom ? "BOOM!" : "HAPPY DIWALI"}
           </span>
         ) : (
           <span
