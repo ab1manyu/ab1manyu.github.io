@@ -101,17 +101,23 @@ export default function BoosterPack({ pack, onSelect, onRipped, disabled }) {
       className={`${styles.pack} ${state === "sealed" ? styles.interactive : ""} ${
         state === "gone" ? styles.gone : ""
       }`}
-      role="button"
-      tabIndex={state === "sealed" ? 0 : -1}
-      aria-label={`Rip open ${pack.name} booster pack`}
       onClick={start}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          start();
-        }
-      }}
     >
+      {/* Empty button carries the accessible name; the artwork is decorative text */}
+      <button
+        type="button"
+        aria-label={`Rip open ${pack.name} booster pack`}
+        tabIndex={state === "sealed" ? 0 : -1}
+        disabled={state !== "sealed"}
+        style={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 5,
+          background: "none",
+          border: 0,
+          cursor: "pointer",
+        }}
+      />
       <div className={styles.body} style={{ clipPath: body }}>
         <PackArt pack={pack} />
       </div>

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { RotateCcw } from "lucide-react";
+import { RotateCcw, Volume2, VolumeX } from "lucide-react";
 import { createDiya, COLORS } from "./diyaEngine";
+import { createAudio } from "./audio";
 
 const FONT = '"Share Tech Mono", ui-monospace, monospace';
 
@@ -9,6 +10,9 @@ export default function DiyaCard() {
   const canvasRef = useRef(null);
   const [run, setRun] = useState(0);
   const [size, setSize] = useState(0);
+  const [soundOn, setSoundOn] = useState(false);
+  const audioRef = useRef(null);
+  const soundRef = useRef(false);
 
   useEffect(() => {
     const el = wrapRef.current;
@@ -16,6 +20,23 @@ export default function DiyaCard() {
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
+
+  // song: (re)starts on enable and on replay, fades out on disable/unmount
+  useEffect(() => {
+    soundRef.current = soundOn;
+    if (!soundOn) return;
+    audioRef.current ??= createAudio();
+    audioRef.current?.start();
+    return () => audioRef.current?.stop();
+  }, [soundOn, run]);
+
+  useEffect(
+    () => () => {
+      audioRef.current?.destroy();
+      audioRef.current = null;
+    },
+    []
+  );
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -41,6 +62,8 @@ export default function DiyaCard() {
     let start = performance.now();
     let last = start;
     let visible = true;
+    let prevT = 0;
+    let prevBurst = 0;
     const io = new IntersectionObserver(([e]) => {
       visible = e.isIntersecting;
       last = performance.now();
@@ -54,7 +77,15 @@ export default function DiyaCard() {
       last = now;
       // reduced motion: skip straight to the finished artwork
       const t = reduced ? 20 + (now - start) / 4000 : (now - start) / 1000;
-      const { glyphs, colors } = frame(t, dt);
+      const { glyphs, colors, burst } = frame(t, dt);
+      const sfx = soundRef.current ? audioRef.current : null;
+      if (sfx) {
+        if (prevT < 8.5 && t >= 8.5) sfx.ignite();
+        if (t >= 15 && Math.random() < dt * 3) sfx.pop();
+        if (burst > 0.97 && prevBurst <= 0.97) sfx.sparkle();
+      }
+      prevT = t;
+      prevBurst = burst;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.fillStyle = "#000";
       ctx.fillRect(0, 0, W * cw, H * lh);
@@ -97,6 +128,15 @@ export default function DiyaCard() {
         <p className="font-mono text-orange-200/90 text-sm sm:text-base">
           Shubh Deepavali, Harini ✦
         </p>
+        <button
+          type="button"
+          onClick={() => setSoundOn((v) => !v)}
+          aria-pressed={soundOn}
+          className="ml-auto inline-flex items-center gap-2 rounded-lg border border-orange-500/40 px-3 py-1.5 font-mono text-xs text-orange-200 hover:bg-orange-500/10 cursor-pointer"
+        >
+          {soundOn ? <Volume2 size={14} /> : <VolumeX size={14} />}
+          {soundOn ? "Sound on" : "Sound off"}
+        </button>
         <button
           type="button"
           onClick={replay}

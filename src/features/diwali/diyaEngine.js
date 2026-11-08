@@ -666,7 +666,7 @@ function controls(bounds, t) {
  * @param {number} W grid columns
  * @param {number} H grid rows
  * @param {{seed?:number,intro?:number,density?:number,glow?:number,accent?:number}} [options]
- * @returns {(t:number, dt:number) => {glyphs:string[], colors:Uint8Array}}
+ * @returns {(t:number, dt:number) => {glyphs:string[], colors:Uint8Array, burst:number}}
  */
 export function createDiya(W, H, options = {}) {
   const opts = {
@@ -695,7 +695,7 @@ export function createDiya(W, H, options = {}) {
     const ctl = controls(bounds, t);
     glyphs.fill("");
     colors.fill(0);
-    if (ctl.stage < 2) return { glyphs, colors };
+    if (ctl.stage < 2) return { glyphs, colors, burst };
 
     burst *= Math.exp(-dt / 0.55);
     if (ctl.alive && rng.random() < 0.3 * dt) {
@@ -754,6 +754,6 @@ export function createDiya(W, H, options = {}) {
       glyphs[i] = ch;
       colors[i] = ch ? col : 0;
     }
-    return { glyphs, colors };
+    return { glyphs, colors, burst };
   };
 }

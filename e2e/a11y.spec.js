@@ -7,6 +7,7 @@ const ROUTES = [
   { path: "/kai", name: "Kai Cards" },
   { path: "/pokedex", name: "Pokédex" },
   { path: "/darts", name: "Darts" },
+  { path: "/diwali", name: "Diwali" },
 ];
 
 test.beforeEach(async ({ page }) => {
