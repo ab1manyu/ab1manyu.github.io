@@ -20,22 +20,49 @@ const TYPES = [
   { name: "Dark", icon: Skull, color: "#9ca3af" },
 ];
 
-const IMAGES = [
-  "/kai/kai.jpg",
-  "/kai/kai2.jpg",
-  "/kai/kai3.jpg",
-  "/kai/kai4.jpg",
-  "/kai/kai5.jpg",
-  "/kai/kai6.jpg",
-  "/kai/kai7.jpg",
-  "/kai/kai8.jpg",
-  "/kai/kai9.jpg",
-  "/kai/kai10.jpg",
+const range = (from, to) =>
+  Array.from({ length: to - from + 1 }, (_, i) => `/kai/kai${from + i}.jpg`);
+
+export const PACKS = [
+  {
+    id: "one",
+    name: "Series One",
+    cover: "/kai/kai.jpg",
+    images: ["/kai/kai.jpg", ...range(2, 10)],
+    legendary: "/kai/kaiLegendary.jpg",
+    colors: {
+      bg1: "#134e36",
+      bg2: "#0a2a1d",
+      bg3: "#0d3a28",
+      crimp1: "#1c6b4a",
+      crimp2: "#0f3d2a",
+      text: "#ecfdf5",
+      accent: "#6ee7b7",
+      deep: "#064e3b",
+    },
+  },
+  {
+    id: "two",
+    name: "Series Two",
+    cover: "/kai/kai11.jpg",
+    images: range(11, 20),
+    legendary: "/kai/kaiLegendary2.jpg",
+    colors: {
+      bg1: "#3b2a7a",
+      bg2: "#1a1240",
+      bg3: "#2a1d5c",
+      crimp1: "#5b45b5",
+      crimp2: "#2a1d5c",
+      text: "#f5f3ff",
+      accent: "#c4b5fd",
+      deep: "#2e1065",
+    },
+  },
 ];
 
-export const TOTAL_CARDS = 20;
-const LEGENDARY_CHANCE = 0.15; // 15%
-
+export const PACK_SIZE = 5;
+export const TOTAL_CARDS = PACK_SIZE;
+const LEGENDARY_CHANCE = 0.16;
 const MOVES = [
   {
     name: "Earthquake",
@@ -86,8 +113,8 @@ const shuffle = (arr) => {
   return a;
 };
 
-export function generateKaiCards(total = TOTAL_CARDS) {
-  const shuffledImages = shuffle(IMAGES);
+export function generateKaiCards(total = TOTAL_CARDS, pack = PACKS[0]) {
+  const shuffledImages = shuffle(pack.images);
 
   return Array.from({ length: total }, (_, i) => {
     const shuffledMoves = [...MOVES].sort(() => 0.5 - Math.random());
@@ -95,7 +122,8 @@ export function generateKaiCards(total = TOTAL_CARDS) {
       () => 0.5 - Math.random()
     );
     const type = shuffledMoves[0].type;
-    const isLegendary = Math.random() < LEGENDARY_CHANCE;
+    // Legendaries can only show up in the final slot of a pack
+    const isLegendary = i === total - 1 && Math.random() < LEGENDARY_CHANCE;
 
     return {
       id: i,
@@ -106,7 +134,7 @@ export function generateKaiCards(total = TOTAL_CARDS) {
       type,
       isLegendary,
       image: isLegendary
-        ? "/kai/kaiLegendary.jpg"
+        ? pack.legendary
         : shuffledImages[i % shuffledImages.length],
       attack1: isLegendary
         ? {

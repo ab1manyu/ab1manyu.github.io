@@ -1,25 +1,319 @@
-.kaicardsContainer {
-  cursor: grab;
-  user-select: none;
-  -webkit-user-select: none;
+.stage {
+  position: relative;
+  overflow: hidden;
+  font-family: monospace;
 }
 
-.kaicardsContainer:active {
-  cursor: grabbing;
-}
-
-.bottomGlow {
+.glow {
   pointer-events: none;
   position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: auto 0 0 0;
   height: 45vh;
   z-index: 0;
   background: radial-gradient(
     ellipse 80% 60% at 50% 100%,
-    rgba(16, 185, 129, 0.13) 0%,
-    rgba(16, 185, 129, 0.05) 45%,
+    rgba(16, 185, 129, 0.14) 0%,
+    rgba(16, 185, 129, 0.04) 45%,
     transparent 100%
   );
+}
+
+.caption {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 1.5rem;
+  min-height: 1.2em;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  opacity: 0.65;
+}
+
+/* Pack and card stack share one box so the cards come out of the pack */
+.row {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(1rem, 4vw, 3rem);
+}
+
+.arenaHidden {
+  opacity: 0;
+  pointer-events: none;
+  margin-inline: calc(var(--w) / -2 - clamp(0.5rem, 2vw, 1.5rem));
+  transform: scale(0.9);
+}
+
+.arena {
+  --w: min(240px, 42vw, calc((100vh - 380px) * 0.68));
+  transition:
+    width 0.6s ease,
+    margin 0.6s ease,
+    opacity 0.4s ease,
+    transform 0.4s ease;
+  position: relative;
+  width: var(--w);
+  min-width: 140px;
+  aspect-ratio: 280 / 410;
+}
+
+.deck {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  aspect-ratio: 5 / 7;
+  transform: translateY(-51%) scale(0.86);
+  transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.deckOpen {
+  transform: translateY(-50%);
+}
+
+.slot {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+  cursor: grab;
+  outline: none;
+  will-change: transform;
+}
+.slot:active {
+  cursor: grabbing;
+}
+.slot:focus-visible {
+  outline: 2px solid var(--accent-solid);
+  outline-offset: 6px;
+  border-radius: 12px;
+}
+
+.footerSlot {
+  position: relative;
+  z-index: 1;
+  height: 3rem;
+  margin-top: 1.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.again {
+  font-weight: 700;
+  padding: 0.65rem 1.5rem;
+  border-radius: 9999px;
+  background: var(--accent-solid);
+  color: #04130c;
+  cursor: pointer;
+  animation: fadeUp 0.5s ease both;
+  transition: transform 0.15s;
+}
+.again:hover {
+  transform: translateY(-2px);
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .deck,
+  .slot {
+    transition: none !important;
+  }
+}
+
+.arenaSelected {
+  --w: min(280px, 72vw, calc((100vh - 380px) * 0.68));
+}
+
+/* ---------- end-of-pack summary ---------- */
+.summary {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 760px;
+}
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.9rem;
+}
+
+/* Cards are authored at 280x392; scale them down to a fixed thumbnail */
+.miniWrap {
+  --s: 0.5;
+  position: relative;
+  width: calc(280px * var(--s));
+  height: calc(392px * var(--s));
+  animation: dealUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@media (min-width: 640px) {
+  .miniWrap {
+    --s: 0.6;
+  }
+}
+
+.miniCard {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 280px;
+  height: 392px;
+  transform: scale(var(--s));
+  transform-origin: top left;
+}
+
+.newBadge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  z-index: 2;
+  padding: 2px 6px;
+  border-radius: 9999px;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  background: var(--accent-solid);
+  color: #04130c;
+}
+
+.collection {
+  width: min(360px, 100%);
+  animation: fadeUp 0.5s ease both;
+}
+
+.collectionHead {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.4rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+}
+
+.bar {
+  height: 6px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  background: var(--accent-solid);
+  transition: width 0.8s ease 0.3s;
+}
+
+.collectionNote {
+  margin-top: 0.4rem;
+  font-size: 0.7rem;
+  opacity: 0.6;
+  text-align: center;
+}
+
+@keyframes dealUp {
+  from {
+    opacity: 0;
+    transform: translateY(60px) scale(0.9);
+  }
+}
+
+/* ---------- legendary effect (sits behind the card) ---------- */
+.legendFx {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  animation: fxIn 0.8s ease-out both;
+  transition: opacity 0.3s ease;
+}
+
+.legendFxOut {
+  opacity: 0;
+}
+
+.halo {
+  position: absolute;
+  inset: -25% -35%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(240, 192, 64, 0.55) 0%,
+    rgba(240, 192, 64, 0.18) 40%,
+    transparent 70%
+  );
+  animation: haloPulse 2.4s ease-in-out infinite alternate;
+}
+
+.rays {
+  position: absolute;
+  inset: -70%;
+  background: repeating-conic-gradient(
+    from 0deg,
+    rgba(240, 192, 64, 0.28) 0deg 8deg,
+    transparent 8deg 24deg
+  );
+  -webkit-mask-image: radial-gradient(circle, #000 0%, transparent 55%);
+  mask-image: radial-gradient(circle, #000 0%, transparent 55%);
+  animation: raysSpin 14s linear infinite;
+}
+
+.spark {
+  position: absolute;
+  bottom: 0;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #f0c040;
+  box-shadow: 0 0 8px 2px rgba(240, 192, 64, 0.8);
+  opacity: 0;
+  animation: sparkRise 3s ease-out infinite;
+}
+
+@keyframes fxIn {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+@keyframes haloPulse {
+  to {
+    opacity: 0.65;
+    transform: scale(1.06);
+  }
+}
+@keyframes raysSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes sparkRise {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.6);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-260px) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rays,
+  .halo,
+  .spark {
+    animation: none;
+  }
 }

@@ -1,0 +1,163 @@
+.pack {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  outline: none;
+  filter: drop-shadow(0 24px 30px rgba(0, 0, 0, 0.55));
+}
+
+.interactive {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+.interactive:hover,
+.interactive:focus-visible {
+  transform: translateY(-6px) rotate(-1deg);
+}
+.interactive:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.body,
+.stay,
+.torn {
+  position: absolute;
+  inset: 0;
+}
+
+/* Torn strip flicks off once the rip finishes; the rest drops away */
+.gone .torn {
+  transition:
+    transform 0.55s cubic-bezier(0.3, 0, 0.7, 1),
+    opacity 0.55s ease;
+  transform: translate(-30px, -60%) rotate(-38deg) !important;
+  opacity: 0;
+}
+.gone .stay {
+  transition:
+    transform 0.55s cubic-bezier(0.3, 0, 0.7, 1),
+    opacity 0.55s ease;
+  transform: translate(30px, -60%) rotate(30deg);
+  opacity: 0;
+}
+.gone .body {
+  transition:
+    transform 0.7s cubic-bezier(0.5, 0, 0.9, 0.4) 0.1s,
+    opacity 0.7s ease 0.1s;
+  transform: translateY(70%);
+  opacity: 0;
+}
+
+/* ---------- artwork ---------- */
+.art {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: 6px;
+  overflow: hidden;
+  background: linear-gradient(
+    165deg,
+    var(--bg1) 0%,
+    var(--bg2) 55%,
+    var(--bg3) 100%
+  );
+  font-family: monospace;
+  color: var(--text);
+}
+
+.crimp {
+  flex: none;
+  height: 4.5%;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.22) 0 1.5px,
+      rgba(0, 0, 0, 0.3) 1.5px 4px
+    ),
+    linear-gradient(var(--crimp1), var(--crimp2));
+  z-index: 2;
+}
+.crimpTop {
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+}
+.crimpBottom {
+  box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4);
+}
+
+.face {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 11% 9% 6%;
+  gap: 5%;
+  overflow: hidden;
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+}
+.brand span {
+  font-size: clamp(2rem, 11vw, 2.8rem);
+  font-weight: 900;
+  letter-spacing: 0.32em;
+  padding-left: 0.32em;
+  color: var(--text);
+  text-shadow:
+    0 2px 0 var(--deep),
+    0 0 18px rgba(52, 211, 153, 0.35);
+}
+.brand small {
+  margin-top: 6px;
+  font-size: 0.6rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.window {
+  flex: 1;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid rgba(236, 253, 245, 0.85);
+  box-shadow:
+    0 0 0 3px var(--deep),
+    inset 0 0 20px rgba(0, 0, 0, 0.4);
+}
+.window img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.footer {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  padding: 0 2px;
+}
+
+/* One soft diagonal highlight, like foil catching light */
+.sheen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.14) 45%,
+    rgba(255, 255, 255, 0.04) 55%,
+    transparent 70%
+  );
+}
