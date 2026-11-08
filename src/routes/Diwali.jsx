@@ -15,8 +15,11 @@ export default function Diwali() {
         <Heart /> <span className="diwali-rainbow">Happy Diwali, Harini</span>{" "}
         <Heart />
       </h1>
-      <p className="text-center text-sm text-gray-400 mb-8">
-        A little light, made of text — just for you. f{" "}
+      <p className="text-center text-sm mb-8">
+        <span className="diwali-rainbow">
+          A little light, made of text — just for you.
+        </span>{" "}
+        <Heart />
       </p>
       <DiyaCard />
     </main>
