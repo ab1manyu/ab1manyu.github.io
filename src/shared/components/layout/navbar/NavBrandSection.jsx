@@ -224,7 +224,7 @@ export default function NavBrandSection() {
         ) : isDiwali ? (
           <span
             className={`font-mono text-[10px] whitespace-nowrap transition-colors duration-200 ${
-              boom ? "text-orange-400 font-bold" : "text-gray-500"
+              boom ? "text-defense-accent" : "text-gray-500"
             }`}
           >
             {boom ? "BOOM!" : "HAPPY DIWALI"}
