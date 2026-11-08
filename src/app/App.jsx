@@ -18,6 +18,7 @@ const Gallery = lazy(() => import("@/routes/Gallery"));
 const KaiCards = lazy(() => import("@/routes/KaiCards"));
 const Pokedex = lazy(() => import("@/routes/Pokedex"));
 const DartScore = lazy(() => import("@/routes/DartScore"));
+const Diwali = lazy(() => import("@/routes/Diwali"));
 const NotFound = lazy(() => import("@/routes/NotFound"));
 
 function AppRoutes() {
@@ -31,6 +32,7 @@ function AppRoutes() {
           <Route path="/kai" element={<KaiCards />} />
           <Route path="/pokedex" element={<Pokedex />} />
           <Route path="/darts" element={<DartScore />} />
+          <Route path="/diwali" element={<Diwali />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
