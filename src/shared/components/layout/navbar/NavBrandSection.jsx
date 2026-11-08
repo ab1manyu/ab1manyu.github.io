@@ -160,11 +160,7 @@ export default function NavBrandSection() {
             className="relative z-10 text-defense-accent hover:text-white transition-colors outline-none cursor-pointer active:scale-90"
             aria-label="Launch fireworks"
           >
-            <Sparkles
-              className={`w-6 h-6 transition-all duration-300 ${
-                boom ? "text-orange-400 scale-125 rotate-12" : ""
-              }`}
-            />
+            <Sparkles className="w-6 h-6" />
           </button>
         ) : (
           <button
