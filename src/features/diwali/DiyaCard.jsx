@@ -126,7 +126,7 @@ export default function DiyaCard() {
       </div>
       <div className="mt-4 flex items-center justify-between gap-4">
         <p className="font-mono text-orange-200/90 text-sm sm:text-base">
-          Shubh Deepavali, Harini ✦
+          Happy Diwali ✦
         </p>
         <button
           type="button"
@@ -135,14 +135,14 @@ export default function DiyaCard() {
           className="ml-auto inline-flex items-center gap-2 rounded-lg border border-orange-500/40 px-3 py-1.5 font-mono text-xs text-orange-200 hover:bg-orange-500/10 cursor-pointer"
         >
           {soundOn ? <Volume2 size={14} /> : <VolumeX size={14} />}
-          {soundOn ? "Sound on" : "Sound off"}
+          {soundOn ? "Volume ON" : "Volume OFF"}
         </button>
         <button
           type="button"
           onClick={replay}
           className="inline-flex items-center gap-2 rounded-lg border border-orange-500/40 px-3 py-1.5 font-mono text-xs text-orange-200 hover:bg-orange-500/10 cursor-pointer"
         >
-          <RotateCcw size={14} /> Replay
+          <RotateCcw size={14} /> Play again
         </button>
       </div>
     </div>
