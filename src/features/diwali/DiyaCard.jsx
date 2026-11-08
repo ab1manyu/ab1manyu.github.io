@@ -3,6 +3,8 @@ import { RotateCcw, Volume2, VolumeX } from "lucide-react";
 import { createDiya, COLORS } from "./diyaEngine";
 import { createAudio } from "./audio";
 
+// skip the opening darkness + first-sparks stages (first 4s of the sequence)
+const SKIP_INTRO = 4;
 const FONT = '"Share Tech Mono", ui-monospace, monospace';
 
 export default function DiyaCard() {
@@ -76,7 +78,9 @@ export default function DiyaCard() {
       const dt = Math.min((now - last) / 1000, 0.1);
       last = now;
       // reduced motion: skip straight to the finished artwork
-      const t = reduced ? 20 + (now - start) / 4000 : (now - start) / 1000;
+      const t = reduced
+        ? 20 + (now - start) / 4000
+        : SKIP_INTRO + (now - start) / 1000;
       const { glyphs, colors, burst } = frame(t, dt);
       const sfx = soundRef.current ? audioRef.current : null;
       if (sfx) {
