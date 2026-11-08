@@ -129,9 +129,6 @@ export default function DiyaCard() {
       <div className="mt-4 flex items-center justify-between gap-4">
         <p className="font-mono text-sm sm:text-base">
           <span className="diwali-rainbow">Happy Diwali</span>{" "}
-          <span aria-hidden="true" className="diwali-heart">
-            ♥
-          </span>
         </p>
         <button
           type="button"
