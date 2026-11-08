@@ -14,7 +14,6 @@ export default function DiyaCard() {
   const [size, setSize] = useState(0);
   const [soundOn, setSoundOn] = useState(false);
   const audioRef = useRef(null);
-  const soundRef = useRef(false);
 
   useEffect(() => {
     const el = wrapRef.current;
@@ -25,17 +24,18 @@ export default function DiyaCard() {
 
   // song: (re)starts on enable and on replay, fades out on disable/unmount
   useEffect(() => {
-    soundRef.current = soundOn;
     if (!soundOn) return;
     audioRef.current ??= createAudio();
     audioRef.current?.start();
     return () => audioRef.current?.stop();
   }, [soundOn, run]);
 
-  // background fireworks (FireworksLayer) announce each burst; play it if sound is on
+  // background fireworks (FireworksLayer) announce each burst; always play explosion sound
   useEffect(() => {
+    audioRef.current ??= createAudio();
     const onBurst = (e) => {
-      if (soundRef.current) audioRef.current?.boom(e.detail?.pan ?? 0);
+      audioRef.current ??= createAudio();
+      audioRef.current?.boom(e.detail?.pan ?? 0);
     };
     window.addEventListener("firework-burst", onBurst);
     return () => window.removeEventListener("firework-burst", onBurst);
@@ -73,8 +73,6 @@ export default function DiyaCard() {
     let start = performance.now();
     let last = start;
     let visible = true;
-    let prevT = 0;
-    let prevBurst = 0;
     const io = new IntersectionObserver(([e]) => {
       visible = e.isIntersecting;
       last = performance.now();
@@ -90,18 +88,9 @@ export default function DiyaCard() {
       const t = reduced
         ? 20 + (now - start) / 4000
         : SKIP_INTRO + (now - start) / 1000;
-      const { glyphs, colors, burst } = frame(t, dt);
-      const sfx = soundRef.current ? audioRef.current : null;
-      if (sfx) {
-        if (prevT < 8.5 && t >= 8.5) sfx.ignite();
-        if (t >= 15 && Math.random() < dt * 3) sfx.pop();
-        if (burst > 0.97 && prevBurst <= 0.97) sfx.sparkle();
-      }
-      prevT = t;
-      prevBurst = burst;
+      const { glyphs, colors } = frame(t, dt);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.fillStyle = "#000";
-      ctx.fillRect(0, 0, W * cw, H * lh);
+      ctx.clearRect(0, 0, W * cw, H * lh);
       ctx.font = `${fontPx}px ${FONT}`;
       ctx.textBaseline = "middle";
       let cur = -1;
@@ -128,7 +117,7 @@ export default function DiyaCard() {
   const replay = useCallback(() => setRun((n) => n + 1), []);
 
   return (
-    <div className="w-full max-w-4xl mx-auto rounded-2xl border border-orange-500/30 bg-black/70 backdrop-blur p-4 sm:p-6 shadow-[0_0_60px_rgba(255,120,10,0.15)]">
+    <div className="w-full max-w-4xl mx-auto rounded-2xl border border-orange-500/30 bg-black/50 p-4 sm:p-6 shadow-[0_0_60px_rgba(255,120,10,0.15)]">
       <div ref={wrapRef} className="w-full flex justify-center">
         <canvas
           ref={canvasRef}

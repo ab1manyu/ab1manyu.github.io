@@ -17,9 +17,8 @@ export default function Diwali() {
       </h1>
       <p className="text-center text-sm mb-8">
         <span className="diwali-rainbow">
-          A little light, made of text — just for you.
+         Wishing you a very happy, bright, and warm Diwali.
         </span>{" "}
-        <Heart />
       </p>
       <DiyaCard />
     </main>
