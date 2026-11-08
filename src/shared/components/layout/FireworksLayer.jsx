@@ -176,6 +176,14 @@ export default function FireworksLayer() {
           for (let k = 0; k < 6; k++)
             dot(px(w.gx), px(head + k), w.color, (1 - k / 6) * 0.9);
         } else {
+          if (!w.burst) {
+            w.burst = true;
+            window.dispatchEvent(
+              new CustomEvent("firework-burst", {
+                detail: { pan: (px(w.gx) / W) * 2 - 1 },
+              })
+            );
+          }
           const p = (age - w.rise) / w.life;
           const e = easeOut(Math.min(1, p * 1.4));
           const fade = (1 - p) ** 1.3;

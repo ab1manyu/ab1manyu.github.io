@@ -32,6 +32,15 @@ export default function DiyaCard() {
     return () => audioRef.current?.stop();
   }, [soundOn, run]);
 
+  // background fireworks (FireworksLayer) announce each burst; play it if sound is on
+  useEffect(() => {
+    const onBurst = (e) => {
+      if (soundRef.current) audioRef.current?.boom(e.detail?.pan ?? 0);
+    };
+    window.addEventListener("firework-burst", onBurst);
+    return () => window.removeEventListener("firework-burst", onBurst);
+  }, []);
+
   useEffect(
     () => () => {
       audioRef.current?.destroy();

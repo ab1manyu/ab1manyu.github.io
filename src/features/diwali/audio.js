@@ -166,6 +166,50 @@ export function createAudio() {
       src.stop(t + 2.3);
       tone("sine", 70, t, 1.2, 0.3);
     },
+    /** Firework explosion: low thump, noisy crack, then a few crackles. pan -1..1 */
+    boom(pan = 0) {
+      const t = ctx.currentTime;
+      const out = ctx.createStereoPanner();
+      out.pan.value = Math.max(-1, Math.min(1, pan));
+      out.connect(bus);
+      const o = ctx.createOscillator();
+      const og = ctx.createGain();
+      o.type = "sine";
+      o.frequency.setValueAtTime(140, t);
+      o.frequency.exponentialRampToValueAtTime(38, t + 0.45);
+      og.gain.setValueAtTime(0.0001, t);
+      og.gain.exponentialRampToValueAtTime(0.5, t + 0.01);
+      og.gain.exponentialRampToValueAtTime(0.0001, t + 0.6);
+      o.connect(og).connect(out);
+      o.start(t);
+      o.stop(t + 0.65);
+
+      const src = ctx.createBufferSource();
+      src.buffer = noise;
+      const f = ctx.createBiquadFilter();
+      f.type = "lowpass";
+      f.frequency.setValueAtTime(3500, t);
+      f.frequency.exponentialRampToValueAtTime(300, t + 0.5);
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0.4, t);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.55);
+      src.connect(f).connect(g).connect(out);
+      src.start(t, Math.random() * 1.2, 0.6);
+
+      for (let i = 0; i < 7; i++) {
+        const at = t + 0.12 + Math.random() * 0.7;
+        const c = ctx.createBufferSource();
+        c.buffer = noise;
+        const hp = ctx.createBiquadFilter();
+        hp.type = "highpass";
+        hp.frequency.value = 2500 + Math.random() * 3000;
+        const cg = ctx.createGain();
+        cg.gain.setValueAtTime(0.05 + Math.random() * 0.05, at);
+        cg.gain.exponentialRampToValueAtTime(0.0001, at + 0.04);
+        c.connect(hp).connect(cg).connect(out);
+        c.start(at, Math.random() * 1.5, 0.1);
+      }
+    },
     /** Tiny ember crackle. */
     pop() {
       const t = ctx.currentTime;
