@@ -181,7 +181,6 @@ input[type="number"] {
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .diwali-rainbow,
   .diwali-heart {
     animation: none;
   }
